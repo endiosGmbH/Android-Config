@@ -1,4 +1,4 @@
-apply from: 'http://endios.de/endiosOne/android_build_config/common.gradle'
+apply from: 'https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/common.gradle'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
