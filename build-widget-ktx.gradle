@@ -1,0 +1,2 @@
+apply plugin: 'com.android.library'
+apply from: 'http://endios.de/endiosOne/android_build_config/build-project-ktx.gradle'

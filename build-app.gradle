@@ -1,0 +1,6 @@
+apply plugin: 'com.android.application'
+apply from: 'http://endios.de/endiosOne/android_build_config/build-project.gradle'
+
+dependencies {
+    implementation project(':foundation')
+}

@@ -1,0 +1,93 @@
+ext.gradle_version = '3.3.2'
+// For Latest Version see: https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-stdlib
+ext.kotlin_version = '1.3.21'
+
+
+ext.compile_sdk_version = 28
+ext.target_sdk_version = 28
+ext.min_sdk_version = 21
+ext.build_tools_version = '28.0.3'
+
+ext.android_support_version = '28.0.0'
+ext.google_play_services_version = '15.0.1'
+
+ext.detekt_version = '1.0.0-RC14'
+
+ext.fabric_version = '1.27.1'
+ext.crashlytics_version = '2.9.9@aar'
+
+ext.retrofit_version = '2.3.0'
+ext.okhttp_version = '3.4.1'
+
+ext.picasso_version = '2.5.2'
+ext.gson_version = '2.8.5'
+
+ext.android_testrunner_version = '1.0.2' // Still needed ? we using AndroidX Testing 
+ext.junit_version = '4.12'
+ext.mockito_core_version = '2.19.0'
+ext.mockito_kotlin_version = '1.5.0'
+ext.assertj_core_version = '3.10.0'
+
+
+
+///////////////////////////////////////////////
+//   __   ___   ______    __    _____  ___   
+//  |/"| /  ") /    " \  |" \  (\"   \|"  \  
+//  (: |/   / // ____  \ ||  | |.\\   \    | 
+//  |    __/ /  /    ) :)|:  | |: \.   \\  | 
+//  (// _  \(: (____/ // |.  | |.  \    \. | 
+//  |: | \  \\        /  /\  |\|    \    \ | 
+//  (__|  \__)\"_____/  (__\_|_)\___|\____\)
+//
+///////////////////////////////////////////////
+
+ext.koin_android_version = '1.0.2'
+ext.koin_android_scope_version = '1.0.2'
+ext.koin_java_version = '1.0.2'
+
+///////////////////////////////////////////////
+//
+//    ___            _           _     _  __   __
+//   / _ \          | |         (_)   | | \ \ / /
+//  / /_\ \_ __   __| |_ __ ___  _  __| |  \ V / 
+//  |  _  | '_ \ / _` | '__/ _ \| |/ _` |  /   \ 
+//  | | | | | | | (_| | | | (_) | | (_| | / /^\ \
+//  \_| |_/_| |_|\__,_|_|  \___/|_|\__,_| \/   \/
+//                                             
+///////////////////////////////////////////////
+                                        
+// AndroidX See Versions: https://developer.android.com/jetpack/androidx/migrate
+ext.androidx_core_version = '1.0.1'
+ext.androidx_fragment_version = '1.0.0'
+ext.androidx_appcompat_version = '1.0.2'
+ext.androidx_recyclerview_version = '1.0.0'
+ext.androidx_viewpager_version = '1.0.0'
+ext.androidx_annotation_version = '1.0.2'
+ext.androidx_transition_version = '1.0.1'
+// material design
+ext.androidx_material_version = '1.0.0'
+///////////////////////////////////////////////
+//
+//  _____         _   
+// |_   _|__  ___| |_ 
+//   | |/ _ \/ __| __|
+//   | |  __/\__ \ |_ 
+//   |_|\___||___/\__|
+//                    
+//
+///////////////////////////////////////////////
+// AndroidX Test
+// see https://developer.android.com/training/testing/set-up-project
+ext.androidx_testcore_version = '1.0.0'
+ext.androidx_testrunner_version = '1.1.0'
+ext.androidx_testrules_version = '1.1.0'
+// Espresso
+ext.androidx_testext_junit_version = '1.0.0'
+ext.androidx_espresso_core_version = '3.1.0'
+ext.androidx_espresso_contrib_version = '3.1.0'
+ext.androidx_espresso_intents_version = '3.1.0'
+ext.androidx_espresso_accessibility_version = '3.1.0'
+ext.androidx_espresso_web_version = '3.1.0'
+ext.androidx_espresso_idling_concurrent_version = '3.1.0'
+ext.androidx_espresso_idling_resource_version = '3.1.0'
+
