@@ -61,6 +61,7 @@ ext.remotemodel_latest_version = '0.1.2-SNAPSHOT'
 ext.koin_android_version = '1.0.2'
 ext.koin_android_scope_version = '1.0.2'
 ext.koin_java_version = '1.0.2'
+ext.koin_test_version = '0.9.3'
 
 ///////////////////////////////////////////////
 //
