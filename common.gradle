@@ -18,6 +18,7 @@ ext.crashlytics_version = '2.9.9@aar'
 
 ext.retrofit_version = '2.3.0'
 ext.okhttp_version = '3.4.1'
+ext.okhttp_logging_interceptor = '3.4.1'
 ext.mockwebserver_version = '3.14.0'
 ext.picasso_okhttp_downloader_version = '1.1.0'
 
