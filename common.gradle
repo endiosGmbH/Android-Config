@@ -29,7 +29,22 @@ ext.junit_version = '4.12'
 ext.mockito_core_version = '2.19.0'
 ext.mockito_kotlin_version = '1.5.0'
 ext.assertj_core_version = '3.10.0'
+///////////////////////////////////////////////
+//
+//  _____                               _           _     _                 
+// |  ___|   ___    _   _   _ __     __| |   __ _  | |_  (_)   ___    _ __  
+// | |_     / _ \  | | | | | '_ \   / _` |  / _` | | __| | |  / _ \  | '_ \ 
+// |  _|   | (_) | | |_| | | | | | | (_| | | (_| | | |_  | | | (_) | | | | |
+// |_|      \___/   \__,_| |_| |_|  \__,_|  \__,_|  \__| |_|  \___/  |_| |_|
+//
+///////////////////////////////////////////////
 
+// Please keep in mind that changing the version !
+// will affect all people working with it
+// foundation and remotemodel should have same version nr 
+ 
+ext.foundation_latest_version = '0.1.2@aar'
+ext.remotemodel_latest_version = '0.1.2'
 
 
 ///////////////////////////////////////////////
