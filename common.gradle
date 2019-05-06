@@ -140,4 +140,4 @@ ext.androidx_espresso_idling_resource_version = '3.1.1'
 // Assertions
 ext.androidx_test_ext_junit_version='1.1.0'
 ext.androidx_test_ext_truth_version='1.1.0'
-ext.com_google_truth_truth_version='.0.42'
+ext.com_google_truth_truth_version='0.44'
