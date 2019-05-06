@@ -16,9 +16,20 @@ ext.detekt_version = '1.0.0-RC14'
 ext.fabric_version = '1.27.1'
 ext.crashlytics_version = '2.9.9@aar'
 
+///////////////////////////
+//  ______   _____      
+// /\__  _\ /\  __`\    
+// \/_/\ \/ \ \ \/\ \   
+//    \ \ \  \ \ \ \ \  
+//     \_\ \__\ \ \_\ \ 
+//     /\_____\\ \_____\
+//     \/_____/ \/_____/
+//
+//////////////////////////
 ext.retrofit_version = '2.5.0'
-ext.okhttp_version = '3.4.1'
-ext.okhttp_logging_interceptor_version = '3.4.1'
+ext.retrofit_coroutines_adapter_version = '0.9.2'
+ext.okhttp_version = '3.14.0'
+ext.okhttp_logging_interceptor_version = '3.14.0'
 ext.mockwebserver_version = '3.14.0'
 ext.picasso_okhttp_downloader_version = '1.1.0'
 
