@@ -127,7 +127,8 @@ ext.androidx_material_version = '1.0.0'
 // see https://developer.android.com/training/testing/set-up-project
 ext.androidx_testcore_version = '1.1.0'
 ext.androidx_testrunner_version = '1.1.1'
-ext.androidx_testrules_version = '1.1.1'
+ext.androidx_test_rules_version = '1.1.1'
+ext.androidx_test_orchestrator_version = '1.1.1'
 // Espresso
 ext.androidx_espresso_core_version = '3.1.1'
 ext.androidx_espresso_contrib_version = '3.1.1'
