@@ -99,7 +99,7 @@ ext.kotlinx_coroutines_android = '1.2.0'
 ///////////////////////////////////////////////
                                         
 // AndroidX See Versions: https://developer.android.com/jetpack/androidx/migrate
-ext.androidx_core_version = '1.0.1'
+ext.androidx_core_version = '1.0.2'
 ext.androidx_fragment_version = '1.0.0'
 ext.androidx_appcompat_version = '1.0.2'
 ext.androidx_recyclerview_version = '1.0.0'
