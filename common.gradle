@@ -58,8 +58,8 @@ ext.assertj_core_version = '3.10.0'
 // will affect all people working with it
 // foundation and remotemodel should have same version nr 
  
-ext.foundation_latest_version = '0.1.8-SNAPSHOT@aar'
-ext.remotemodel_latest_version = '0.1.8-SNAPSHOT'
+ext.foundation_latest_version = '0.1.9-SNAPSHOT@aar'
+ext.remotemodel_latest_version = '0.1.9-SNAPSHOT'
 
 
 ///////////////////////////////////////////////
