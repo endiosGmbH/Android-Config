@@ -128,6 +128,9 @@ ext.androidx_annotation_version = '1.0.2'
 ext.androidx_transition_version = '1.0.1'
 ext.androidx_collection_version = '1.0.0'
 ext.androidx_localbroadcastmanager_version = '1.0.0'
+ext.androidx_navigation_runtime_ktx_version = '2.0.0'
+ext.androidx_navigation_ui_ktx_version = '2.0.0'
+ext.androidx_navigation_version = '2.0.0'
 // material design
 ext.androidx_material_version = '1.1.0-alpha07'
 ///////////////////////////////////////////////
