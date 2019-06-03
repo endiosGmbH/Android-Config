@@ -157,6 +157,7 @@ ext.androidx_espresso_accessibility_version = '3.1.1'
 ext.androidx_espresso_web_version = '3.1.1'
 ext.androidx_espresso_idling_concurrent_version = '3.1.1'
 ext.androidx_espresso_idling_resource_version = '3.1.1'
+ext.androidx_fragment_testing_version = '1.1.0-alpha09'
 // Assertions
 ext.androidx_test_ext_junit_version='1.1.0'
 ext.androidx_test_ext_truth_version='1.1.0'
