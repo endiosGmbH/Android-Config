@@ -11,7 +11,7 @@ ext.build_tools_version = '29.0.2'
 ext.android_support_version = '28.0.0'
 ext.google_play_services_version = '15.0.1'
 // Gradle Plugin Version
-ext.com_google_gms_google_services_version = '4.2.0'
+ext.com_google_gms_google_services_version = '4.3.3'
 
 ext.detekt_version = '1.0.0-RC14'
 
