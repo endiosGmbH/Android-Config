@@ -1,0 +1,54 @@
+apply plugin: 'maven-publish'
+
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier "sources"
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId project.ext.pomGroupID
+                artifactId project.name
+                version project.ext.pomVersion
+
+                artifact(sourceJar)
+                artifact(bundleReleaseAar)
+
+                pom {
+                    withXml {
+                        def dependenciesNode = asNode().appendNode('dependencies')
+                        //Iterate over the compile dependencies (we don't want the test ones), adding a <dependency> node for each
+                        configurations.api.allDependencies.each {
+                            if (it.group != null && (it.name != null || "unspecified" == it.name) && it.version != null) {
+                                def dependencyNode = dependenciesNode.appendNode('dependency')
+                                dependencyNode.appendNode('artifactId', it.name)
+                                if (it.version == 'unspecified') {
+                                    dependencyNode.appendNode('groupId', project.ext.pomGroupID)
+                                    dependencyNode.appendNode('version', project.ext.pomVersion)
+                                    System.println("${project.ext.pomGroupID} ${it.name} ${project.ext.pomVersion}")
+                                } else {
+                                    dependencyNode.appendNode('groupId', it.group)
+                                    dependencyNode.appendNode('version', it.version)
+                                    System.println("${project.ext.pomGroupID} ${it.name} ${it.version}")
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        repositories {
+            maven {
+                url 'sftp://78.47.62.17:22/public_html/endiosOne/android/foundation/m2/'
+                Properties properties = new Properties()
+                properties.load(project.rootProject.file('local.properties').newDataInputStream())
+                credentials {
+                    username properties.getProperty('ENDIOS_DE_FTP_USER')
+                    password properties.getProperty('ENDIOS_DE_FTP_PASSWORD')
+                }
+            }
+        }
+    }
+}
