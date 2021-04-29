@@ -60,7 +60,7 @@ afterEvaluate {
         }
         repositories {
             maven {
-                url 'sftp://78.47.62.17:22/public_html/endiosOne/android/foundation/m2/'
+                url 'sftp://78.47.62.17:22/public_html/endiosOne/android/'
                 Properties properties = new Properties()
                 properties.load(project.rootProject.file('local.properties').newDataInputStream())
                 credentials {
