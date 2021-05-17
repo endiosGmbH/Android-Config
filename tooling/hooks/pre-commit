@@ -1,0 +1,6 @@
+#!/bin/sh
+# https://github.com/shyiko/ktlint pre-commit hook
+# Refer: https://github.com/pinterest/ktlint/blob/master/ktlint/src/main/resources/ktlint-git-pre-commit-hook-android.sh
+# Disabled Rules: Import Ordering - since Android Studio's autoformatting utility cannot sort this.
+git diff --name-only --cached --relative | grep '\.kt[s"]\?$' | xargs ktlint --android --relative --disabled_rules=import-ordering .
+if [ $? -ne 0 ]; then exit 1; fi

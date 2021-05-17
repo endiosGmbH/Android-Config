@@ -1,0 +1,31 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+
+android {
+    compileSdkVersion build_version.compile_sdk
+    defaultConfig {
+        minSdkVersion build_version.min_sdk
+        targetSdkVersion build_version.target_sdk
+        versionName project.ext.pomVersion
+        buildConfigField("String", "VERSION_NAME", "\"${defaultConfig.versionName}\"")
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        compileOptions.encoding = 'UTF-8'
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+    lintOptions {
+        lintConfig file("$rootDir/lint.xml")
+    }
+}
+
+dependencies {
+    implementation("de.endios.one.core:foundation:$FOUNDATION_VERSION@aar") { transitive = true }
+    androidTestImplementation("de.endios.one.core:testlibrary:$FOUNDATION_VERSION@aar") {
+        transitive = true
+    }
+}

@@ -1,0 +1,82 @@
+apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/feature/OP-2311/tooling/.maven/maven.gradle"
+
+ext.dependency = [:]
+def version = [:]
+// start-dependency-version-declaration
+// core
+version.android_gradle_plugin = '4.2.0'
+version.coroutines = "1.5.0-RC"
+version.kotlin = "1.5.0"
+// DI
+version.koin = "3.0.1"
+// android
+version.androidx_navigation = "2.0.0"
+version.androidx_ui_test_runner = "1.3.0"
+version.androidx_ui_test_junit = "1.1.2"
+// google
+version.google_services = "4.3.3"
+// end-dependency-version-declaration
+ext.version = version
+
+def build_version = [:]
+// start-build-version-declaration
+build_version.min_sdk = 23
+build_version.compile_sdk = 29
+build_version.target_sdk = 29
+// end-build-version-declaration
+ext.build_version = build_version
+
+def dependency = [:]
+// start-dependency-declaration
+dependency.android_gradle_plugin = "com.android.tools.build:gradle:$version.android_gradle_plugin"
+
+def coroutines = [:]
+coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version.coroutines"
+coroutines.core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version.coroutines"
+coroutines.test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version.coroutines"
+dependency.coroutines = coroutines
+
+def kotlin = [:]
+kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$version.kotlin"
+kotlin.test = "org.jetbrains.kotlin:kotlin-test-junit:$version.kotlin"
+kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version.kotlin"
+kotlin.allopen = "org.jetbrains.kotlin:kotlin-allopen:$version.kotlin"
+dependency.kotlin = kotlin
+
+def google = [:]
+google.services = "com.google.gms:google-services:$version.google_services"
+dependency.google = google
+
+def navigation = [:]
+navigation.androidx_navigation_safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:$version.androidx_navigation"
+dependency.navigation = navigation
+
+def ui_test = [:]
+ui_test.androidx_ui_test_runner = "androidx.test:runner:$version.androidx_ui_test_runner"
+ui_test.androidx_ui_test_junit = "androidx.test.ext:junit:$version.androidx_ui_test_junit"
+dependency.ui_test = ui_test
+// end-dependency-declaration
+ext.dependency = dependency
+
+def addRepositories(RepositoryHandler handler) {
+    handler.google()
+    // 1.
+    // Only ExoPlayer version 2.13.3 onwards are available on Google's Maven Repository
+    // Since ExoPlayer API is consumed by Kohii API we need to wait for https://github.com/eneim/kohii/issues/150
+    // 2.
+    // Android Volley (com.android.volley:volley:1.1.1) is still required by Google Places API
+    // until then we need to pull both of these dependencies from jCenter's Repository
+    handler.jcenter()
+    handler.mavenCentral()
+    handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    handler.maven {
+        url 'https://mvn.endios.de/android'
+        credentials {
+            username maven_pull_credential_username
+            password maven_pull_credential_password
+        }
+    }
+    handler.mavenLocal()
+}
+
+ext.addRepositories = this.&addRepositories

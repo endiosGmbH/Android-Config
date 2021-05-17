@@ -1,0 +1,32 @@
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    configurations {
+        detekt
+    }
+
+    buildscript {
+        ext.DETEKT_VERSION = '1.17.0-RC3'
+    }
+
+    task detekt(type: JavaExec) {
+        group = "Tooling"
+        description = "Static-Code Analysis for Kotlin Code."
+        main = "io.gitlab.arturbosch.detekt.cli.Main"
+        classpath = configurations.detekt
+        def config = "$rootDir/tooling/.detekt/detekt-config.yml"
+        // providing exclude params since the default input params are not honored
+        def exclude = ".*/build/.*,.*/resources/.*,**/test/**,**/androidTest/**,**/debug/**"
+        def report = "xml:$buildDir/reports/detekt/detekt-report.xml"
+        def params = ['-c', config, '-ex', exclude, '-r', report, '--parallel']
+        // println("Detekt Params = $params") // For debug usage - make sure the params are valid
+        args(params)
+    }
+
+    dependencies {
+        detekt "io.gitlab.arturbosch.detekt:detekt-cli:$DETEKT_VERSION"
+        detekt "io.gitlab.arturbosch.detekt:detekt-formatting:$DETEKT_VERSION"
+    }
+}

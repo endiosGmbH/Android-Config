@@ -1,0 +1,46 @@
+subprojects {
+    repositories {
+        mavenCentral()
+    }
+
+    configurations {
+        ktlint
+    }
+
+    buildscript {
+        ext.KTLINT_VERSION = '0.40.0'
+    }
+    dependencies {
+        ktlint "com.pinterest:ktlint:$KTLINT_VERSION"
+    }
+
+    task ktlint(type: JavaExec, group: "verification") {
+        group = "Tooling"
+        description = "Check Kotlin code style."
+        classpath = configurations.ktlint
+        main = "com.pinterest.ktlint.Main"
+        args "src/**/*.kt", "!src/**/generated/**",
+                "--reporter=plain",
+                "--reporter=checkstyle,output=${buildDir}/ktlint.xml,src/**/*.kt",
+                "--android",
+                "--relative",
+                "--disabled_rules=import-ordering",
+                "--color",
+                "--color-name=RED"
+    }
+
+    task ktlintFormat(type: JavaExec, group: "formatting") {
+        group = "Tooling"
+        description = "Fix Kotlin code style deviations."
+        classpath = configurations.ktlint
+        main = "com.pinterest.ktlint.Main"
+        args "-F", "src/**/*.kt", "!src/**/generated/**",
+                "--reporter=plain",
+                "--reporter=checkstyle,output=${buildDir}/ktlint.xml,src/**/*.kt",
+                "--android",
+                "--relative",
+                "--disabled_rules=import-ordering",
+                "--color",
+                "--color-name=RED"
+    }
+}

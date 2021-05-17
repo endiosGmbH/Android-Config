@@ -1,0 +1,13 @@
+Properties artifact_repository_credentials = new Properties()
+// checking if a universal endiosOne properties exists
+if (new File(System.getProperty("user.home"), "endiosone.properties").exists()) {
+    artifact_repository_credentials.load(new File(System.getProperty("user.home"), "endiosone.properties").newDataInputStream())
+} else {    // loading local properties
+    artifact_repository_credentials.load(project.rootProject.file('local.properties').newDataInputStream())
+}
+
+project.ext { maven_pull_credential_username = artifact_repository_credentials.getProperty('ENDIOS_DE_HTACCESS_USER') }
+project.ext { maven_pull_credential_password = artifact_repository_credentials.getProperty('ENDIOS_DE_HTACCESS_PASSWORD') }
+
+project.ext { maven_push_credential_username = artifact_repository_credentials.getProperty('ENDIOS_DE_FTP_USER') }
+project.ext { maven_push_credential_password = artifact_repository_credentials.getProperty('ENDIOS_DE_FTP_PASSWORD') }

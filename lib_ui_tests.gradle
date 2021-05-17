@@ -1,0 +1,16 @@
+apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/feature/OP-2311/version.gradle"
+android {
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+    }
+    testOptions {
+        animationsDisabled = true
+    }
+}
+
+dependencies {
+    androidTestImplementation("de.endios.one.core:testlibrary:$FOUNDATION_VERSION@aar")
+    androidTestImplementation dependency.ui_test.androidx_ui_test_runner
+    androidTestImplementation dependency.ui_test.androidx_ui_test_junit
+}
