@@ -24,8 +24,8 @@ android {
 }
 
 dependencies {
-    implementation("de.endios.one.core:foundation:$FOUNDATION_VERSION@aar") { transitive = true }
-    androidTestImplementation("de.endios.one.core:testlibrary:$FOUNDATION_VERSION@aar") {
+    implementation(dependency.foundation.base) { transitive = true }
+    androidTestImplementation(dependency.foundation.test_library) {
         transitive = true
     }
 }

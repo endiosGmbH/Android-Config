@@ -10,7 +10,7 @@ android {
 }
 
 dependencies {
-    androidTestImplementation("de.endios.one.core:testlibrary:$FOUNDATION_VERSION@aar")
+    androidTestImplementation dependency.foundation.test_library
     androidTestImplementation dependency.ui_test.androidx_ui_test_runner
     androidTestImplementation dependency.ui_test.androidx_ui_test_junit
 }
