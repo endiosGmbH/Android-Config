@@ -1,15 +1,8 @@
 #!/bin/sh
-# This file should ideally serve as the only place to setup any required tooling on this local machine so as to keep it versioned.
+echo "Versioned tooling required for local machine."
 echo "Script executed from: ${PWD}"
-SCRIPTDIR=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)
-echo "Script location: ${SCRIPTDIR}"
-PROJECTDIR=$(dirname ${SCRIPTDIR})
-echo "Project location: ${PROJECTDIR}"
 
 echo "Installing required tooling..."
-
-echo "Copying GIT hook..."
-cp -fr ${SCRIPTDIR}/hooks ${PROJECTDIR}/.git
 
 # ktlint
 echo "Downloading & setting up ktlint binary...(Machine's User Password may be asked once if ktlint binary is not configured)"
@@ -31,8 +24,5 @@ rm -f detekt-cli-1.17.0.zip
 chmod a+x /usr/local/bin/detekt-cli-1.17.0/bin/detekt-cli
 # you can also download detekt binary manually from https://github.com/detekt/detekt/releases
 # another option is "brew install detekt". Refer: https://detekt.github.io/detekt/cli.html#macos-with-homebrew
-
-echo "Setting up executables..."
-chmod 577 ${PROJECTDIR}/.git/hooks/pre-commit
 
 echo "Installation complete!"
