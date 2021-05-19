@@ -3,20 +3,43 @@ apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/feature
 ext.dependency = [:]
 def version = [:]
 // start-dependency-version-declaration
+// androidx
+version.androidx_annotation = "1.1.0"
+version.androidx_navigation = "2.0.0"
+version.androidx_ui_test_runner = "1.3.0"
+version.androidx_ui_test_junit = "1.1.2"
+version.androidx_lifecycle = "2.1.0"
+version.androidx_lifecycle_ktx = "2.2.0"
+// assertJ
+version.assertj = "3.10.0"
 // core
 version.android_gradle_plugin = '4.2.1'
 version.coroutines = "1.5.0-RC"
 version.kotlin = "1.5.0"
+// dependency graph
+version.dependency_graph = "0.5.0"
+// epoxy
+version.epoxy = "4.1.0"
+// firebase
+version.firebase_core = "17.20"
+version.firebase_crashlytics = "2.3.0"
+version.firebase_messaging = "19.0.1"
 // foundation
 version.foundation = "4.12.0-SNAPSHOT"
-// DI
-version.koin = "3.0.1"
-// android
-version.androidx_navigation = "2.0.0"
-version.androidx_ui_test_runner = "1.3.0"
-version.androidx_ui_test_junit = "1.1.2"
 // google
 version.google_services = "4.3.3"
+// jacoco
+version.jacoco = "0.8.4"
+// junit
+version.junit = "4.13.1"
+version.junit_jupiter = "5.7.1"
+version.junit_jupiter_plugin = "1.7.1.1"
+// koin
+version.koin = "3.0.1"
+// mockk
+version.mockk = "1.9.2"
+// vertx-codegen
+version.vertx_codegen = "3.6.0"
 // end-dependency-version-declaration
 ext.version = version
 
@@ -31,6 +54,8 @@ ext.build_version = build_version
 def dependency = [:]
 // start-dependency-declaration
 dependency.android_gradle_plugin = "com.android.tools.build:gradle:$version.android_gradle_plugin"
+dependency.androidx_annotation = "androidx.annotation:annotation$version.androidx_annotation"
+dependency.assertj_core = "org.assertj:assertj-core:$version.assertj"
 
 def coroutines = [:]
 coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version.coroutines"
@@ -38,11 +63,37 @@ coroutines.core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version.corout
 coroutines.test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version.coroutines"
 dependency.coroutines = coroutines
 
+dependency.dependency_graph = "com.vanniktech:gradle-dependency-graph-generator-plugin:$version.dependency_graph"
+
+def epoxy = [:]
+epoxy.core = "com.airbnb.android:epoxy"
+epoxy.processor = "com.airbnb.android:epoxy-processor"
+dependency.epoxy = epoxy
+
+def firebase = [:]
+firebase.core = "com.google.firebase:firebase-core:$version.firebase_core"
+firebase.crashlytics_gradle = "com.google.firebase:firebase-crashlytics-gradle:$version.firebase_crashlytics"
+firebase.messaging = "com.google.firebase:firebase-messaging:$version.firebase_messaging"
+dependency.firebase = firebase
+
 def foundation = [:]
 foundation.base = "de.endios.one.core:foundation:$version.foundation@aar"
 foundation.test_app = "de.endios.one.core:test-app:$version.foundation@aar"
 foundation.test_library = "de.endios.one.core:testlibrary:$version.foundation@aar"
 dependency.foundation = foundation
+
+def google = [:]
+google.services = "com.google.gms:google-services:$version.google_services"
+dependency.google = google
+
+dependency.jacoco_core = "org.jacoco:org.jacoco.core:$version.jacoco"
+
+def koin = [:]
+koin.android = "io.insert-koin:koin-android:$version.koin"
+koin.core = "io.insert-koin:koin-core:$version.koin"
+koin.test = "io.insert-koin:koin-test:$version.koin"
+koin.test_junit4 = "io.insert-koin:koin-test-junit4:$version.koin"
+dependency.koin = koin
 
 def kotlin = [:]
 kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$version.kotlin"
@@ -51,18 +102,37 @@ kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version.kotlin"
 kotlin.allopen = "org.jetbrains.kotlin:kotlin-allopen:$version.kotlin"
 dependency.kotlin = kotlin
 
-def google = [:]
-google.services = "com.google.gms:google-services:$version.google_services"
-dependency.google = google
+def lifecycle = [:]
+lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$version.androidx_lifecycle"
+lifecycle.extensions = "androidx.lifecycle:lifecycle-extensions:$version.androidx_lifecycle"
+lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$version.androidx_lifecycle"
+lifecycle.livedata_ktx = "androidx.lifecycle:lifecycle-livedata-ktx:$version.androidx_lifecycle_ktx"
+lifecycle.runtime_ktx = "androidx.lifecycle:lifecycle-runtime-ktx:$version.androidx_lifecycle_ktx"
+dependency.lifecycle = lifecycle
+
+def mockk = [:]
+mockk.core = "io.mockk:mockk:$version.mockk"
+mockk.android = "io.mockk:mockk-android:$version.mockk"
+dependency.mockk = mockk
 
 def navigation = [:]
 navigation.androidx_navigation_safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:$version.androidx_navigation"
 dependency.navigation = navigation
 
+def test = [:]
+test.base = "org.junit.jupiter:junit:$version.junit"
+test.jupiter_api = "org.junit.jupiter:junit-jupiter-api:$version.junit_jupiter"
+test.jupiter_engine = "org.junit.jupiter:junit-jupiter-engine:$version.junit_jupiter"
+test.jupiter_params = "org.junit.jupiter:junit-jupiter-params:$version.junit_jupiter"
+test.jupiter_plugin = "de.mannodermaus.gradle.plugins:android-junit5:$version.junit_jupiter_plugin"
+dependency.test = test
+
 def ui_test = [:]
 ui_test.androidx_ui_test_runner = "androidx.test:runner:$version.androidx_ui_test_runner"
 ui_test.androidx_ui_test_junit = "androidx.test.ext:junit:$version.androidx_ui_test_junit"
 dependency.ui_test = ui_test
+
+dependency.vertx_codegen = "io.vertx:vertx-codegen:$version.vertx_codegen"
 // end-dependency-declaration
 ext.dependency = dependency
 
