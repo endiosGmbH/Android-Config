@@ -5,12 +5,12 @@ SETCOLOR_SUCCESS="echo \\033[1;32m"
 SETCOLOR_FAILURE="echo \\033[1;31m"
 SETCOLOR_NORMAL="echo \\033[0;39m"
 
-function run_check {
+function run_check() {
   cmd_output=$($@)
   local status=$?
   if [ $status -ne 0 ]; then
     [ "$BOOTUP" = "color" ] && $SETCOLOR_FAILURE
-    echo "error with $1" >&2 ":"
+    echo "Error with $1" ":" >&2
     [ "$BOOTUP" = "color" ] && $SETCOLOR_NORMAL
     echo $cmd_output
   else
@@ -18,22 +18,22 @@ function run_check {
     echo "Successful run!"
     [ "$BOOTUP" = "color" ] && $SETCOLOR_NORMAL
   fi
-    return $status
+  return $status
 }
 
-function ktlint() {
+function ktlint_check() {
   # Refer: https://github.com/pinterest/ktlint/blob/master/ktlint/src/main/resources/ktlint-git-pre-commit-hook-android.sh
   # Disabled Rules: Import Ordering - since Android Studio's autoformatting utility cannot sort this.
   git diff --name-only --cached --relative | grep '\.kt[s"]\?$' | xargs ktlint --android --relative --disabled_rules=import-ordering .
 }
 
-function detekt() {
+function detekt_check() {
   git diff --name-only --cached --relative | grep '\.kt[s"]\?$' | xargs echo | tr ' ' ',' | tr ' ' ',' | xargs /usr/local/bin/detekt-cli-1.17.0/bin/detekt-cli --config tooling/.detekt/detekt-config.yml --input
 }
 
 echo
 echo "Running ktlint on diff..."
-run_check ktlint
+run_check ktlint_check
 echo
 echo "Running detekt on diff..."
-run_check detekt
+run_check detekt_check
