@@ -62,7 +62,8 @@ version.mockk = "1.9.2"
 // okhttp
 version.okhttp = "4.1.0"
 // play-services
-version.play_services = "17.0.1"
+version.play_services_maps = "17.0.1"
+version.play_services_location = "17.0.0"
 // retrofit
 version.retrofit = "2.6.1"
 // vertx-codegen
@@ -176,8 +177,8 @@ network.retrofit_converter_simplexml = "com.squareup.retrofit2:converter-simplex
 dependency.network = network
 
 def play_services = [:]
-play_services.location = "com.google.android.gms:play-services-location:$version.play_services"
-play_services.maps = "com.google.android.gms:play-services-maps:$version.play_services"
+play_services.location = "com.google.android.gms:play-services-location:$version.play_services_location"
+play_services.maps = "com.google.android.gms:play-services-maps:$version.play_services_maps"
 dependency.play_services = play_services
 
 def test = [:]
