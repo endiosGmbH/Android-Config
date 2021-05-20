@@ -120,7 +120,7 @@ navigation.androidx_navigation_safe_args_plugin = "androidx.navigation:navigatio
 dependency.navigation = navigation
 
 def test = [:]
-test.base = "org.junit.jupiter:junit:$version.junit"
+test.base = "junit:junit:$version.junit"
 test.jupiter_api = "org.junit.jupiter:junit-jupiter-api:$version.junit_jupiter"
 test.jupiter_engine = "org.junit.jupiter:junit-jupiter-engine:$version.junit_jupiter"
 test.jupiter_params = "org.junit.jupiter:junit-jupiter-params:$version.junit_jupiter"
