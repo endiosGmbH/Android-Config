@@ -11,6 +11,6 @@ android {
 
 dependencies {
     androidTestImplementation dependency.foundation.test_library
-    androidTestImplementation dependency.ui_test.androidx_ui_test_runner
-    androidTestImplementation dependency.ui_test.androidx_ui_test_junit
+    androidTestImplementation dependency.ui_test.androidx_test_runner
+    androidTestImplementation dependency.ui_test.androidx_test_junit
 }
