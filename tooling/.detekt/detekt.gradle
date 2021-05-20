@@ -8,7 +8,7 @@ subprojects {
     }
 
     buildscript {
-        ext.DETEKT_VERSION = '1.17.0-RC3'
+        ext.DETEKT_VERSION = '1.17.0'
     }
 
     task detekt(type: JavaExec) {
