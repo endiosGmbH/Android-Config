@@ -5,13 +5,25 @@ def version = [:]
 // start-dependency-version-declaration
 // androidx
 version.androidx_annotation = "1.1.0"
-version.androidx_navigation = "2.0.0"
-version.androidx_ui_test_runner = "1.3.0"
-version.androidx_ui_test_junit = "1.1.2"
+version.androidx_appcompat = "1.1.0"
+version.androidx_browser = "1.2.0"
+version.androidx_constraint_layout = "2.0.4"
+version.androidx_arch_core = "2.1.0"
+version.androidx_core = "1.2.0"
+version.androidx_navigation = "2.2.2"
+version.androidx_navigation_plugin = "2.0.0"
 version.androidx_lifecycle = "2.1.0"
 version.androidx_lifecycle_ktx = "2.2.0"
+version.androidx_recyclerview = "1.0.0"
+version.androidx_swipe_refresh_layout = "1.0.0"
+version.androidx_ui_test = "1.3.0"
+version.androidx_ui_test_junit = "1.1.2"
+version.androidx_viewpager = "1.0.0"
+version.androidx_viewpager2 = "1.0.0"
 // assertJ
 version.assertj = "3.10.0"
+// coil
+version.coil = "1.1.0"
 // core
 version.android_gradle_plugin = '4.2.1'
 version.coroutines = "1.5.0-RC"
@@ -20,24 +32,39 @@ version.kotlin = "1.5.0"
 version.dependency_graph = "0.5.0"
 // epoxy
 version.epoxy = "4.1.0"
+// espresso
+version.espresso = "3.3.0"
 // firebase
-version.firebase_core = "17.20"
+version.firebase_core = "17.2.0"
 version.firebase_crashlytics = "2.3.0"
 version.firebase_messaging = "19.0.1"
 // foundation
 version.foundation = "4.12.0-SNAPSHOT"
 // google
+version.google_exoplayer = "2.10.4"
+version.google_material = "1.2.1"
 version.google_services = "4.3.3"
+version.google_gson = "2.8.5"
+version.google_maps_utils = "2.2.3"
+version.google_places = "2.4.0"
 // jacoco
 version.jacoco = "0.8.4"
 // junit
 version.junit = "4.13.1"
 version.junit_jupiter = "5.7.1"
 version.junit_jupiter_plugin = "1.7.1.1"
+// kohii
+version.kohii = "1.2.0.2011008"
 // koin
 version.koin = "3.0.1"
 // mockk
 version.mockk = "1.9.2"
+// okhttp
+version.okhttp = "4.1.0"
+// play-services
+version.play_services = "17.0.1"
+// retrofit
+version.retrofit = "2.6.1"
 // vertx-codegen
 version.vertx_codegen = "3.6.0"
 // end-dependency-version-declaration
@@ -54,8 +81,17 @@ ext.build_version = build_version
 def dependency = [:]
 // start-dependency-declaration
 dependency.android_gradle_plugin = "com.android.tools.build:gradle:$version.android_gradle_plugin"
-dependency.androidx_annotation = "androidx.annotation:annotation$version.androidx_annotation"
+dependency.androidx_annotation = "androidx.annotation:annotation:$version.androidx_annotation"
 dependency.assertj_core = "org.assertj:assertj-core:$version.assertj"
+
+def androidx_arch = [:]
+androidx_arch.core_testing = "androidx.arch.core:core-testing:$version.androidx_arch_core"
+dependency.androidx_arch = androidx_arch
+
+def androidx_core = [:]
+androidx_core.core = "androidx.core:core:$version.androidx_core"
+androidx_core.core_ktx = "androidx.core:core-ktx:$version.androidx_core"
+dependency.androidx_core = androidx_core
 
 def coroutines = [:]
 coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version.coroutines"
@@ -66,8 +102,8 @@ dependency.coroutines = coroutines
 dependency.dependency_graph = "com.vanniktech:gradle-dependency-graph-generator-plugin:$version.dependency_graph"
 
 def epoxy = [:]
-epoxy.core = "com.airbnb.android:epoxy"
-epoxy.processor = "com.airbnb.android:epoxy-processor"
+epoxy.core = "com.airbnb.android:epoxy:$version.epoxy"
+epoxy.processor = "com.airbnb.android:epoxy-processor:$version.epoxy"
 dependency.epoxy = epoxy
 
 def firebase = [:]
@@ -83,8 +119,16 @@ foundation.test_library = "de.endios.one.core:testlibrary:$version.foundation@aa
 dependency.foundation = foundation
 
 def google = [:]
+google.gson = "com.google.code.gson:gson:$version.google_gson"
+google.maps_utils = "com.google.maps.android:android-maps-utils:$version.google_maps_utils"
+google.places = "com.google.android.libraries.places:places:$version.google_places"
 google.services = "com.google.gms:google-services:$version.google_services"
 dependency.google = google
+
+def image = [:]
+image.coil = "io.coil-kt:coil:$version.coil"
+image.coil_svg = "io.coil-kt:coil-svg:$version.coil"
+dependency.image = image
 
 dependency.jacoco_core = "org.jacoco:org.jacoco.core:$version.jacoco"
 
@@ -99,7 +143,7 @@ def kotlin = [:]
 kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$version.kotlin"
 kotlin.test = "org.jetbrains.kotlin:kotlin-test-junit:$version.kotlin"
 kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version.kotlin"
-kotlin.allopen = "org.jetbrains.kotlin:kotlin-allopen:$version.kotlin"
+kotlin.reflect = "org.jetbrains.kotlin:kotlin-reflect:$version.kotlin"
 dependency.kotlin = kotlin
 
 def lifecycle = [:]
@@ -116,8 +160,25 @@ mockk.android = "io.mockk:mockk-android:$version.mockk"
 dependency.mockk = mockk
 
 def navigation = [:]
-navigation.androidx_navigation_safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:$version.androidx_navigation"
+navigation.androidx_navigation_safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:$version.androidx_navigation_plugin"
+navigation.androidx_navigation_fragment_ktx = "androidx.navigation:navigation-fragment-ktx:$version.androidx_navigation"
+navigation.androidx_navigation_ui_ktx = "androidx.navigation:navigation-ui-ktx:$version.androidx_navigation"
+navigation.androidx_navigation_runtime_ktx = "androidx.navigation:navigation-runtime-ktx:$version.androidx_navigation"
 dependency.navigation = navigation
+
+def network = [:]
+network.browser = "androidx.browser:browser:$version.androidx_browser"
+network.okhttp_base = "com.squareup.okhttp3:okhttp:$version.okhttp"
+network.okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:$version.okhttp"
+network.retrofit_base = "com.squareup.retrofit2:retrofit:$version.retrofit"
+network.retrofit_converter_gson = "com.squareup.retrofit2:converter-gson:$version.retrofit"
+network.retrofit_converter_simplexml = "com.squareup.retrofit2:converter-simplexml:$version.retrofit"
+dependency.network = network
+
+def play_services = [:]
+play_services.location = "com.google.android.gms:play-services-location:$version.play_services"
+play_services.maps = "com.google.android.gms:play-services-maps:$version.play_services"
+dependency.play_services = play_services
 
 def test = [:]
 test.base = "junit:junit:$version.junit"
@@ -128,9 +189,30 @@ test.jupiter_plugin = "de.mannodermaus.gradle.plugins:android-junit5:$version.ju
 dependency.test = test
 
 def ui_test = [:]
-ui_test.androidx_ui_test_runner = "androidx.test:runner:$version.androidx_ui_test_runner"
+ui_test.androidx_espresso_contrib = "androidx.test.espresso:espresso-contrib:$version.androidx_espresso"
+ui_test.androidx_espresso_core = "androidx.test.espresso:espresso-core:$version.androidx_espresso"
+ui_test.androidx_espresso_intents = "androidx.test.espresso:espresso-intents:$version.androidx_espresso"
+ui_test.androidx_ui_test_orchestrator = "androidx.test:orchestrator:$version.androidx_ui_test"
+ui_test.androidx_ui_test_rules = "androidx.test:rules:$version.androidx_ui_test"
+ui_test.androidx_ui_test_runner = "androidx.test:runner:$version.androidx_ui_test"
 ui_test.androidx_ui_test_junit = "androidx.test.ext:junit:$version.androidx_ui_test_junit"
 dependency.ui_test = ui_test
+
+def ui = [:]
+ui.androidx_appcompat = "androidx.appcompat:appcompat:$version.androidx_appcompat"
+ui.androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:$version.androidx_constraint_layout"
+ui.androidx_recyclerview = "androidx.recyclerview:recyclerview:$version.androidx_recyclerview"
+ui.androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:$version.androidx_swipe_refresh_layout"
+ui.androidx_viewpager = "androidx.viewpager:viewpager:$version.androidx_viewpager"
+ui.androidx_viewpager2 = "androidx.viewpager2:viewpager2:$version.androidx_viewpager2"
+ui.google_material = "com.google.android.material:material:$version.google_material"
+dependency.ui = ui
+
+def video = [:]
+video.exoplayer = "com.google.android.exoplayer:exoplayer:$version.google_exoplayer"
+video.kohii_core = "im.ene.kohii:kohii-core:$version.kohii"
+video.kohii_exoplayer = "im.ene.kohii:kohii-exoplayer:$version.kohii"
+dependency.video = video
 
 dependency.vertx_codegen = "io.vertx:vertx-codegen:$version.vertx_codegen"
 // end-dependency-declaration
