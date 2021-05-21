@@ -70,6 +70,8 @@ version.vertx_codegen = "3.6.0"
 // end-dependency-version-declaration
 ext.version = version
 
+ext.version_foundation = project.hasProperty("OVERRIDE_FOUNDATION_VERSION") && OVERRIDE_FOUNDATION_VERSION?.trim() ? OVERRIDE_FOUNDATION_VERSION : version.foundation
+
 def build_version = [:]
 // start-build-version-declaration
 build_version.min_sdk = 23
@@ -113,9 +115,9 @@ firebase.messaging = "com.google.firebase:firebase-messaging:$version.firebase_m
 dependency.firebase = firebase
 
 def foundation = [:]
-foundation.base = "de.endios.one.core:foundation:$version.foundation@aar"
-foundation.test_app = "de.endios.one.core:test-app:$version.foundation@aar"
-foundation.test_library = "de.endios.one.core:testlibrary:$version.foundation@aar"
+foundation.base = "de.endios.one.core:foundation:$version_foundation@aar"
+foundation.test_app = "de.endios.one.core:test-app:$version_foundation@aar"
+foundation.test_library = "de.endios.one.core:testlibrary:$version_foundation@aar"
 dependency.foundation = foundation
 
 def google = [:]
