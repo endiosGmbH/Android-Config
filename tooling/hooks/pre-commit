@@ -5,6 +5,8 @@ SETCOLOR_SUCCESS="echo \\033[1;32m"
 SETCOLOR_FAILURE="echo \\033[1;31m"
 SETCOLOR_NORMAL="echo \\033[0;39m"
 
+git_diff=`git diff --name-only --cached --diff-filter=dr --relative | grep '\.kt[s"]\?$'`
+
 function run_check() {
   cmd_output=$($@)
   local status=$?
@@ -24,11 +26,11 @@ function run_check() {
 function ktlint_check() {
   # Refer: https://github.com/pinterest/ktlint/blob/master/ktlint/src/main/resources/ktlint-git-pre-commit-hook-android.sh
   # Disabled Rules: Import Ordering - since Android Studio's autoformatting utility cannot sort this.
-  git diff --name-only --cached --relative | grep '\.kt[s"]\?$' | xargs ktlint --android --relative --disabled_rules=import-ordering .
+  echo $git_diff | xargs ktlint --android --relative --disabled_rules=import-ordering .
 }
 
 function detekt_check() {
-  git diff --name-only --cached --relative | grep '\.kt[s"]\?$' | xargs echo | tr ' ' ',' | tr ' ' ',' | xargs /usr/local/bin/detekt-cli-1.17.0/bin/detekt-cli --config tooling/.detekt/detekt-config.yml --input
+  echo $git_diff | xargs echo | tr ' ' ',' | tr ' ' ',' | xargs /usr/local/bin/detekt-cli-1.17.0/bin/detekt-cli --config tooling/.detekt/detekt-config.yml --input
 }
 
 echo
