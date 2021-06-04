@@ -95,12 +95,6 @@ androidx_core.core = "androidx.core:core:$version.androidx_core"
 androidx_core.core_ktx = "androidx.core:core-ktx:$version.androidx_core"
 dependency.androidx_core = androidx_core
 
-def kotlin_coroutines = [:]
-kotlin_coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version.kotlin_coroutines"
-kotlin_coroutines.core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version.kotlin_coroutines"
-kotlin_coroutines.test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version.kotlin_coroutines"
-dependency.kotlin_coroutines = kotlin_coroutines
-
 dependency.dependency_graph = "com.vanniktech:gradle-dependency-graph-generator-plugin:$version.dependency_graph"
 
 def epoxy = [:]
@@ -147,6 +141,12 @@ kotlin.test = "org.jetbrains.kotlin:kotlin-test-junit:$version.kotlin"
 kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version.kotlin"
 kotlin.reflect = "org.jetbrains.kotlin:kotlin-reflect:$version.kotlin"
 dependency.kotlin = kotlin
+
+def kotlin_coroutines = [:]
+kotlin_coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version.kotlin_coroutines"
+kotlin_coroutines.core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version.kotlin_coroutines"
+kotlin_coroutines.test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version.kotlin_coroutines"
+dependency.kotlin_coroutines = kotlin_coroutines
 
 def lifecycle = [:]
 lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$version.androidx_lifecycle"
