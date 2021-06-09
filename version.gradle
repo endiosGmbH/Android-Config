@@ -60,6 +60,8 @@ version.koin = "3.0.2"
 version.mockk = "1.9.2"
 // okhttp
 version.okhttp = "4.1.0"
+// permission
+version.permission = "4.6.0"
 // play-services
 version.play_services_maps = "17.0.1"
 version.play_services_location = "17.0.0"
@@ -176,6 +178,11 @@ network.retrofit_base = "com.squareup.retrofit2:retrofit:$version.retrofit"
 network.retrofit_converter_gson = "com.squareup.retrofit2:converter-gson:$version.retrofit"
 network.retrofit_converter_simplexml = "com.squareup.retrofit2:converter-simplexml:$version.retrofit"
 dependency.network = network
+
+def permission = [:]
+permission.base = "org.permissionsdispatcher:permissionsdispatcher:$version.permission"
+permission.processor = "org.permissionsdispatcher:permissionsdispatcher-processor:$version.permission"
+dependency.permission = permission
 
 def play_services = [:]
 play_services.location = "com.google.android.gms:play-services-location:$version.play_services_location"
