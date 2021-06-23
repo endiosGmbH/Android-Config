@@ -133,7 +133,9 @@ dependency.jacoco_core = "org.jacoco:org.jacoco.core:$version.jacoco"
 
 def koin = [:]
 koin.android = "io.insert-koin:koin-android:$version.koin"
+koin.android_extensions = "io.insert-koin:koin-android-ext:$version.koin"
 koin.core = "io.insert-koin:koin-core:$version.koin"
+koin.core_extensions = "io.insert-koin:koin-core-ext:$version.koin"
 koin.test = "io.insert-koin:koin-test:$version.koin"
 koin.test_junit4 = "io.insert-koin:koin-test-junit4:$version.koin"
 dependency.koin = koin
