@@ -1,0 +1,16 @@
+apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/version.gradle"
+android {
+    defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+    }
+    testOptions {
+        animationsDisabled = true
+    }
+}
+
+dependencies {
+    androidTestImplementation dependency.foundation.test_library
+    androidTestImplementation dependency.ui_test.androidx_test_runner
+    androidTestImplementation dependency.ui_test.androidx_test_junit
+}

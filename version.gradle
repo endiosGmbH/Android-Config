@@ -1,0 +1,257 @@
+apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/tooling/.maven/maven.gradle"
+
+ext.dependency = [:]
+def version = [:]
+// start-dependency-version-declaration
+// androidx
+version.androidx_annotation = "1.1.0"
+version.androidx_appcompat = "1.1.0"
+version.androidx_browser = "1.2.0"
+version.androidx_constraint_layout = "2.0.4"
+version.androidx_arch_core = "2.1.0"
+version.androidx_core = "1.2.0"
+version.androidx_espresso = "3.3.0"
+version.androidx_navigation = "2.2.2"
+version.androidx_navigation_plugin = "2.2.2"
+version.androidx_lifecycle = "2.3.1"
+version.androidx_lifecycle_extensions = "2.2.0"
+version.androidx_recyclerview = "1.0.0"
+version.androidx_swipe_refresh_layout = "1.0.0"
+version.androidx_test = "1.3.0"
+version.androidx_test_junit = "1.1.2"
+version.androidx_viewpager = "1.0.0"
+version.androidx_viewpager2 = "1.0.0"
+// assertJ
+version.assertj = "3.10.0"
+// coil
+version.coil = "1.1.0"
+// core
+version.android_gradle_plugin = '4.2.1'
+version.kotlin_coroutines = "1.5.0"
+version.kotlin = "1.5.10"
+// dependency graph
+version.dependency_graph = "0.5.0"
+// epoxy
+version.epoxy = "4.1.0"
+// firebase
+version.firebase_core = "17.2.0"
+version.firebase_crashlytics = "17.2.2"
+version.firebase_crashlytics_gradle = "2.3.0"
+version.firebase_messaging = "19.0.1"
+// foundation
+version.foundation = "4.12.0-SNAPSHOT"
+// google
+version.google_exoplayer = "2.10.4"
+version.google_material = "1.2.1"
+version.google_services = "4.3.3"
+version.google_gson = "2.8.5"
+version.google_maps_utils = "2.2.3"
+version.google_places = "2.4.0"
+// jacoco
+version.jacoco = "0.8.4"
+// junit
+version.junit = "4.13.1"
+version.junit_jupiter = "5.7.1"
+version.junit_jupiter_plugin = "1.7.1.1"
+// kohii
+version.kohii = "1.2.0.2011008"
+// koin
+version.koin = "3.0.2"
+// mockk
+version.mockk = "1.9.2"
+// okhttp
+version.okhttp = "4.1.0"
+// permission
+version.permission = "4.6.0"
+// play-services
+version.play_services_maps = "17.0.1"
+version.play_services_location = "17.0.0"
+version.play_services_vision = "18.0.0"
+// retrofit
+version.retrofit = "2.6.1"
+// vertx-codegen
+version.vertx_codegen = "3.6.0"
+// end-dependency-version-declaration
+ext.version = version
+
+ext.version_foundation = project.hasProperty("OVERRIDE_FOUNDATION_VERSION") && OVERRIDE_FOUNDATION_VERSION?.trim() ? OVERRIDE_FOUNDATION_VERSION : version.foundation
+
+def build_version = [:]
+// start-build-version-declaration
+build_version.min_sdk = 23
+build_version.compile_sdk = 29
+build_version.target_sdk = 29
+// end-build-version-declaration
+ext.build_version = build_version
+
+def dependency = [:]
+// start-dependency-declaration
+dependency.android_gradle_plugin = "com.android.tools.build:gradle:$version.android_gradle_plugin"
+dependency.androidx_annotation = "androidx.annotation:annotation:$version.androidx_annotation"
+dependency.assertj_core = "org.assertj:assertj-core:$version.assertj"
+
+def androidx_arch = [:]
+androidx_arch.core_testing = "androidx.arch.core:core-testing:$version.androidx_arch_core"
+dependency.androidx_arch = androidx_arch
+
+def androidx_core = [:]
+androidx_core.core = "androidx.core:core:$version.androidx_core"
+androidx_core.core_ktx = "androidx.core:core-ktx:$version.androidx_core"
+dependency.androidx_core = androidx_core
+
+dependency.dependency_graph = "com.vanniktech:gradle-dependency-graph-generator-plugin:$version.dependency_graph"
+
+def epoxy = [:]
+epoxy.core = "com.airbnb.android:epoxy:$version.epoxy"
+epoxy.processor = "com.airbnb.android:epoxy-processor:$version.epoxy"
+dependency.epoxy = epoxy
+
+def firebase = [:]
+firebase.core = "com.google.firebase:firebase-core:$version.firebase_core"
+firebase.crashlytics = "com.google.firebase:firebase-crashlytics:$version.firebase_crashlytics"
+firebase.crashlytics_gradle = "com.google.firebase:firebase-crashlytics-gradle:$version.firebase_crashlytics_gradle"
+firebase.messaging = "com.google.firebase:firebase-messaging:$version.firebase_messaging"
+dependency.firebase = firebase
+
+def foundation = [:]
+foundation.base = "de.endios.one.core:foundation:$version_foundation@aar"
+foundation.test_app = "de.endios.one.core:test-app:$version_foundation@aar"
+foundation.test_library = "de.endios.one.core:testlibrary:$version_foundation@aar"
+dependency.foundation = foundation
+
+def google = [:]
+google.gson = "com.google.code.gson:gson:$version.google_gson"
+google.maps_utils = "com.google.maps.android:android-maps-utils:$version.google_maps_utils"
+google.places = "com.google.android.libraries.places:places:$version.google_places"
+google.services = "com.google.gms:google-services:$version.google_services"
+dependency.google = google
+
+def image = [:]
+image.coil = "io.coil-kt:coil:$version.coil"
+image.coil_svg = "io.coil-kt:coil-svg:$version.coil"
+dependency.image = image
+
+dependency.jacoco_core = "org.jacoco:org.jacoco.core:$version.jacoco"
+
+def koin = [:]
+koin.android = "io.insert-koin:koin-android:$version.koin"
+koin.android_extensions = "io.insert-koin:koin-android-ext:$version.koin"
+koin.core = "io.insert-koin:koin-core:$version.koin"
+koin.core_extensions = "io.insert-koin:koin-core-ext:$version.koin"
+koin.test = "io.insert-koin:koin-test:$version.koin"
+koin.test_junit4 = "io.insert-koin:koin-test-junit4:$version.koin"
+dependency.koin = koin
+
+def kotlin = [:]
+kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$version.kotlin"
+kotlin.test = "org.jetbrains.kotlin:kotlin-test-junit:$version.kotlin"
+kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version.kotlin"
+kotlin.reflect = "org.jetbrains.kotlin:kotlin-reflect:$version.kotlin"
+dependency.kotlin = kotlin
+
+def kotlin_coroutines = [:]
+kotlin_coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version.kotlin_coroutines"
+kotlin_coroutines.core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version.kotlin_coroutines"
+kotlin_coroutines.test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version.kotlin_coroutines"
+dependency.kotlin_coroutines = kotlin_coroutines
+
+def lifecycle = [:]
+lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$version.androidx_lifecycle"
+lifecycle.extensions = "androidx.lifecycle:lifecycle-extensions:$version.androidx_lifecycle_extensions"
+lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$version.androidx_lifecycle"
+lifecycle.livedata_ktx = "androidx.lifecycle:lifecycle-livedata-ktx:$version.androidx_lifecycle"
+lifecycle.runtime_ktx = "androidx.lifecycle:lifecycle-runtime-ktx:$version.androidx_lifecycle"
+dependency.lifecycle = lifecycle
+
+def mockk = [:]
+mockk.core = "io.mockk:mockk:$version.mockk"
+mockk.android = "io.mockk:mockk-android:$version.mockk"
+dependency.mockk = mockk
+
+def navigation = [:]
+navigation.androidx_navigation_safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:$version.androidx_navigation_plugin"
+navigation.androidx_navigation_fragment_ktx = "androidx.navigation:navigation-fragment-ktx:$version.androidx_navigation"
+navigation.androidx_navigation_ui_ktx = "androidx.navigation:navigation-ui-ktx:$version.androidx_navigation"
+navigation.androidx_navigation_runtime_ktx = "androidx.navigation:navigation-runtime-ktx:$version.androidx_navigation"
+dependency.navigation = navigation
+
+def network = [:]
+network.browser = "androidx.browser:browser:$version.androidx_browser"
+network.okhttp_base = "com.squareup.okhttp3:okhttp:$version.okhttp"
+network.okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:$version.okhttp"
+network.retrofit_base = "com.squareup.retrofit2:retrofit:$version.retrofit"
+network.retrofit_converter_gson = "com.squareup.retrofit2:converter-gson:$version.retrofit"
+network.retrofit_converter_simplexml = "com.squareup.retrofit2:converter-simplexml:$version.retrofit"
+dependency.network = network
+
+def permission = [:]
+permission.base = "org.permissionsdispatcher:permissionsdispatcher:$version.permission"
+permission.processor = "org.permissionsdispatcher:permissionsdispatcher-processor:$version.permission"
+dependency.permission = permission
+
+def play_services = [:]
+play_services.location = "com.google.android.gms:play-services-location:$version.play_services_location"
+play_services.maps = "com.google.android.gms:play-services-maps:$version.play_services_maps"
+play_services.vision = "com.google.android.gms:play-services-vision:$version.play_services_vision"
+dependency.play_services = play_services
+
+def test = [:]
+test.base = "junit:junit:$version.junit"
+test.jupiter_api = "org.junit.jupiter:junit-jupiter-api:$version.junit_jupiter"
+test.jupiter_engine = "org.junit.jupiter:junit-jupiter-engine:$version.junit_jupiter"
+test.jupiter_params = "org.junit.jupiter:junit-jupiter-params:$version.junit_jupiter"
+test.jupiter_plugin = "de.mannodermaus.gradle.plugins:android-junit5:$version.junit_jupiter_plugin"
+dependency.test = test
+
+def ui_test = [:]
+ui_test.androidx_espresso_contrib = "androidx.test.espresso:espresso-contrib:$version.androidx_espresso"
+ui_test.androidx_espresso_core = "androidx.test.espresso:espresso-core:$version.androidx_espresso"
+ui_test.androidx_espresso_intents = "androidx.test.espresso:espresso-intents:$version.androidx_espresso"
+ui_test.androidx_test_orchestrator = "androidx.test:orchestrator:$version.androidx_test"
+ui_test.androidx_test_rules = "androidx.test:rules:$version.androidx_test"
+ui_test.androidx_test_runner = "androidx.test:runner:$version.androidx_test"
+ui_test.androidx_test_junit = "androidx.test.ext:junit:$version.androidx_test_junit"
+dependency.ui_test = ui_test
+
+def ui = [:]
+ui.androidx_appcompat = "androidx.appcompat:appcompat:$version.androidx_appcompat"
+ui.androidx_constraint_layout = "androidx.constraintlayout:constraintlayout:$version.androidx_constraint_layout"
+ui.androidx_recyclerview = "androidx.recyclerview:recyclerview:$version.androidx_recyclerview"
+ui.androidx_swipe_refresh_layout = "androidx.swiperefreshlayout:swiperefreshlayout:$version.androidx_swipe_refresh_layout"
+ui.androidx_viewpager = "androidx.viewpager:viewpager:$version.androidx_viewpager"
+ui.androidx_viewpager2 = "androidx.viewpager2:viewpager2:$version.androidx_viewpager2"
+ui.google_material = "com.google.android.material:material:$version.google_material"
+dependency.ui = ui
+
+def video = [:]
+video.exoplayer = "com.google.android.exoplayer:exoplayer:$version.google_exoplayer"
+video.kohii_core = "im.ene.kohii:kohii-core:$version.kohii"
+video.kohii_exoplayer = "im.ene.kohii:kohii-exoplayer:$version.kohii"
+dependency.video = video
+
+dependency.vertx_codegen = "io.vertx:vertx-codegen:$version.vertx_codegen"
+// end-dependency-declaration
+ext.dependency = dependency
+
+def addRepositories(RepositoryHandler handler) {
+    handler.google()
+    // 1.
+    // Only ExoPlayer version 2.13.3 onwards are available on Google's Maven Repository
+    // Since ExoPlayer API is consumed by Kohii API we need to wait for https://github.com/eneim/kohii/issues/150
+    // 2.
+    // Android Volley (com.android.volley:volley:1.1.1) is still required by Google Places API
+    // until then we need to pull both of these dependencies from jCenter's Repository
+    handler.jcenter()
+    handler.mavenCentral()
+    handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    handler.maven {
+        url 'https://mvn.endios.de/android'
+        credentials {
+            username maven_pull_credential_username
+            password maven_pull_credential_password
+        }
+    }
+    handler.mavenLocal()
+}
+
+ext.addRepositories = this.&addRepositories
