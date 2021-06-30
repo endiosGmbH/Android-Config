@@ -35,7 +35,8 @@ version.dependency_graph = "0.5.0"
 version.epoxy = "4.1.0"
 // firebase
 version.firebase_core = "17.2.0"
-version.firebase_crashlytics = "2.3.0"
+version.firebase_crashlytics = "17.2.2"
+version.firebase_crashlytics_gradle = "2.3.0"
 version.firebase_messaging = "19.0.1"
 // foundation
 version.foundation = "4.12.0-SNAPSHOT"
@@ -107,7 +108,8 @@ dependency.epoxy = epoxy
 
 def firebase = [:]
 firebase.core = "com.google.firebase:firebase-core:$version.firebase_core"
-firebase.crashlytics_gradle = "com.google.firebase:firebase-crashlytics-gradle:$version.firebase_crashlytics"
+firebase.crashlytics = "com.google.firebase:firebase-crashlytics:$version.firebase_crashlytics"
+firebase.crashlytics_gradle = "com.google.firebase:firebase-crashlytics-gradle:$version.firebase_crashlytics_gradle"
 firebase.messaging = "com.google.firebase:firebase-messaging:$version.firebase_messaging"
 dependency.firebase = firebase
 
