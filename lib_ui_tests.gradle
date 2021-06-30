@@ -1,4 +1,4 @@
-apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/feature/OP-2311/version.gradle"
+apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/version.gradle"
 android {
     defaultConfig {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
