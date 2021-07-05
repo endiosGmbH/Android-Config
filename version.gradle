@@ -79,8 +79,8 @@ ext.version_foundation = project.hasProperty("OVERRIDE_FOUNDATION_VERSION") && O
 def build_version = [:]
 // start-build-version-declaration
 build_version.min_sdk = 23
-build_version.compile_sdk = 29
-build_version.target_sdk = 29
+build_version.compile_sdk = 30
+build_version.target_sdk = 30
 // end-build-version-declaration
 ext.build_version = build_version
 
