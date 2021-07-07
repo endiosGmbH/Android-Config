@@ -29,8 +29,6 @@ version.coil = "1.1.0"
 version.android_gradle_plugin = '4.2.1'
 version.kotlin_coroutines = "1.5.0"
 version.kotlin = "1.5.10"
-// maven artifact packaging
-version.maven_artifact_packaging = "2.1"
 // dependency graph
 version.dependency_graph = "0.5.0"
 // epoxy
@@ -101,7 +99,6 @@ androidx_core.core = "androidx.core:core:$version.androidx_core"
 androidx_core.core_ktx = "androidx.core:core-ktx:$version.androidx_core"
 dependency.androidx_core = androidx_core
 
-dependency.maven_artifact_packaging = "com.github.dcendents:android-maven-gradle-plugin:$version.maven_artifact_packaging"
 dependency.dependency_graph = "com.vanniktech:gradle-dependency-graph-generator-plugin:$version.dependency_graph"
 
 def epoxy = [:]
