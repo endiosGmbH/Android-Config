@@ -1,3 +1,4 @@
+apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/tooling/.maven/maven_publish.gradle"
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
