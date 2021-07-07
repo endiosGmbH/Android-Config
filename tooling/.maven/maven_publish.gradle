@@ -1,7 +1,5 @@
-plugins {
-    id "com.github.dcendents.android-maven" version "2.1"
-}
 apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/tooling/.maven/maven.gradle"
+apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'maven-publish'
 
 afterEvaluate {
