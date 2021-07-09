@@ -60,7 +60,7 @@ version.koin = "2.0.1"
 // mockk
 version.mockk = "1.9.2"
 // okhttp
-version.okhttp = "4.1.0"
+version.okhttp = "4.9.1"
 // permission
 version.permission = "4.6.0"
 // play-services
