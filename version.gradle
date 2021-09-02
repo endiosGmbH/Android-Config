@@ -47,6 +47,7 @@ version.google_services = "4.3.3"
 version.google_gson = "2.8.5"
 version.google_maps_utils = "0.5"
 version.google_places = "2.0.0"
+version.google_zxing= "3.4.1"
 // jacoco
 version.jacoco = "0.8.4"
 // junit
@@ -124,6 +125,7 @@ google.gson = "com.google.code.gson:gson:$version.google_gson"
 google.maps_utils = "com.google.maps.android:android-maps-utils:$version.google_maps_utils"
 google.places = "com.google.android.libraries.places:places:$version.google_places"
 google.services = "com.google.gms:google-services:$version.google_services"
+google.barcode_core = "com.google.zxing:core:$version.google_zxing"
 dependency.google = google
 
 def image = [:]
