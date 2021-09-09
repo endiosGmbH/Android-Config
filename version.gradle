@@ -215,7 +215,7 @@ ui_test.androidx_test_orchestrator = "androidx.test:orchestrator:$version.androi
 ui_test.androidx_test_rules = "androidx.test:rules:$version.androidx_test"
 ui_test.androidx_test_runner = "androidx.test:runner:$version.androidx_test"
 ui_test.androidx_test_junit = "androidx.test.ext:junit:$version.androidx_test_junit"
-ui_test.androidx_uiautomator = "androidx.test.uiautomator:uiautomator$version.androidx_test_uiautomator"
+ui_test.androidx_uiautomator = "androidx.test.uiautomator:uiautomator:$version.androidx_test_uiautomator"
 dependency.ui_test = ui_test
 
 def ui = [:]
