@@ -64,7 +64,7 @@ version.mockk = "1.9.2"
 // okhttp
 version.okhttp = "4.9.1"
 // permission
-version.permission = "4.6.0"
+version.permission = "4.8.0"
 // play-services
 version.play_services_maps = "17.0.0"
 version.play_services_location = "17.0.0"
@@ -189,8 +189,8 @@ network.retrofit_converter_simplexml = "com.squareup.retrofit2:converter-simplex
 dependency.network = network
 
 def permission = [:]
-permission.base = "org.permissionsdispatcher:permissionsdispatcher:$version.permission"
-permission.processor = "org.permissionsdispatcher:permissionsdispatcher-processor:$version.permission"
+permission.base = "com.github.permissions-dispatcher:permissionsdispatcher:$version.permission"
+permission.processor = "com.github.permissions-dispatcher:permissionsdispatcher-processor:$version.permission"
 dependency.permission = permission
 
 def play_services = [:]
