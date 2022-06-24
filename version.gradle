@@ -68,7 +68,8 @@ version.permission = "4.6.0"
 // play-services
 version.play_services_maps = "17.0.0"
 version.play_services_location = "17.0.0"
-version.play_services_vision = "18.0.0"
+//version.play_services_vision = "18.0.0"
+version.play_services_mlkit_barcode_scanning = "18.0.0"
 // retrofit
 version.retrofit = "2.6.1"
 // vertx-codegen
@@ -196,7 +197,8 @@ dependency.permission = permission
 def play_services = [:]
 play_services.location = "com.google.android.gms:play-services-location:$version.play_services_location"
 play_services.maps = "com.google.android.gms:play-services-maps:$version.play_services_maps"
-play_services.vision = "com.google.android.gms:play-services-vision:$version.play_services_vision"
+//play_services.vision = "com.google.android.gms:play-services-vision:$version.play_services_vision"
+play_services.mlkit_barcode_scanning = "com.google.android.gms:play-services-mlkit-barcode-scanning:$version.play_services_mlkit_barcode_scanning"
 dependency.play_services = play_services
 
 def test = [:]
