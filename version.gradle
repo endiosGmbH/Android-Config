@@ -33,7 +33,7 @@ version.kotlin = "1.6.0"
 // dependency graph
 version.dependency_graph = "0.5.0"
 // epoxy
-version.epoxy = "4.1.0"
+version.epoxy = "4.6.3"
 // firebase
 version.firebase_core = "17.4.4"
 version.firebase_crashlytics = "18.2.11"
