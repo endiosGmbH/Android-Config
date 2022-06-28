@@ -58,7 +58,7 @@ version.junit_jupiter_plugin = "1.7.1.1"
 // kohii
 version.kohii = "1.2.0.2011008"
 // koin
-version.koin = "2.0.1"
+version.koin = "2.2.3"
 // mockk
 version.mockk = "1.9.2"
 // okhttp
