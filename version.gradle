@@ -35,10 +35,10 @@ version.dependency_graph = "0.5.0"
 // epoxy
 version.epoxy = "4.1.0"
 // firebase
-version.firebase_core = "21.0.0"
+version.firebase_core = "17.4.4"
 version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
-version.firebase_messaging = "23.0.5"
+version.firebase_messaging = "20.2.3"
 // foundation
 version.foundation = "4.26.0-SCANNER"
 // google
