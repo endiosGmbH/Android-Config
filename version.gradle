@@ -27,9 +27,9 @@ version.assertj = "3.10.0"
 // coil
 version.coil = "1.1.0"
 // core
-version.android_gradle_plugin = '4.2.1'
-version.kotlin_coroutines = "1.5.0"
-version.kotlin = "1.5.10"
+version.android_gradle_plugin = '7.2.0'
+version.kotlin_coroutines = "1.6.0"
+version.kotlin = "1.6.0"
 // dependency graph
 version.dependency_graph = "0.5.0"
 // epoxy
@@ -40,7 +40,7 @@ version.firebase_crashlytics = "17.2.2"
 version.firebase_crashlytics_gradle = "2.3.0"
 version.firebase_messaging = "19.0.1"
 // foundation
-version.foundation = "4.25.56"
+version.foundation = "4.25.58"
 // google
 version.google_exoplayer = "2.10.4"
 version.google_material = "1.3.0"
@@ -81,7 +81,7 @@ ext.version_foundation = project.hasProperty("OVERRIDE_FOUNDATION_VERSION") && O
 def build_version = [:]
 // start-build-version-declaration
 build_version.min_sdk = 23
-build_version.compile_sdk = 30
+build_version.compile_sdk = 31
 build_version.target_sdk = 30
 // end-build-version-declaration
 ext.build_version = build_version
