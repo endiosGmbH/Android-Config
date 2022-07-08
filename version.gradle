@@ -143,7 +143,6 @@ koin.android = "io.insert-koin:koin-android:$version.koin"
 koin.android_scope = "io.insert-koin:koin-android-scope:$version.koin"
 koin.core = "io.insert-koin:koin-core:$version.koin"
 koin.test = "io.insert-koin:koin-test:$version.koin"
-//koin.android_view_model = "io.insert-koin:koin-android-viewmodel:$version.koin"
 koin.androidx_view_model = "io.insert-koin:koin-androidx-viewmodel:$version.koin"
 dependency.koin = koin
 
