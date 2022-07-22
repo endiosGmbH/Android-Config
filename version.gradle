@@ -43,7 +43,7 @@ version.firebase_messaging = "19.0.1"
 version.foundation = "4.26.2"
 // google
 version.google_exoplayer = "2.14.0"
-version.google_material = "1.3.0"
+version.google_material = "1.6.0"
 version.google_services = "4.3.3"
 version.google_gson = "2.8.5"
 version.google_maps_utils = "0.5"
