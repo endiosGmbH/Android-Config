@@ -40,7 +40,7 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "19.0.1"
 // foundation
-version.foundation = "4.26.3"
+version.foundation = "4.26.4"
 // google
 version.google_exoplayer = "2.14.0"
 version.google_material = "1.3.0"
@@ -165,6 +165,7 @@ lifecycle.extensions = "androidx.lifecycle:lifecycle-extensions:$version.android
 lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$version.androidx_lifecycle"
 lifecycle.livedata_ktx = "androidx.lifecycle:lifecycle-livedata-ktx:$version.androidx_lifecycle"
 lifecycle.runtime_ktx = "androidx.lifecycle:lifecycle-runtime-ktx:$version.androidx_lifecycle"
+lifecycle.viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version.androidx_lifecycle"
 dependency.lifecycle = lifecycle
 
 def mockk = [:]
