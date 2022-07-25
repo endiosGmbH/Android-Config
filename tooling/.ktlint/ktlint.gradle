@@ -8,7 +8,7 @@ subprojects {
     }
 
     buildscript {
-        ext.KTLINT_VERSION = '0.40.0'
+        ext.KTLINT_VERSION = '0.44.0'
     }
     dependencies {
         ktlint "com.pinterest:ktlint:$KTLINT_VERSION"
