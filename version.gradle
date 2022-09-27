@@ -5,7 +5,7 @@ def version = [:]
 // start-dependency-version-declaration
 // androidx
 version.androidx_annotation = "1.1.0"
-version.androidx_appcompat = "1.4.2"
+version.androidx_appcompat = "1.5.0"
 version.androidx_browser = "1.2.0"
 version.androidx_constraint_layout = "2.1.4"
 version.androidx_arch_core = "2.1.0"
@@ -83,8 +83,8 @@ ext.version_foundation = project.hasProperty("OVERRIDE_FOUNDATION_VERSION") && O
 def build_version = [:]
 // start-build-version-declaration
 build_version.min_sdk = 23
-build_version.compile_sdk = 31
-build_version.target_sdk = 31
+build_version.compile_sdk = 32
+build_version.target_sdk = 32
 // end-build-version-declaration
 ext.build_version = build_version
 
