@@ -34,6 +34,8 @@ version.kotlin = "1.6.0"
 version.dependency_graph = "0.8.0"
 // epoxy
 version.epoxy = "4.6.3"
+// work manager
+version.work_manager = "2.7.1"
 // firebase
 version.firebase_core = "21.0.0"
 version.firebase_crashlytics = "18.2.11"
@@ -187,6 +189,7 @@ network.okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:$
 network.retrofit_base = "com.squareup.retrofit2:retrofit:$version.retrofit"
 network.retrofit_converter_gson = "com.squareup.retrofit2:converter-gson:$version.retrofit"
 network.retrofit_converter_simplexml = "com.squareup.retrofit2:converter-simplexml:$version.retrofit"
+network.work_manager = "androidx.work:work-runtime-ktx:$version.work_manager"
 dependency.network = network
 
 def permission = [:]
