@@ -34,6 +34,8 @@ version.kotlin = "1.6.0"
 version.dependency_graph = "0.8.0"
 // epoxy
 version.epoxy = "4.6.3"
+// work manager
+version.work_manager = "2.7.1"
 // firebase
 version.firebase_core = "21.0.0"
 version.firebase_crashlytics = "18.2.11"
@@ -55,6 +57,9 @@ version.jacoco = "0.8.4"
 version.junit = "4.13.1"
 version.junit_jupiter = "5.7.1"
 version.junit_jupiter_plugin = "1.7.1.1"
+version.junit_ktx = "1.1.5"
+//test
+version.core_ktx = "1.5.0"
 // kohii
 // For now we have to use this SNAPSHOT-version
 // because there is no release that uses a non-jCenter-exoplayer-version
@@ -187,6 +192,8 @@ network.okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:$
 network.retrofit_base = "com.squareup.retrofit2:retrofit:$version.retrofit"
 network.retrofit_converter_gson = "com.squareup.retrofit2:converter-gson:$version.retrofit"
 network.retrofit_converter_simplexml = "com.squareup.retrofit2:converter-simplexml:$version.retrofit"
+network.work_manager = "androidx.work:work-runtime-ktx:$version.work_manager"
+network.work_manager_testing = "androidx.work:work-testing:$version.work_manager"
 dependency.network = network
 
 def permission = [:]
@@ -205,6 +212,8 @@ test.jupiter_api = "org.junit.jupiter:junit-jupiter-api:$version.junit_jupiter"
 test.jupiter_engine = "org.junit.jupiter:junit-jupiter-engine:$version.junit_jupiter"
 test.jupiter_params = "org.junit.jupiter:junit-jupiter-params:$version.junit_jupiter"
 test.jupiter_plugin = "de.mannodermaus.gradle.plugins:android-junit5:$version.junit_jupiter_plugin"
+test.core_ktx = "androidx.test:core-ktx:$version.core_ktx"
+test.junit_ktx = "androidx.test.ext:junit-ktx:$version.junit_ktx"
 dependency.test = test
 
 def ui_test = [:]
