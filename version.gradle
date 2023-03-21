@@ -74,8 +74,8 @@ version.okhttp = "4.9.1"
 // permission
 version.permission = "4.8.0"
 // play-services
-version.play_services_maps = "17.0.0"
-version.play_services_location = "17.0.0"
+version.play_services_maps = "18.0.0"
+version.play_services_location = "21.0.0"
 // retrofit
 version.retrofit = "2.6.1"
 // vertx-codegen
