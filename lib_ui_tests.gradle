@@ -1,4 +1,5 @@
-apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/version.gradle"
+// TODO (Point back to master when you want to merge [FTP-765])
+apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/feature/FTP-765/version.gradle"
 android {
     defaultConfig {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
