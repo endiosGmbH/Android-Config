@@ -87,6 +87,8 @@ version.compose_bom = "2023.04.01"
 version.compose_kotlin_compiler = "1.4.7"
 version.compose_activity = "1.7.1"
 version.compose_lifecycle_viewmodel = "2.5.1"
+// Accompanist
+version.accompanist_systemuicontroller = "0.30.1"
 // maps-compose
 version.maps_compose = "2.11.4"
 // end-dependency-version-declaration
@@ -225,6 +227,7 @@ compose.activity = "androidx.activity:activity-compose:$version.compose_activity
 compose.maps = "com.google.maps.android:maps-compose:$version.maps_compose"
 compose.lifecycle_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-compose:$version.compose_lifecycle_viewmodel"
 compose.compiler = "$version.compose_kotlin_compiler"
+compose.system_ui_controller = "com.google.accompanist:accompanist-systemuicontroller:$version.accompanist_systemuicontroller"
 dependency.compose = compose
 
 def test = [:]
