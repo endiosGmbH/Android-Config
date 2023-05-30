@@ -25,7 +25,7 @@ version.androidx_viewpager2 = "1.0.0"
 // assertJ
 version.assertj = "3.10.0"
 // coil
-version.coil = "2.0.0"
+version.coil = "1.4.0"
 // core
 version.android_gradle_plugin = '7.2.0'
 version.kotlin_coroutines = "1.6.0"
