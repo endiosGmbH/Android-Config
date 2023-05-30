@@ -27,7 +27,7 @@ version.assertj = "3.10.0"
 // coil
 version.coil = "2.4.0"
 // core
-version.android_gradle_plugin = '7.2.0'
+version.android_gradle_plugin = '8.0.0'
 version.kotlin_coroutines = "1.6.0"
 version.kotlin = "1.6.0"
 // dependency graph
