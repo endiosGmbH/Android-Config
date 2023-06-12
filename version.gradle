@@ -219,7 +219,7 @@ dependency.play_services = play_services
 
 def compose = [:]
 compose.bom = "androidx.compose:compose-bom:$version.compose_bom"
-compose.material3 = "androidx.compose.material3:material3"
+compose.material = "androidx.compose.material:material"
 compose.ui = "androidx.compose.ui:ui"
 compose.ui_preview = "androidx.compose.ui:ui-tooling-preview"
 compose.ui_tooling = "androidx.compose.ui:ui-tooling"
