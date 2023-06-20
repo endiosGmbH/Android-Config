@@ -1,8 +1,7 @@
 # This is a comment.
 # Each line is a file pattern followed by one or more owners.
 
-# These owners will be the default owners for everything in
-# the repo. Unless a later match takes precedence,
-# @anatolii-pozniak, @felipeendios, @JimArabajoglou, @nicolaiendios and @or-dvir-endios will be requested for
-# review when someone opens a pull request.
-* @anatolii-pozniak @felipeendios @JimArabajoglou @nicolaiendios @or-dvir-endios
+# These owners will be the default owners for everything in the repo.
+# Unless a later match takes precedence, the below listed users
+# will be requested for review when someone opens a pull request.
+* @felipeendios @JimArabajoglou @nicolaiendios @OmarShehe @or-dvir-endios
