@@ -30,6 +30,7 @@ android {
 
 dependencies {
     implementation(dependency.foundation.base) { transitive = true }
+    implementation(dependency.foundation.compose) { transitive = true }
     androidTestImplementation(dependency.foundation.test_library) {
         transitive = true
     }
