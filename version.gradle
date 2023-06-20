@@ -138,7 +138,7 @@ def foundation = [:]
 foundation.base = "de.endios.one.core:foundation:$version_foundation@aar"
 foundation.test_app = "de.endios.one.core:test-app:$version_foundation@aar"
 foundation.test_library = "de.endios.one.core:testlibrary:$version_foundation@aar"
-foundation.compose = "de.endios.one.core:one-core-compose:$one_core_compose@aar"
+foundation.compose = "de.endios.one.core:one-core-compose:$version.one_core_compose@aar"
 dependency.foundation = foundation
 
 def google = [:]
