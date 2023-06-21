@@ -71,7 +71,7 @@ version.kohii = "1.3.0.2014000-SNAPSHOT"
 // koin
 version.koin = "2.2.3"
 // mockk
-version.mockk = "1.12.4"
+version.mockk = "1.13.5"
 // okhttp
 version.okhttp = "4.9.1"
 // permission
