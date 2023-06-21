@@ -5,7 +5,7 @@ def version = [:]
 // start-dependency-version-declaration
 // androidx
 version.androidx_annotation = "1.1.0"
-version.androidx_appcompat = "1.5.0"
+version.androidx_appcompat = "1.6.1"
 version.androidx_browser = "1.2.0"
 version.androidx_constraint_layout = "2.1.4"
 version.androidx_arch_core = "2.1.0"
@@ -47,7 +47,7 @@ version.firebase_messaging = "23.0.7"
 version.foundation = "4.26.75"
 version.one_core_compose = "4.26.58"
 // google
-version.google_exoplayer = "2.14.0"
+version.google_exoplayer = "2.18.7"
 version.google_material = "1.6.0"
 version.google_services = "4.3.3"
 version.google_gson = "2.8.5"
@@ -67,7 +67,7 @@ version.core_ktx = "1.5.0"
 // For now we have to use this SNAPSHOT-version
 // because there is no release that uses a non-jCenter-exoplayer-version
 // see https://github.com/eneim/kohii/issues/150
-version.kohii = "1.3.0.2014000-SNAPSHOT"
+version.kohii = "1.4.0.2017001"
 // koin
 version.koin = "2.2.3"
 // mockk
