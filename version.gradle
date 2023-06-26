@@ -47,7 +47,7 @@ version.firebase_messaging = "23.0.7"
 version.foundation = "4.26.76"
 version.one_core_compose = "4.26.58"
 // google
-version.google_exoplayer = "2.18.7"
+version.google_exoplayer = "2.17.1"
 version.google_material = "1.6.0"
 version.google_services = "4.3.3"
 version.google_gson = "2.8.5"
