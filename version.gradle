@@ -51,7 +51,7 @@ version.google_exoplayer = "2.17.1"
 version.google_material = "1.6.0"
 version.google_services = "4.3.3"
 version.google_gson = "2.8.5"
-version.google_maps_utils = "0.5"
+version.google_maps_utils = "3.4.0"
 version.google_places = "2.6.0"
 version.google_zxing = "3.4.1"
 // jacoco
