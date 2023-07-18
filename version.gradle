@@ -44,7 +44,7 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation
-version.foundation = "4.26.87"
+version.foundation = "4.26.88"
 version.one_core_compose = "4.26.58"
 // google
 version.google_exoplayer = "2.17.1"
@@ -204,7 +204,6 @@ network.okhttp_base = "com.squareup.okhttp3:okhttp:$version.okhttp"
 network.okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:$version.okhttp"
 network.retrofit_base = "com.squareup.retrofit2:retrofit:$version.retrofit"
 network.retrofit_converter_gson = "com.squareup.retrofit2:converter-gson:$version.retrofit"
-network.retrofit_converter_simplexml = "com.squareup.retrofit2:converter-simplexml:$version.retrofit"
 network.work_manager = "androidx.work:work-runtime-ktx:$version.work_manager"
 network.work_manager_testing = "androidx.work:work-testing:$version.work_manager"
 dependency.network = network
