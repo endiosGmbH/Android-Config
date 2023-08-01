@@ -44,7 +44,7 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation
-version.foundation = "4.26.90"
+version.foundation = "4.26.91"
 version.one_core_compose = "4.26.58"
 // google
 version.google_exoplayer = "2.17.1"
@@ -64,9 +64,6 @@ version.junit_ktx = "1.1.5"
 //test
 version.core_ktx = "1.5.0"
 // kohii
-// For now we have to use this SNAPSHOT-version
-// because there is no release that uses a non-jCenter-exoplayer-version
-// see https://github.com/eneim/kohii/issues/150
 version.kohii = "1.4.0.2017001"
 // koin
 version.koin = "2.2.3"
