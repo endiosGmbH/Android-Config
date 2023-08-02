@@ -192,6 +192,7 @@ dependency.mockk = mockk
 
 def fragment = [:]
 fragment.test = "androidx.fragment:fragment-testing:$version.fragment_testing"
+dependency.fragment = fragment
 
 def navigation = [:]
 navigation.androidx_navigation_safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:$version.androidx_navigation_plugin"
