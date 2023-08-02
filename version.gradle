@@ -23,7 +23,7 @@ version.androidx_test_uiautomator = "2.2.0"
 version.androidx_viewpager = "1.0.0"
 version.androidx_viewpager2 = "1.0.0"
 // fragment
-version.fragment_testing = "1.5.7"
+version.fragment_testing = "1.6.1"
 // assertJ
 version.assertj = "3.10.0"
 // coil
