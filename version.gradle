@@ -22,6 +22,8 @@ version.androidx_test_junit = "1.1.3"
 version.androidx_test_uiautomator = "2.2.0"
 version.androidx_viewpager = "1.0.0"
 version.androidx_viewpager2 = "1.0.0"
+// fragment
+version.fragment_testing = "1.5.7"
 // assertJ
 version.assertj = "3.10.0"
 // coil
@@ -187,6 +189,9 @@ def mockk = [:]
 mockk.core = "io.mockk:mockk:$version.mockk"
 mockk.android = "io.mockk:mockk-android:$version.mockk"
 dependency.mockk = mockk
+
+def fragment = [:]
+fragment.test = "androidx.fragment:fragment-testing:$version.fragment_testing"
 
 def navigation = [:]
 navigation.androidx_navigation_safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:$version.androidx_navigation_plugin"
