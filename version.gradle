@@ -185,10 +185,10 @@ lifecycle.runtime_ktx = "androidx.lifecycle:lifecycle-runtime-ktx:$version.andro
 lifecycle.viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version.androidx_lifecycle"
 dependency.lifecycle = lifecycle
 
-def mockk = [:]
-mockk.core = "io.mockk:mockk:$version.mockk"
-mockk.android = "io.mockk:mockk-android:$version.mockk"
-dependency.mockk = mockk
+//def mockk = [:]
+//mockk.core = "io.mockk:mockk:$version.mockk"
+//mockk.android = "io.mockk:mockk-android:$version.mockk"
+//dependency.mockk = mockk
 
 def fragment_testing = [:]
 fragment_testing.test = "androidx.fragment:fragment-testing:$version.fragment_testing"
