@@ -190,9 +190,9 @@ mockk.core = "io.mockk:mockk:$version.mockk"
 mockk.android = "io.mockk:mockk-android:$version.mockk"
 dependency.mockk = mockk
 
-def fragment = [:]
-fragment.test = "androidx.fragment:fragment-testing:$version.fragment_testing"
-dependency.fragment = fragment
+def fragment_testing = [:]
+fragment_testing.test = "androidx.fragment:fragment-testing:$version.fragment_testing"
+dependency.fragment_testing = fragment_testing
 
 def navigation = [:]
 navigation.androidx_navigation_safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:$version.androidx_navigation_plugin"
