@@ -85,7 +85,7 @@ version.compose_bom = "2023.04.01"
 version.compose_kotlin_compiler = "1.4.7"
 version.compose_activity = "1.7.1"
 version.compose_lifecycle_viewmodel = "2.5.1"
-// Accompanist
+// Accompanist-compose
 version.accompanist = "0.30.1"
 // maps-compose
 version.maps_compose = "2.11.4"
