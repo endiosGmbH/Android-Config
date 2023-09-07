@@ -27,7 +27,7 @@ version.assertj = "3.10.0"
 // coil
 version.coil = "2.4.0"
 // core
-version.android_gradle_plugin = '8.1.1'
+version.android_gradle_plugin = '8.0.1'
 version.kotlin_coroutines = "1.7.1"
 // When updating please update compose_kotlin_compiler too
 // see https://developer.android.com/jetpack/androidx/releases/compose-kotlin
