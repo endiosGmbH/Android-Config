@@ -221,6 +221,11 @@ def compose = [:]
 compose.bom = "androidx.compose:compose-bom:$version.compose_bom"
 compose.material = "androidx.compose.material:material"
 compose.ui = "androidx.compose.ui:ui"
+
+
+compose.ui_android = "androidx.compose.ui:ui-android"
+
+
 compose.ui_preview = "androidx.compose.ui:ui-tooling-preview"
 compose.ui_graphics = "androidx.compose.ui:ui-graphics"
 compose.ui_tooling = "androidx.compose.ui:ui-tooling"
