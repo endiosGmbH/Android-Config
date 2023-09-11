@@ -98,8 +98,8 @@ ext.version_foundation = project.hasProperty("OVERRIDE_FOUNDATION_VERSION") && O
 def build_version = [:]
 // start-build-version-declaration
 build_version.min_sdk = 23
-build_version.compile_sdk = 34
-build_version.target_sdk = 34
+build_version.compile_sdk = 33
+build_version.target_sdk = 33
 // end-build-version-declaration
 ext.build_version = build_version
 
@@ -221,11 +221,7 @@ def compose = [:]
 compose.bom = "androidx.compose:compose-bom:$version.compose_bom"
 compose.material = "androidx.compose.material:material"
 compose.ui = "androidx.compose.ui:ui"
-
-
 compose.ui_android = "androidx.compose.ui:ui-android"
-
-
 compose.ui_preview = "androidx.compose.ui:ui-tooling-preview"
 compose.ui_graphics = "androidx.compose.ui:ui-graphics"
 compose.ui_tooling = "androidx.compose.ui:ui-tooling"
