@@ -44,7 +44,7 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation
-version.foundation = "4.27.8"
+version.foundation = "4.27.9"
 version.one_core_compose = "4.26.58"
 // google
 version.google_exoplayer = "2.17.1"
