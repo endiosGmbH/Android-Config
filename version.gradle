@@ -86,6 +86,7 @@ version.compose_bom = "2023.04.01"
 version.compose_kotlin_compiler = "1.4.7"
 version.compose_activity = "1.7.1"
 version.compose_ui_android = "1.5.1"
+version.compose_ui_tooling_preview_android = "1.5.1"
 version.compose_lifecycle_viewmodel = "2.5.1"
 // Accompanist-compose
 version.accompanist = "0.30.1"
@@ -225,10 +226,10 @@ compose.ui = "androidx.compose.ui:ui"
 
 
 compose.ui_android = "androidx.compose.ui:ui-android:$version.compose_ui_android"
+compose.ui_tooling_preview_android = "androidx.compose.ui:ui-tooling-preview-android:$version.compose_ui_tooling_preview_android"
 
 
 compose.ui_tooling_preview = "androidx.compose.ui:ui-tooling-preview"
-compose.ui_tooling_preview_android = "androidx.compose.ui:ui-tooling-preview-android"
 
 
 compose.ui_graphics = "androidx.compose.ui:ui-graphics"
