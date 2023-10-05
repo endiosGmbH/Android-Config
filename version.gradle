@@ -82,12 +82,14 @@ version.retrofit = "2.6.1"
 // vertx-codegen
 version.vertx_codegen = "3.6.0"
 // jetpack-compose
-version.compose_bom = "2023.04.01"
+//version.compose_bom = "2023.04.01"
 version.compose_kotlin_compiler = "1.4.7"
 version.compose_activity = "1.7.1"
-version.compose_ui_android = "1.5.1"
-version.compose_ui_tooling_preview_android = "1.5.1"
 version.compose_lifecycle_viewmodel = "2.5.1"
+version.compose_base = "1.4.2"
+
+//version.compose_ui_android = "1.5.1"
+//version.compose_ui_tooling_preview_android = "1.5.1"
 // Accompanist-compose
 version.accompanist = "0.30.1"
 // maps-compose
@@ -220,29 +222,29 @@ play_services.maps = "com.google.android.gms:play-services-maps:$version.play_se
 dependency.play_services = play_services
 
 def compose = [:]
-compose.bom = "androidx.compose:compose-bom:$version.compose_bom"
-compose.material = "androidx.compose.material:material"
+//compose.bom = "androidx.compose:compose-bom:$version.compose_bom"
 
 
-compose.ui = "androidx.compose.ui:ui"
-
-
-compose.ui_android = "androidx.compose.ui:ui-android:$version.compose_ui_android"
-compose.ui_tooling_preview_android = "androidx.compose.ui:ui-tooling-preview-android:$version.compose_ui_tooling_preview_android"
-
-
-compose.ui_tooling_preview = "androidx.compose.ui:ui-tooling-preview"
-
-
-compose.ui_graphics = "androidx.compose.ui:ui-graphics"
-compose.ui_tooling = "androidx.compose.ui:ui-tooling"
+compose.material = "androidx.compose.material:material:$version.compose_base"
+compose.ui_tooling_preview = "androidx.compose.ui:ui-tooling-preview:$version.compose_base"
+compose.ui_tooling = "androidx.compose.ui:ui-tooling:$version.compose_base"
+compose.ui = "androidx.compose.ui:ui:$version.compose_base"
 compose.activity = "androidx.activity:activity-compose:$version.compose_activity"
-compose.maps = "com.google.maps.android:maps-compose:$version.maps_compose"
-compose.maps_utils = "com.google.maps.android:maps-compose-utils:$version.maps_compose"
 compose.lifecycle_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-compose:$version.compose_lifecycle_viewmodel"
 compose.compiler = "$version.compose_kotlin_compiler"
+compose.maps = "com.google.maps.android:maps-compose:$version.maps_compose"
+compose.maps_utils = "com.google.maps.android:maps-compose-utils:$version.maps_compose"
 compose.system_ui_controller = "com.google.accompanist:accompanist-systemuicontroller:$version.accompanist"
 compose.permissions = "com.google.accompanist:accompanist-permissions:$version.accompanist"
+
+
+/////////////////////////////before deleting, check which is being used in the widget omar already did
+//compose.ui_android = "androidx.compose.ui:ui-android:$version.compose_ui_android"
+//compose.ui_tooling_preview_android = "androidx.compose.ui:ui-tooling-preview-android:$version.compose_ui_tooling_preview_android"
+//compose.ui_graphics = "androidx.compose.ui:ui-graphics"
+
+
+
 dependency.compose = compose
 
 def test = [:]
