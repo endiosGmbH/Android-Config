@@ -232,7 +232,7 @@ compose.maps = "com.google.maps.android:maps-compose:$version.maps_compose"
 compose.maps_utils = "com.google.maps.android:maps-compose-utils:$version.maps_compose"
 compose.system_ui_controller = "com.google.accompanist:accompanist-systemuicontroller:$version.accompanist"
 compose.permissions = "com.google.accompanist:accompanist-permissions:$version.accompanist"
-
+compose.coil = "io.coil-kt:coil-compose:$version.coil"
 
 /////////////////////////////before deleting, check which is being used in the widget omar already did
 //compose.ui_android = "androidx.compose.ui:ui-android:$version.compose_ui_android"
