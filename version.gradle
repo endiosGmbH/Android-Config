@@ -82,7 +82,6 @@ version.retrofit = "2.6.1"
 // vertx-codegen
 version.vertx_codegen = "3.6.0"
 // jetpack-compose
-//version.compose_bom = "2023.04.01"
 version.compose_kotlin_compiler = "1.4.7"
 version.compose_activity = "1.7.1"
 version.compose_lifecycle_viewmodel = "2.5.1"
@@ -222,9 +221,6 @@ play_services.maps = "com.google.android.gms:play-services-maps:$version.play_se
 dependency.play_services = play_services
 
 def compose = [:]
-//compose.bom = "androidx.compose:compose-bom:$version.compose_bom"
-
-
 compose.material = "androidx.compose.material:material:$version.compose_base"
 compose.ui_tooling_preview = "androidx.compose.ui:ui-tooling-preview:$version.compose_base"
 compose.ui_tooling = "androidx.compose.ui:ui-tooling:$version.compose_base"
