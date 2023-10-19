@@ -86,6 +86,7 @@ version.compose_kotlin_compiler = "1.4.7"
 version.compose_activity = "1.7.1"
 version.compose_lifecycle_viewmodel = "2.5.1"
 version.compose_base = "1.4.2"
+version.compose_runtime = "2.6.2"
 
 //version.compose_ui_android = "1.5.1"
 //version.compose_ui_tooling_preview_android = "1.5.1"
@@ -233,7 +234,7 @@ compose.maps_utils = "com.google.maps.android:maps-compose-utils:$version.maps_c
 compose.system_ui_controller = "com.google.accompanist:accompanist-systemuicontroller:$version.accompanist"
 compose.permissions = "com.google.accompanist:accompanist-permissions:$version.accompanist"
 compose.coil = "io.coil-kt:coil-compose:$version.coil"
-compose.livedata = "androidx.compose.runtime:runtime-livedata:$version.compose_base"
+compose.runtime = "androidx.lifecycle:lifecycle-runtime-compose:$version.compose_runtime"
 
 /////////////////////////////before deleting, check which is being used in the widget omar already did
 //todo handle pharmacies widget!!! it also uses BOM!!!
