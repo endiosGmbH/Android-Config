@@ -233,7 +233,7 @@ compose.maps_utils = "com.google.maps.android:maps-compose-utils:$version.maps_c
 compose.system_ui_controller = "com.google.accompanist:accompanist-systemuicontroller:$version.accompanist"
 compose.permissions = "com.google.accompanist:accompanist-permissions:$version.accompanist"
 compose.coil = "io.coil-kt:coil-compose:$version.coil"
-compose.liveData = "androidx.compose.runtime:runtime-livedata$version.compose_base"
+compose.liveData = "androidx.compose.runtime:runtime-livedata:$version.compose_base"
 
 /////////////////////////////before deleting, check which is being used in the widget omar already did
 //todo handle pharmacies widget!!! it also uses BOM!!!
