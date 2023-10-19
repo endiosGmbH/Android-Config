@@ -1,4 +1,4 @@
-// todo replace when done
+// todo restore when done
 apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/feature/OP-8630/version.gradle"
 //apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/version.gradle"
 
