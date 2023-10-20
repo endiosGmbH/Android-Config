@@ -235,6 +235,7 @@ compose.system_ui_controller = "com.google.accompanist:accompanist-systemuicontr
 compose.permissions = "com.google.accompanist:accompanist-permissions:$version.accompanist"
 compose.coil = "io.coil-kt:coil-compose:$version.coil"
 compose.runtime = "androidx.lifecycle:lifecycle-runtime-compose:$version.compose_runtime"
+compose.livedata = "androidx.compose.runtime:runtime-livedata:$version.compose_base"
 
 /////////////////////////////before deleting, check which is being used in the widget omar already did
 //todo handle pharmacies widget!!! it also uses BOM!!!
