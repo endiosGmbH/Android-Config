@@ -86,9 +86,6 @@ version.compose_activity = "1.7.1"
 version.compose_lifecycle_viewmodel = "2.5.1"
 version.compose_base = "1.4.2"
 version.compose_runtime = "2.6.2"
-
-//version.compose_ui_android = "1.5.1"
-//version.compose_ui_tooling_preview_android = "1.5.1"
 // Accompanist-compose
 version.accompanist = "0.30.1"
 // maps-compose
@@ -140,7 +137,6 @@ foundation.base = "de.endios.one.core:foundation:$version_foundation@aar"
 foundation.test_app = "de.endios.one.core:test-app:$version_foundation@aar"
 foundation.test_library = "de.endios.one.core:testlibrary:$version_foundation@aar"
 foundation.compose = "de.endios.one.core:one-core-compose:$version_foundation@aar"
-//foundation.compose = "de.endios.one.core:one-core-compose:$version.one_core_compose@aar"
 dependency.foundation = foundation
 
 def google = [:]
