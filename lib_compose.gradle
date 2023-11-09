@@ -1,6 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+// todo once the pharmacies widget has been updated to not use this file, delete it
+
 android {
     compileSdkVersion build_version.compile_sdk
     defaultConfig {
