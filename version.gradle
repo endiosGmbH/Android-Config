@@ -236,14 +236,6 @@ compose.permissions = "com.google.accompanist:accompanist-permissions:$version.a
 compose.coil = "io.coil-kt:coil-compose:$version.coil"
 compose.runtime = "androidx.lifecycle:lifecycle-runtime-compose:$version.compose_runtime"
 
-/////////////////////////////before deleting, check which is being used in the widget omar already did
-//todo handle pharmacies widget!!! it also uses BOM!!!
-//compose.ui_android = "androidx.compose.ui:ui-android:$version.compose_ui_android"
-//compose.ui_tooling_preview_android = "androidx.compose.ui:ui-tooling-preview-android:$version.compose_ui_tooling_preview_android"
-//compose.ui_graphics = "androidx.compose.ui:ui-graphics"
-
-
-
 dependency.compose = compose
 
 def test = [:]
