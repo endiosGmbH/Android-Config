@@ -16,12 +16,12 @@ curl -sSLO https://github.com/pinterest/ktlint/releases/download/0.40.0/ktlint &
 # detekt
 echo "Downloading & setting up detekt binary...(Machine's User Password may be asked once if detekt binary is not configured)"
 # downloading the detekt archive and unzipping into the required directory
-curl -sSLO https://github.com/detekt/detekt/releases/download/v1.17.0/detekt-cli-1.17.0.zip &&
-  unzip -o detekt-cli-1.17.0.zip -d /usr/local/bin/
+curl -sSLO https://github.com/detekt/detekt/releases/download/v1.22.0/detekt-cli-1.22.0.zip &&
+  unzip -o detekt-cli-1.22.0.zip -d /usr/local/bin/
 # removing detekt archive file since it is no longer required
-rm -f detekt-cli-1.17.0.zip
+rm -f detekt-cli-1.22.0.zip
 # marking detekt cli as executable
-chmod a+x /usr/local/bin/detekt-cli-1.17.0/bin/detekt-cli
+chmod a+x /usr/local/bin/detekt-cli-1.22.0/bin/detekt-cli
 # you can also download detekt binary manually from https://github.com/detekt/detekt/releases
 # another option is "brew install detekt". Refer: https://detekt.github.io/detekt/cli.html#macos-with-homebrew
 
