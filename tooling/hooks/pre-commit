@@ -30,7 +30,7 @@ function ktlint_check() {
 }
 
 function detekt_check() {
-  echo $git_diff | xargs echo | tr ' ' ',' | tr ' ' ',' | xargs /usr/local/bin/detekt-cli-1.17.0/bin/detekt-cli --config tooling/.detekt/detekt-config.yml --input
+  echo $git_diff | xargs echo | tr ' ' ',' | tr ' ' ',' | xargs /usr/local/bin/detekt-cli-1.22.0/bin/detekt-cli --config tooling/.detekt/detekt-config.yml --input
 }
 
 echo
