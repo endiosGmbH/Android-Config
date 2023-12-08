@@ -9,16 +9,28 @@ android {
         versionName project.ext.pomVersion
         buildConfigField("String", "VERSION_NAME", "\"${defaultConfig.versionName}\"")
     }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
         compileOptions.encoding = 'UTF-8'
     }
+
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11
+        jvmTarget = JavaVersion.VERSION_17
     }
+
     lintOptions {
         lintConfig file("$rootDir/lint.xml")
+    }
+
+    buildFeatures {
+        buildConfig true
+        viewBinding true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion "$dependency.compose.compiler"
     }
 }
 

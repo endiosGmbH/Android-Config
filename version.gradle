@@ -27,7 +27,7 @@ version.assertj = "3.10.0"
 // coil
 version.coil = "2.4.0"
 // core
-version.android_gradle_plugin = '7.4.2'
+version.android_gradle_plugin = '8.0.1'
 version.kotlin_coroutines = "1.7.1"
 // When updating please update compose_kotlin_compiler too
 // see https://developer.android.com/jetpack/androidx/releases/compose-kotlin
@@ -44,7 +44,7 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation
-version.foundation = "4.27.19"
+version.foundation = "4.27.26"
 version.one_core_compose = "4.26.58"
 // google
 version.google_exoplayer = "2.17.1"
@@ -81,11 +81,12 @@ version.retrofit = "2.6.1"
 // vertx-codegen
 version.vertx_codegen = "3.6.0"
 // jetpack-compose
-version.compose_bom = "2023.04.01"
 version.compose_kotlin_compiler = "1.4.7"
 version.compose_activity = "1.7.1"
 version.compose_lifecycle_viewmodel = "2.5.1"
-// Accompanist
+version.compose_base = "1.5.4"
+version.compose_runtime = "2.6.2"
+// Accompanist-compose
 version.accompanist = "0.30.1"
 // maps-compose
 version.maps_compose = "2.11.4"
@@ -97,8 +98,8 @@ ext.version_foundation = project.hasProperty("OVERRIDE_FOUNDATION_VERSION") && O
 def build_version = [:]
 // start-build-version-declaration
 build_version.min_sdk = 23
-build_version.compile_sdk = 33
-build_version.target_sdk = 33
+build_version.compile_sdk = 34
+build_version.target_sdk = 34
 // end-build-version-declaration
 ext.build_version = build_version
 
@@ -135,7 +136,7 @@ def foundation = [:]
 foundation.base = "de.endios.one.core:foundation:$version_foundation@aar"
 foundation.test_app = "de.endios.one.core:test-app:$version_foundation@aar"
 foundation.test_library = "de.endios.one.core:testlibrary:$version_foundation@aar"
-foundation.compose = "de.endios.one.core:one-core-compose:$version.one_core_compose@aar"
+foundation.compose = "de.endios.one.core:one-core-compose:$version_foundation@aar"
 dependency.foundation = foundation
 
 def google = [:]
@@ -216,18 +217,20 @@ play_services.maps = "com.google.android.gms:play-services-maps:$version.play_se
 dependency.play_services = play_services
 
 def compose = [:]
-compose.bom = "androidx.compose:compose-bom:$version.compose_bom"
-compose.material = "androidx.compose.material:material"
-compose.ui = "androidx.compose.ui:ui"
-compose.ui_preview = "androidx.compose.ui:ui-tooling-preview"
-compose.ui_tooling = "androidx.compose.ui:ui-tooling"
+compose.material = "androidx.compose.material:material:$version.compose_base"
+compose.ui_tooling_preview = "androidx.compose.ui:ui-tooling-preview:$version.compose_base"
+compose.ui_tooling = "androidx.compose.ui:ui-tooling:$version.compose_base"
+compose.ui = "androidx.compose.ui:ui:$version.compose_base"
 compose.activity = "androidx.activity:activity-compose:$version.compose_activity"
-compose.maps = "com.google.maps.android:maps-compose:$version.maps_compose"
-compose.maps_utils = "com.google.maps.android:maps-compose-utils:$version.maps_compose"
 compose.lifecycle_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-compose:$version.compose_lifecycle_viewmodel"
 compose.compiler = "$version.compose_kotlin_compiler"
+compose.maps = "com.google.maps.android:maps-compose:$version.maps_compose"
+compose.maps_utils = "com.google.maps.android:maps-compose-utils:$version.maps_compose"
 compose.system_ui_controller = "com.google.accompanist:accompanist-systemuicontroller:$version.accompanist"
 compose.permissions = "com.google.accompanist:accompanist-permissions:$version.accompanist"
+compose.coil = "io.coil-kt:coil-compose:$version.coil"
+compose.runtime = "androidx.lifecycle:lifecycle-runtime-compose:$version.compose_runtime"
+
 dependency.compose = compose
 
 def test = [:]
