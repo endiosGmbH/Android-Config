@@ -137,7 +137,7 @@ foundation.base = "de.endios.one.core:foundation:$version_foundation@aar"
 foundation.test_app = "de.endios.one.core:test-app:$version_foundation@aar"
 foundation.test_library = "de.endios.one.core:testlibrary:$version_foundation@aar"
 foundation.compose = "de.endios.one.core:one-core-compose:$version_foundation@aar"
-foundation.profileDeletion = "de.endios.one.core:one-ui-profile-deletion:$version_foundation@aar"
+foundation.profile_deletion = "de.endios.one.core:one-ui-profile-deletion:$version_foundation@aar"
 dependency.foundation = foundation
 
 def google = [:]
