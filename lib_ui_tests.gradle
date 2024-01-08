@@ -1,4 +1,6 @@
-apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/version.gradle"
+// todo restore me
+apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/feature/OP-9329/version.gradle"
+//apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/version.gradle"
 
 android {
     defaultConfig {
