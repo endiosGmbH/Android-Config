@@ -230,7 +230,6 @@ compose.system_ui_controller = "com.google.accompanist:accompanist-systemuicontr
 compose.permissions = "com.google.accompanist:accompanist-permissions:$version.accompanist"
 compose.coil = "io.coil-kt:coil-compose:$version.coil"
 compose.runtime = "androidx.lifecycle:lifecycle-runtime-compose:$version.compose_runtime"
-
 dependency.compose = compose
 
 def test = [:]
