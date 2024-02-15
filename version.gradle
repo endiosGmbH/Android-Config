@@ -34,8 +34,6 @@ version.kotlin_coroutines = "1.7.1"
 version.kotlin = "1.8.21"
 // dependency graph
 version.dependency_graph = "0.8.0"
-// epoxy
-version.epoxy = "4.6.3"
 // work manager
 version.work_manager = "2.7.1"
 // firebase
@@ -44,7 +42,7 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation
-version.foundation = "4.27.44"
+version.foundation = "4.27.45"
 version.one_core_compose = "4.26.58"
 // google
 version.google_exoplayer = "2.17.1"
@@ -119,11 +117,6 @@ androidx_core.core_ktx = "androidx.core:core-ktx:$version.androidx_core"
 dependency.androidx_core = androidx_core
 
 dependency.dependency_graph = "com.vanniktech:gradle-dependency-graph-generator-plugin:$version.dependency_graph"
-
-def epoxy = [:]
-epoxy.core = "com.airbnb.android:epoxy:$version.epoxy"
-epoxy.processor = "com.airbnb.android:epoxy-processor:$version.epoxy"
-dependency.epoxy = epoxy
 
 def firebase = [:]
 firebase.core = "com.google.firebase:firebase-core:$version.firebase_core"
