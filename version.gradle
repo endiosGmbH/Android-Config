@@ -82,7 +82,7 @@ version.vertx_codegen = "3.6.0"
 version.compose_kotlin_compiler = "1.4.7"
 version.compose_activity = "1.7.1"
 version.compose_lifecycle_viewmodel = "2.5.1"
-version.compose_base = "1.6.3"
+version.compose_base = "1.5.4"
 version.compose_runtime = "2.6.2"
 // Accompanist-compose
 version.accompanist = "0.30.1"
