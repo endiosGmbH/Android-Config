@@ -82,7 +82,7 @@ version.vertx_codegen = "3.6.0"
 version.compose_kotlin_compiler = "1.4.7"
 version.compose_activity = "1.7.1"
 version.compose_lifecycle_viewmodel = "2.5.1"
-version.compose_base = "1.5.4"
+version.compose_base = "1.6.3"
 version.compose_runtime = "2.6.2"
 // Accompanist-compose
 version.accompanist = "0.30.1"
@@ -211,6 +211,7 @@ dependency.play_services = play_services
 
 def compose = [:]
 compose.material = "androidx.compose.material:material:$version.compose_base"
+compose.material_icons_extended = "androidx.compose.material:material-icons-extended:$version.compose_base"
 compose.ui_tooling_preview = "androidx.compose.ui:ui-tooling-preview:$version.compose_base"
 compose.ui_tooling = "androidx.compose.ui:ui-tooling:$version.compose_base"
 compose.ui = "androidx.compose.ui:ui:$version.compose_base"
