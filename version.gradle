@@ -42,7 +42,7 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation
-version.foundation = "4.27.56"
+version.foundation = "4.27.57"
 version.one_core_compose = "4.26.58"
 // google
 version.google_exoplayer = "2.17.1"
@@ -211,6 +211,7 @@ dependency.play_services = play_services
 
 def compose = [:]
 compose.material = "androidx.compose.material:material:$version.compose_base"
+compose.material_icons_extended = "androidx.compose.material:material-icons-extended:$version.compose_base"
 compose.ui_tooling_preview = "androidx.compose.ui:ui-tooling-preview:$version.compose_base"
 compose.ui_tooling = "androidx.compose.ui:ui-tooling:$version.compose_base"
 compose.ui = "androidx.compose.ui:ui:$version.compose_base"
