@@ -31,7 +31,7 @@ version.android_gradle_plugin = '8.0.1'
 version.kotlin_coroutines = "1.7.1"
 // When updating please update compose_kotlin_compiler too
 // see https://developer.android.com/jetpack/androidx/releases/compose-kotlin
-version.kotlin = "1.8.21"
+version.kotlin = "1.9.0"
 // dependency graph
 version.dependency_graph = "0.8.0"
 // work manager
@@ -79,7 +79,7 @@ version.retrofit = "2.6.1"
 // vertx-codegen
 version.vertx_codegen = "3.6.0"
 // jetpack-compose
-version.compose_kotlin_compiler = "1.4.7"
+version.compose_kotlin_compiler = "1.5.0"
 version.compose_activity = "1.7.1"
 version.compose_lifecycle_viewmodel = "2.5.1"
 version.compose_base = "1.5.4"
