@@ -4,6 +4,7 @@ ext.dependency = [:]
 def version = [:]
 // start-dependency-version-declaration
 // androidx
+version.androidx_activity = "1.6.0"
 version.androidx_annotation = "1.1.0"
 version.androidx_appcompat = "1.6.1"
 version.androidx_browser = "1.2.0"
@@ -106,6 +107,10 @@ def dependency = [:]
 dependency.android_gradle_plugin = "com.android.tools.build:gradle:$version.android_gradle_plugin"
 dependency.androidx_annotation = "androidx.annotation:annotation:$version.androidx_annotation"
 dependency.assertj_core = "org.assertj:assertj-core:$version.assertj"
+
+def activity = [:]
+activity.ktx = "androidx.activity:activity-ktx:$androidx_activity@aar"
+dependency.activity = activity
 
 def androidx_arch = [:]
 androidx_arch.core_testing = "androidx.arch.core:core-testing:$version.androidx_arch_core"
