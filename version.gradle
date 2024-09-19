@@ -4,7 +4,7 @@ ext.dependency = [:]
 def version = [:]
 // start-dependency-version-declaration
 // androidx
-version.androidx_activity = "1.6.0"
+version.androidx_activity = "1.9.2"
 version.androidx_annotation = "1.1.0"
 version.androidx_appcompat = "1.6.1"
 version.androidx_browser = "1.2.0"
