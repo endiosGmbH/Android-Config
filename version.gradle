@@ -64,7 +64,7 @@ version.core_ktx = "1.5.0"
 // kohii
 version.kohii = "1.4.0.2017001"
 // koin
-version.koin = "3.5.3"
+version.koin = "4.0.0"
 // mockk
 version.mockk = "1.13.5"
 // okhttp
