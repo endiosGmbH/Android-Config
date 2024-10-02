@@ -27,7 +27,7 @@ version.assertj = "3.10.0"
 // coil
 version.coil = "2.4.0"
 // core
-version.android_gradle_plugin = '8.3.0'
+version.android_gradle_plugin = '8.6.1'
 version.kotlin_coroutines = "1.8.0"
 // When updating please update compose_kotlin_compiler too
 // see https://developer.android.com/jetpack/androidx/releases/compose-kotlin
@@ -42,7 +42,7 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation
-version.foundation = "4.27.67"
+version.foundation = "4.28.31"
 version.one_core_compose = "4.26.58"
 // google
 version.google_exoplayer = "2.17.1"
