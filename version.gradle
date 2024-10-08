@@ -42,7 +42,7 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation
-version.foundation = "4.28.31"
+version.foundation = "4.29.0"
 version.one_core_compose = "4.26.58"
 // google
 version.google_exoplayer = "2.17.1"
@@ -152,7 +152,6 @@ koin.android = "io.insert-koin:koin-android:$version.koin"
 koin.android_scope = "io.insert-koin:koin-android-scope:$version.koin"
 koin.core = "io.insert-koin:koin-core:$version.koin"
 koin.test = "io.insert-koin:koin-test:$version.koin"
-//koin.androidx_view_model = "io.insert-koin:koin-androidx-viewmodel:$version.koin"
 dependency.koin = koin
 
 def kotlin = [:]
