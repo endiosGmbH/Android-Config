@@ -151,7 +151,6 @@ def koin = [:]
 koin.android = "io.insert-koin:koin-android:$version.koin"
 koin.android_scope = "io.insert-koin:koin-android-scope:$version.koin"
 koin.core = "io.insert-koin:koin-core:$version.koin"
-koin.compose "io.insert-koin:koin-androidx-compose:$version.koin"
 koin.test = "io.insert-koin:koin-test:$version.koin"
 dependency.koin = koin
 
