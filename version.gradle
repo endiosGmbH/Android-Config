@@ -43,6 +43,7 @@ version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation
 version.foundation = "4.29.11"
+version.foundation_auth = "4.29.11"
 version.one_core_compose = "4.26.58"
 // google
 version.google_exoplayer = "2.17.1"
@@ -130,6 +131,7 @@ foundation.base = "de.endios.one.core:foundation:$version_foundation@aar"
 foundation.test_app = "de.endios.one.core:test-app:$version_foundation@aar"
 foundation.test_library = "de.endios.one.core:testlibrary:$version_foundation@aar"
 foundation.compose = "de.endios.one.core:one-core-compose:$version_foundation@aar"
+foundation.auth = "de.endios.one.core:platform-auth:$version.foundation_auth@aar"
 dependency.foundation = foundation
 
 def google = [:]
