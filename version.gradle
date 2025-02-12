@@ -42,7 +42,8 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation
-version.foundation = "5.0.11"
+version.foundation = "5.0.12"
+version.foundation_auth = "5.0.1"
 version.foundation_test_library = "5.0.1"
 version.one_core_compose = "4.26.58"
 // google
@@ -131,7 +132,7 @@ foundation.base = "de.endios.one.core:foundation:$version_foundation@aar"
 foundation.test_app = "de.endios.one.core:test-app:$version.foundation_test_library@aar"
 foundation.test_library = "de.endios.one.core:testlibrary:$version.foundation_test_library@aar"
 foundation.compose = "de.endios.one.core:one-core-compose:$version_foundation@aar"
-foundation.auth = "de.endios.one.core:platform-auth:$version_foundation@aar"
+foundation.auth = "de.endios.one.core:platform-auth:$version.foundation_auth@aar"
 foundation.main = "de.endios.one.core:platform-main:$version_foundation@aar"
 dependency.foundation = foundation
 
