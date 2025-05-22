@@ -1,4 +1,4 @@
-apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/version.gradle"
+apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/feature/AGENCY-6082/version.gradle"
 
 android {
     defaultConfig {
