@@ -42,7 +42,7 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation
-version.foundation = "5.0.51"
+version.foundation = "5.0.52"
 version.foundation_auth = "5.0.7"
 version.foundation_test_library = "5.0.1"
 version.one_core_compose = "4.26.58"
@@ -59,7 +59,7 @@ version.jacoco = "0.8.4"
 // junit
 version.junit = "4.13.1"
 version.junit_jupiter = "5.7.1"
-version.junit_jupiter_plugin = "1.7.1.1"
+version.junit_jupiter_plugin = "1.8.2.1"
 version.junit_ktx = "1.1.5"
 //test
 version.core_ktx = "1.5.0"
