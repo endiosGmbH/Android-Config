@@ -62,7 +62,7 @@ version.junit_jupiter = "5.7.1"
 version.junit_jupiter_plugin = "1.8.2.1"
 version.junit_ktx = "1.1.5"
 //test
-version.core_ktx = "1.5.0"
+version.core_ktx = "1.13.1"
 // kohii
 version.kohii = "1.4.0.2017001"
 // koin
