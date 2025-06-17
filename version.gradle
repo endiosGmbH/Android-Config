@@ -84,7 +84,7 @@ version.vertx_codegen = "3.6.0"
 version.compose_kotlin_compiler = "1.5.7"
 version.compose_activity = "1.7.1"
 version.compose_lifecycle_viewmodel = "2.5.1"
-version.compose_base = "1.7.0" // "1.8.1" Latest stable version but there are some un expected issues with it
+version.compose_bom = "2023.09.01"
 version.compose_runtime = "2.6.2"
 // Accompanist-compose
 version.accompanist = "0.30.1"
@@ -214,11 +214,12 @@ play_services.maps = "com.google.android.gms:play-services-maps:$version.play_se
 dependency.play_services = play_services
 
 def compose = [:]
-compose.material = "androidx.compose.material:material:$version.compose_base"
-compose.material_icons_extended = "androidx.compose.material:material-icons-extended:$version.compose_base"
-compose.ui_tooling_preview = "androidx.compose.ui:ui-tooling-preview:$version.compose_base"
-compose.ui_tooling = "androidx.compose.ui:ui-tooling:$version.compose_base"
-compose.ui = "androidx.compose.ui:ui:$version.compose_base"
+compose.bom = "androidx.compose:compose-bom:$version.compose_bom"
+compose.material = "androidx.compose.material:material"
+compose.material_icons_extended = "androidx.compose.material:material-icons-extended"
+compose.ui_tooling_preview = "androidx.compose.ui:ui-tooling-preview"
+compose.ui_tooling = "androidx.compose.ui:ui-tooling"
+compose.ui = "androidx.compose.ui:ui"
 compose.activity = "androidx.activity:activity-compose:$version.compose_activity"
 compose.lifecycle_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-compose:$version.compose_lifecycle_viewmodel"
 compose.compiler = "$version.compose_kotlin_compiler"
