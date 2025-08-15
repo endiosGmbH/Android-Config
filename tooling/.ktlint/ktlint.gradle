@@ -33,7 +33,7 @@ subprojects {
         group = "Tooling"
         description = "Fix Kotlin code style deviations."
         classpath = configurations.ktlint
-        main = "com.pinterest.ktlint.Main"
+        mainClass = "com.pinterest.ktlint.Main"
         args "-F", "src/**/*.kt", "!src/**/generated/**",
                 "--reporter=plain",
                 "--reporter=checkstyle,output=${buildDir}/ktlint.xml,src/**/*.kt",
