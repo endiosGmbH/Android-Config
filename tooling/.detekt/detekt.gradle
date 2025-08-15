@@ -14,7 +14,7 @@ subprojects {
     task detekt(type: JavaExec) {
         group = "Tooling"
         description = "Static-Code Analysis for Kotlin Code."
-        main = "io.gitlab.arturbosch.detekt.cli.Main"
+        mainClass = "io.gitlab.arturbosch.detekt.cli.Main"
         classpath = configurations.detekt
         def config = "$rootDir/tooling/.detekt/detekt-config.yml"
         // providing exclude params since the default input params are not honored
