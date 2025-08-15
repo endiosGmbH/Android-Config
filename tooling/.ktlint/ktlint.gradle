@@ -18,7 +18,7 @@ subprojects {
         group = "Tooling"
         description = "Check Kotlin code style."
         classpath = configurations.ktlint
-        main = "com.pinterest.ktlint.Main"
+        mainClass = "com.pinterest.ktlint.Main"
         args "src/**/*.kt", "!src/**/generated/**",
                 "--reporter=plain",
                 "--reporter=checkstyle,output=${buildDir}/ktlint.xml,src/**/*.kt",
