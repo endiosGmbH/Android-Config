@@ -58,7 +58,7 @@ version.google_zxing = "3.4.1"
 version.jacoco = "0.8.4"
 // junit
 version.junit = "4.13.1"
-version.junit_jupiter = "5.7.1"
+version.junit_jupiter = "5.11.0"
 version.junit_jupiter_plugin = "1.8.2.1"
 version.junit_ktx = "1.1.5"
 //test
