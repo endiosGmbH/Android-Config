@@ -42,8 +42,8 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation
-version.foundation = "5.1.52"
-version.foundation_auth = "5.0.22"
+version.foundation = "5.1.53"
+version.foundation_auth = "5.0.21"
 version.foundation_test_library = "5.0.5"
 version.one_core_compose = "4.26.58"
 // google
