@@ -34,6 +34,7 @@ version.coil = "2.4.0"
 // core
 version.android_gradle_plugin = '8.11.2'
 version.kotlin_coroutines = "1.9.0"
+version.kotlin_serialization = "1.9.0"
 // When updating please update compose_kotlin_compiler too
 // see https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 version.kotlin = "2.2.0"
@@ -75,7 +76,7 @@ version.core_ktx = "1.5.0"
 // kohii
 version.kohii = "1.4.0.2017001"
 // koin
-version.koin = "4.0.0"
+version.koin = "4.1.1"
 // mockk
 version.mockk = "1.13.5"
 // okhttp
@@ -186,6 +187,7 @@ dependency.jacoco_core = "org.jacoco:org.jacoco.core:$version.jacoco"
 def koin = [:]
 koin.android = "io.insert-koin:koin-android:$version.koin"
 koin.android_scope = "io.insert-koin:koin-android-scope:$version.koin"
+koin.compose = "io.insert-koin:koin-androidx-compose:$version.koin"
 koin.core = "io.insert-koin:koin-core:$version.koin"
 koin.test = "io.insert-koin:koin-test:$version.koin"
 dependency.koin = koin
@@ -196,6 +198,7 @@ kotlin.test = "org.jetbrains.kotlin:kotlin-test-junit:$version.kotlin"
 kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version.kotlin"
 kotlin.reflect = "org.jetbrains.kotlin:kotlin-reflect:$version.kotlin"
 kotlin.compose_plugin = "org.jetbrains.kotlin:compose-compiler-gradle-plugin:$version.kotlin"
+kotlin.serialization_plugin = "org.jetbrains.kotlin:kotlin-serialization:$version.kotlin"
 dependency.kotlin = kotlin
 
 def kotlin_coroutines = [:]
@@ -203,6 +206,10 @@ kotlin_coroutines.android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$v
 kotlin_coroutines.core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version.kotlin_coroutines"
 kotlin_coroutines.test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version.kotlin_coroutines"
 dependency.kotlin_coroutines = kotlin_coroutines
+
+def kotlin_serialization = [:]
+kotlin_serialization.json = "org.jetbrains.kotlinx:kotlinx-serialization-json:$version.kotlin_serialization"
+dependency.kotlin_serialization = kotlin_serialization
 
 def lifecycle = [:]
 lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$version.androidx_lifecycle"
@@ -223,6 +230,7 @@ navigation.androidx_navigation_safe_args_plugin = "androidx.navigation:navigatio
 navigation.androidx_navigation_fragment_ktx = "androidx.navigation:navigation-fragment-ktx:$version.androidx_navigation"
 navigation.androidx_navigation_ui_ktx = "androidx.navigation:navigation-ui-ktx:$version.androidx_navigation"
 navigation.androidx_navigation_runtime_ktx = "androidx.navigation:navigation-runtime-ktx:$version.androidx_navigation"
+navigation.androidx_navigation_compose = "androidx.navigation:navigation-compose:$version.androidx_navigation"
 dependency.navigation = navigation
 
 def network = [:]
