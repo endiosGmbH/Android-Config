@@ -1,5 +1,31 @@
 apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/tooling/.maven/maven.gradle"
 
+// Helper function to get current git branch
+static def getCurrentBranch() {
+    try {
+        def branch = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
+        return branch
+    } catch (Exception e) {
+        // Fallback: try reading from .git/HEAD
+        try {
+            def head = new File('.git/HEAD').text.trim()
+            if (head.startsWith('ref: ')) {
+                return head.substring(5).replaceFirst('refs/heads/', '')
+            }
+        } catch (Exception ignored) {
+            // If all else fails, return unknown
+            return 'unknown'
+        }
+        return 'unknown'
+    }
+}
+
+// Helper function to determine if we're on a release branch
+static def isReleaseBranch() {
+    def branch = getCurrentBranch()
+    return branch.startsWith('release/')
+}
+
 ext.dependency = [:]
 def version = [:]
 // start-dependency-version-declaration
@@ -41,8 +67,10 @@ version.firebase_core = "21.0.0"
 version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
-// foundation
+// foundation - LATEST development version
 version.foundation = "5.2.18"
+// foundation - STABLE release version (used by release/* branches)
+version.foundation_release = "5.2.10"
 version.foundation_auth = "5.0.24"
 version.foundation_test_library = "5.0.7"
 version.one_core_compose = "4.26.58"
@@ -95,8 +123,28 @@ version.maps_compose = "2.11.4"
 // end-dependency-version-declaration
 ext.version = version
 
-ext.version_foundation = project.hasProperty("OVERRIDE_FOUNDATION_VERSION") && OVERRIDE_FOUNDATION_VERSION?.trim() ? OVERRIDE_FOUNDATION_VERSION : version.foundation
-ext.version_auth = project.hasProperty("OVERRIDE_AUTH_VERSION") && OVERRIDE_AUTH_VERSION?.trim() ? OVERRIDE_AUTH_VERSION : version.foundation_auth
+// AUTOMATIC BRANCH-BASED VERSION SELECTION
+// Select foundation version based on current branch
+def selectedFoundationVersion = isReleaseBranch() ? version.foundation_release : version.foundation
+
+// Allow override via gradle property (for testing/debugging)
+ext.version_foundation = project.hasProperty("OVERRIDE_FOUNDATION_VERSION") && OVERRIDE_FOUNDATION_VERSION?.trim()
+        ? OVERRIDE_FOUNDATION_VERSION
+        : selectedFoundationVersion
+
+ext.version_auth = project.hasProperty("OVERRIDE_AUTH_VERSION") && OVERRIDE_AUTH_VERSION?.trim()
+        ? OVERRIDE_AUTH_VERSION
+        : version.foundation_auth
+
+// Log which version is being used (helpful for debugging)
+def currentBranch = getCurrentBranch()
+if (isReleaseBranch()) {
+    logger.lifecycle("🔒 Release branch detected: ${currentBranch}")
+    logger.lifecycle("   Using STABLE foundation version: ${ext.version_foundation}")
+} else {
+    logger.lifecycle("🚀 Development branch detected: ${currentBranch}")
+    logger.lifecycle("   Using LATEST foundation version: ${ext.version_foundation}")
+}
 
 def build_version = [:]
 // start-build-version-declaration
