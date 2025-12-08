@@ -9,7 +9,7 @@ afterEvaluate {
                 artifactId project.name
                 version project.ext.pomVersion
 
-                artifact(bundleReleaseAar)
+                from components.release
                 pom.withXml {
                     final dependenciesNode = asNode().appendNode('dependencies')
 
