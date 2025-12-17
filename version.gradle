@@ -16,6 +16,7 @@ version.androidx_arch_core = "2.1.0"
 version.androidx_core = "1.8.0"
 version.androidx_espresso = "3.3.0"
 version.androidx_navigation = "2.2.2"
+version.androidx_navigation3 = "1.0.0"
 version.androidx_navigation_plugin = "2.9.5"
 version.androidx_lifecycle = "2.4.1"
 version.androidx_lifecycle_extensions = "2.2.0"
@@ -230,8 +231,12 @@ navigation.androidx_navigation_safe_args_plugin = "androidx.navigation:navigatio
 navigation.androidx_navigation_fragment_ktx = "androidx.navigation:navigation-fragment-ktx:$version.androidx_navigation"
 navigation.androidx_navigation_ui_ktx = "androidx.navigation:navigation-ui-ktx:$version.androidx_navigation"
 navigation.androidx_navigation_runtime_ktx = "androidx.navigation:navigation-runtime-ktx:$version.androidx_navigation"
-navigation.androidx_navigation_compose = "androidx.navigation:navigation-compose:$version.androidx_navigation"
 dependency.navigation = navigation
+
+def navigation3 = [:]
+navigation3.runtime = "androidx.navigation3:navigation3-runtime:$version.androidx_navigation3"
+navigation3.ui = "androidx.navigation3:navigation3-ui:$version.androidx_navigation3"
+dependency.navigation3 = navigation3
 
 def network = [:]
 network.browser = "androidx.browser:browser:$version.androidx_browser"
