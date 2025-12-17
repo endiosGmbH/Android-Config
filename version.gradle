@@ -131,8 +131,8 @@ if (isReleaseBranch()) {
 def build_version = [:]
 // start-build-version-declaration
 build_version.min_sdk = 26
-build_version.compile_sdk = 35
-build_version.target_sdk = 35
+build_version.compile_sdk = 36
+build_version.target_sdk = 36
 // end-build-version-declaration
 ext.build_version = build_version
 
