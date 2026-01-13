@@ -20,10 +20,10 @@ static def getCurrentBranch() {
     }
 }
 
-// Helper function to determine if we're on a release branch
+// Helper function to determine if we're on a release branch or master
 static def isReleaseBranch() {
     def branch = getCurrentBranch()
-    return branch.startsWith('release/')
+    return branch.startsWith('release/') || branch == 'master'
 }
 
 ext.dependency = [:]
@@ -141,7 +141,7 @@ ext.version_auth = project.hasProperty("OVERRIDE_AUTH_VERSION") && OVERRIDE_AUTH
 // Log which version is being used (helpful for debugging)
 def currentBranch = getCurrentBranch()
 if (isReleaseBranch()) {
-    logger.lifecycle("🔒 Release branch detected: ${currentBranch}")
+    logger.lifecycle("🔒 Stable branch detected: ${currentBranch}")
     logger.lifecycle("   Using STABLE foundation version: ${ext.version_foundation}")
 } else {
     logger.lifecycle("🚀 Development branch detected: ${currentBranch}")
