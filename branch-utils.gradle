@@ -8,18 +8,6 @@
  * @return String - The current branch name, or 'unknown' if detection fails
  */
 static def getCurrentBranch() {
-    // Debug: Log all relevant environment variables
-    def debugEnvVars = [
-        'GIT_BRANCH', 'BRANCH_NAME', 'GITHUB_REF_NAME',
-        'CI_COMMIT_REF_NAME', 'CHANGE_BRANCH', 'GIT_LOCAL_BRANCH',
-        'CHANGE_TARGET', 'ghprbSourceBranch', 'JOB_NAME', 'BUILD_NUMBER'
-    ]
-    println("   === BRANCH DETECTION DEBUG ===")
-    debugEnvVars.each { varName ->
-        def value = System.getenv(varName)
-        if (value) println("   ENV: ${varName} = ${value}")
-    }
-
     // First, check for CI environment variables (Jenkins, GitHub Actions, GitLab CI, etc.)
     def envBranch = System.getenv('GIT_BRANCH') ?:
                     System.getenv('BRANCH_NAME') ?:
@@ -30,28 +18,18 @@ static def getCurrentBranch() {
 
     if (envBranch) {
         // Jenkins often prefixes with 'origin/', remove it
-        def cleanBranch = envBranch.replaceFirst('^origin/', '')
-        println("   ✓ Branch from environment: ${cleanBranch}")
-        return cleanBranch
+        return envBranch.replaceFirst('^origin/', '')
     }
 
     try {
         def branch = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
-        println("   GIT: rev-parse --abbrev-ref HEAD = '${branch}'")
 
         // If we get 'HEAD', we're in detached HEAD state
         // Try to find the branch name from symbolic-ref or remote branches
         if (branch == 'HEAD') {
-            println("   ! Detached HEAD detected, searching...")
-
             // Try to find branch from remote tracking branches that contain this commit
             try {
                 def remoteBranch = 'git branch -r --contains HEAD'.execute().text.trim()
-                println("   GIT: branch -r --contains HEAD:")
-                remoteBranch.split('\n').each { line ->
-                    if (line.trim()) println("     - ${line.trim()}")
-                }
-
                 if (remoteBranch) {
                     def lines = remoteBranch.split('\n')
                     for (def line : lines) {
@@ -60,23 +38,15 @@ static def getCurrentBranch() {
                                 .replaceFirst('^origin/', '')
                         // Skip HEAD references
                         if (!cleanLine.contains('HEAD') && cleanLine) {
-                            println("   ✓ Found branch: ${cleanLine}")
                             return cleanLine
                         }
                     }
                 }
-            } catch (Exception e) {
-                println("   ! Git remote branch error: ${e.message}")
-            }
+            } catch (Exception ignored) {}
 
             // Try to match against all local and remote branches
             try {
                 def allBranches = 'git branch -a --contains HEAD'.execute().text.trim()
-                println("   GIT: branch -a --contains HEAD:")
-                allBranches.split('\n').each { line ->
-                    if (line.trim()) println("     - ${line.trim()}")
-                }
-
                 if (allBranches) {
                     def lines = allBranches.split('\n')
                     for (def line : lines) {
@@ -85,19 +55,15 @@ static def getCurrentBranch() {
                                 .replaceFirst('^remotes/origin/', '')
                         // Skip HEAD references and detached HEAD indicators
                         if (!cleanLine.contains('HEAD') && !cleanLine.startsWith('(') && cleanLine) {
-                            println("   ✓ Found branch: ${cleanLine}")
                             return cleanLine
                         }
                     }
                 }
-            } catch (Exception e) {
-                println("   ! Git all branches error: ${e.message}")
-            }
+            } catch (Exception ignored) {}
         }
 
         return branch
-    } catch (Exception e) {
-        println("   ! Git command error: ${e.message}")
+    } catch (Exception ignored) {
         return 'unknown'
     }
 }
