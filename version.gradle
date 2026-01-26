@@ -1,7 +1,7 @@
 apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/tooling/.maven/maven.gradle"
 
-// Import branch detection utilities
-apply from: "${rootDir}/branch-utils.gradle"
+// Import branch detection utilities (using script directory, not rootDir)
+apply from: new File(buildscript.sourceFile.parentFile, 'branch-utils.gradle')
 
 ext.dependency = [:]
 def version = [:]
