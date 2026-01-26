@@ -47,10 +47,10 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation - LATEST development version
-version.foundation = "5.3.6"
+version.foundation = "5.3.10"
 // foundation - STABLE release version (used by release/* branches)
 version.foundation_release = "5.3.2"
-version.foundation_auth = "5.0.29"
+version.foundation_auth = "5.0.30"
 version.foundation_test_library = "5.0.8"
 version.one_core_compose = "4.26.58"
 // google
@@ -250,6 +250,8 @@ compose.material_icons_extended = "androidx.compose.material:material-icons-exte
 compose.ui_tooling_preview = "androidx.compose.ui:ui-tooling-preview:$version.compose_base"
 compose.ui_tooling = "androidx.compose.ui:ui-tooling:$version.compose_base"
 compose.ui = "androidx.compose.ui:ui:$version.compose_base"
+compose.ui_testing = "androidx.compose.ui:ui-test-junit4:$version.compose_base"
+compose.ui_testing_manifest = "androidx.compose.ui:ui-test-manifest:$version.compose_base"
 compose.activity = "androidx.activity:activity-compose:$version.compose_activity"
 compose.lifecycle_viewmodel = "androidx.lifecycle:lifecycle-viewmodel-compose:$version.compose_lifecycle_viewmodel"
 compose.compiler = "$version.compose_kotlin_compiler"
