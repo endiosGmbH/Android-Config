@@ -13,13 +13,12 @@ static def getCurrentBranch() {
                     System.getenv('BRANCH_NAME') ?:
                     System.getenv('GITHUB_REF_NAME') ?:
                     System.getenv('CI_COMMIT_REF_NAME') ?:
-                    System.getenv('CHANGE_BRANCH')
+                    System.getenv('CHANGE_BRANCH') ?:
+                    System.getenv('GIT_LOCAL_BRANCH')
 
     if (envBranch) {
         // Jenkins often prefixes with 'origin/', remove it
-        def cleanBranch = envBranch.replaceFirst('^origin/', '')
-        println("   Branch detected from environment variable: ${cleanBranch}")
-        return cleanBranch
+        return envBranch.replaceFirst('^origin/', '')
     }
 
     try {
@@ -28,17 +27,6 @@ static def getCurrentBranch() {
         // If we get 'HEAD', we're in detached HEAD state
         // Try to find the branch name from symbolic-ref or remote branches
         if (branch == 'HEAD') {
-            println("   Detached HEAD detected, attempting to find branch name...")
-
-            // Try symbolic-ref first
-            try {
-                def symbolicRef = 'git symbolic-ref --short HEAD'.execute().text.trim()
-                if (symbolicRef && symbolicRef != 'HEAD') {
-                    println("   Found branch via symbolic-ref: ${symbolicRef}")
-                    return symbolicRef
-                }
-            } catch (Exception ignored) {}
-
             // Try to find branch from remote tracking branches that contain this commit
             try {
                 def remoteBranch = 'git branch -r --contains HEAD'.execute().text.trim()
@@ -49,8 +37,7 @@ static def getCurrentBranch() {
                                 .replaceFirst('^\\*?\\s*', '')
                                 .replaceFirst('^origin/', '')
                         // Skip HEAD references
-                        if (!cleanLine.contains('HEAD')) {
-                            println("   Found branch via remote tracking: ${cleanLine}")
+                        if (!cleanLine.contains('HEAD') && cleanLine) {
                             return cleanLine
                         }
                     }
@@ -67,8 +54,7 @@ static def getCurrentBranch() {
                                 .replaceFirst('^\\*?\\s*', '')
                                 .replaceFirst('^remotes/origin/', '')
                         // Skip HEAD references and detached HEAD indicators
-                        if (!cleanLine.contains('HEAD') && !cleanLine.startsWith('(')) {
-                            println("   Found branch via all branches: ${cleanLine}")
+                        if (!cleanLine.contains('HEAD') && !cleanLine.startsWith('(') && cleanLine) {
                             return cleanLine
                         }
                     }
@@ -77,19 +63,7 @@ static def getCurrentBranch() {
         }
 
         return branch
-    } catch (Exception e) {
-        // Fallback: try reading from .git/HEAD
-        try {
-            def head = new File('.git/HEAD').text.trim()
-            if (head.startsWith('ref: ')) {
-                def branchFromFile = head.substring(5).replaceFirst('refs/heads/', '')
-                println("   Found branch from .git/HEAD: ${branchFromFile}")
-                return branchFromFile
-            }
-        } catch (Exception ignored) {
-            // If all else fails, return unknown
-            return 'unknown'
-        }
+    } catch (Exception ignored) {
         return 'unknown'
     }
 }
