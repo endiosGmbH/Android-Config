@@ -2,7 +2,7 @@ apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/
 
 // Import branch detection utilities
 // Note: Update the branch name in the URL below when testing on a different branch
-apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/fix/OP-15122/branch-utils.gradle"
+apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/branch-utils.gradle"
 
 ext.dependency = [:]
 def version = [:]
