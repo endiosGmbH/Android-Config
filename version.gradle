@@ -1,30 +1,8 @@
 apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/tooling/.maven/maven.gradle"
 
-// Helper function to get current git branch
-static def getCurrentBranch() {
-    try {
-        def branch = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
-        return branch
-    } catch (Exception e) {
-        // Fallback: try reading from .git/HEAD
-        try {
-            def head = new File('.git/HEAD').text.trim()
-            if (head.startsWith('ref: ')) {
-                return head.substring(5).replaceFirst('refs/heads/', '')
-            }
-        } catch (Exception ignored) {
-            // If all else fails, return unknown
-            return 'unknown'
-        }
-        return 'unknown'
-    }
-}
-
-// Helper function to determine if we're on a release branch or master
-static def isReleaseBranch() {
-    def branch = getCurrentBranch()
-    return branch.startsWith('release/') || branch == 'master'
-}
+// Import branch detection utilities
+// Note: Update the branch name in the URL below when testing on a different branch
+apply from: "https://raw.githubusercontent.com/endiosGmbH/Android-Config/master/branch-utils.gradle"
 
 ext.dependency = [:]
 def version = [:]

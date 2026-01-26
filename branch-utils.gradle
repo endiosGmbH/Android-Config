@@ -1,0 +1,113 @@
+// Helper utilities for branch detection in CI/CD environments
+// This script provides functions to detect the current Git branch even in detached HEAD states
+
+/**
+ * Gets the current git branch name, with special handling for CI environments
+ * and detached HEAD states commonly encountered in Jenkins and other CI systems.
+ *
+ * @return String - The current branch name, or 'unknown' if detection fails
+ */
+static def getCurrentBranch() {
+    // First, check for CI environment variables (Jenkins, GitHub Actions, GitLab CI, etc.)
+    def envBranch = System.getenv('GIT_BRANCH') ?:
+                    System.getenv('BRANCH_NAME') ?:
+                    System.getenv('GITHUB_REF_NAME') ?:
+                    System.getenv('CI_COMMIT_REF_NAME') ?:
+                    System.getenv('CHANGE_BRANCH')
+
+    if (envBranch) {
+        // Jenkins often prefixes with 'origin/', remove it
+        def cleanBranch = envBranch.replaceFirst('^origin/', '')
+        println("   Branch detected from environment variable: ${cleanBranch}")
+        return cleanBranch
+    }
+
+    try {
+        def branch = 'git rev-parse --abbrev-ref HEAD'.execute().text.trim()
+
+        // If we get 'HEAD', we're in detached HEAD state
+        // Try to find the branch name from symbolic-ref or remote branches
+        if (branch == 'HEAD') {
+            println("   Detached HEAD detected, attempting to find branch name...")
+
+            // Try symbolic-ref first
+            try {
+                def symbolicRef = 'git symbolic-ref --short HEAD'.execute().text.trim()
+                if (symbolicRef && symbolicRef != 'HEAD') {
+                    println("   Found branch via symbolic-ref: ${symbolicRef}")
+                    return symbolicRef
+                }
+            } catch (Exception ignored) {}
+
+            // Try to find branch from remote tracking branches that contain this commit
+            try {
+                def remoteBranch = 'git branch -r --contains HEAD'.execute().text.trim()
+                if (remoteBranch) {
+                    def lines = remoteBranch.split('\n')
+                    for (def line : lines) {
+                        def cleanLine = line.trim()
+                                .replaceFirst('^\\*?\\s*', '')
+                                .replaceFirst('^origin/', '')
+                        // Skip HEAD references
+                        if (!cleanLine.contains('HEAD')) {
+                            println("   Found branch via remote tracking: ${cleanLine}")
+                            return cleanLine
+                        }
+                    }
+                }
+            } catch (Exception ignored) {}
+
+            // Try to match against all local and remote branches
+            try {
+                def allBranches = 'git branch -a --contains HEAD'.execute().text.trim()
+                if (allBranches) {
+                    def lines = allBranches.split('\n')
+                    for (def line : lines) {
+                        def cleanLine = line.trim()
+                                .replaceFirst('^\\*?\\s*', '')
+                                .replaceFirst('^remotes/origin/', '')
+                        // Skip HEAD references and detached HEAD indicators
+                        if (!cleanLine.contains('HEAD') && !cleanLine.startsWith('(')) {
+                            println("   Found branch via all branches: ${cleanLine}")
+                            return cleanLine
+                        }
+                    }
+                }
+            } catch (Exception ignored) {}
+        }
+
+        return branch
+    } catch (Exception e) {
+        // Fallback: try reading from .git/HEAD
+        try {
+            def head = new File('.git/HEAD').text.trim()
+            if (head.startsWith('ref: ')) {
+                def branchFromFile = head.substring(5).replaceFirst('refs/heads/', '')
+                println("   Found branch from .git/HEAD: ${branchFromFile}")
+                return branchFromFile
+            }
+        } catch (Exception ignored) {
+            // If all else fails, return unknown
+            return 'unknown'
+        }
+        return 'unknown'
+    }
+}
+
+/**
+ * Determines if the current branch is a release branch or master.
+ * Release branches are those that start with 'release/' or the master branch itself.
+ *
+ * @return boolean - true if on a release branch or master, false otherwise
+ */
+static def isReleaseBranch() {
+    def branch = getCurrentBranch()
+    return branch.startsWith('release/') || branch == 'master'
+}
+
+// Export functions for use in other scripts
+ext {
+    getCurrentBranch = this.&getCurrentBranch
+    isReleaseBranch = this.&isReleaseBranch
+}
+
