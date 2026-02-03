@@ -219,6 +219,7 @@ lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$version.androidx_life
 lifecycle.livedata_ktx = "androidx.lifecycle:lifecycle-livedata-ktx:$version.androidx_lifecycle"
 lifecycle.runtime_ktx = "androidx.lifecycle:lifecycle-runtime-ktx:$version.androidx_lifecycle"
 lifecycle.viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version.androidx_lifecycle"
+lifecycle.navigation = "androidx.lifecycle:lifecycle-viewmodel-navigation3:$version.androidx_lifecycle"
 dependency.lifecycle = lifecycle
 
 def mockk = [:]
