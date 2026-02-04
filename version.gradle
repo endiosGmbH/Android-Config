@@ -48,11 +48,11 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation - LATEST development version
-version.foundation = "5.3.14"
+version.foundation = "5.3.15"
 // foundation - STABLE release version (used by release/* branches)
 version.foundation_release = "5.3.6-RC"
-version.foundation_auth = "5.0.30"
-version.foundation_test_library = "5.0.9-RECOMPILE"
+version.foundation_auth = "5.0.31"
+version.foundation_test_library = "5.0.8"
 version.one_core_compose = "4.26.58"
 // google
 version.google_exoplayer = "2.17.1"
