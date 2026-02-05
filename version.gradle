@@ -50,7 +50,7 @@ version.firebase_messaging = "23.0.7"
 // foundation - LATEST development version
 version.foundation = "5.3.16"
 // foundation - STABLE release version (used by release/* branches)
-version.foundation_release = "5.3.6-RC"
+version.foundation_release = "5.3.7-RC"
 version.foundation_auth = "5.0.31"
 version.foundation_test_library = "5.0.8"
 version.one_core_compose = "4.26.58"
