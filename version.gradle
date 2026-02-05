@@ -48,7 +48,7 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation - LATEST development version
-version.foundation = "5.3.15"
+version.foundation = "5.3.16"
 // foundation - STABLE release version (used by release/* branches)
 version.foundation_release = "5.3.6-RC"
 version.foundation_auth = "5.0.31"
