@@ -16,6 +16,7 @@ version.androidx_arch_core = "2.1.0"
 version.androidx_core = "1.8.0"
 version.androidx_espresso = "3.3.0"
 version.androidx_navigation = "2.2.2"
+version.androidx_navigation3 = "1.0.0"
 version.androidx_navigation_plugin = "2.9.5"
 version.androidx_lifecycle = "2.4.1"
 version.androidx_lifecycle_extensions = "2.2.0"
@@ -34,6 +35,7 @@ version.coil = "2.4.0"
 // core
 version.android_gradle_plugin = '8.11.2'
 version.kotlin_coroutines = "1.9.0"
+version.kotlin_serialization = "1.9.0"
 // When updating please update compose_kotlin_compiler too
 // see https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 version.kotlin = "2.2.0"
@@ -75,7 +77,7 @@ version.core_ktx = "1.5.0"
 // kohii
 version.kohii = "1.4.0.2017001"
 // koin
-version.koin = "4.0.0"
+version.koin = "4.1.1"
 // mockk
 version.mockk = "1.13.5"
 // okhttp
@@ -129,8 +131,8 @@ if (isReleaseBranch()) {
 def build_version = [:]
 // start-build-version-declaration
 build_version.min_sdk = 26
-build_version.compile_sdk = 35
-build_version.target_sdk = 35
+build_version.compile_sdk = 36
+build_version.target_sdk = 36
 // end-build-version-declaration
 ext.build_version = build_version
 
@@ -186,6 +188,7 @@ dependency.jacoco_core = "org.jacoco:org.jacoco.core:$version.jacoco"
 def koin = [:]
 koin.android = "io.insert-koin:koin-android:$version.koin"
 koin.android_scope = "io.insert-koin:koin-android-scope:$version.koin"
+koin.compose = "io.insert-koin:koin-androidx-compose:$version.koin"
 koin.core = "io.insert-koin:koin-core:$version.koin"
 koin.test = "io.insert-koin:koin-test:$version.koin"
 dependency.koin = koin
@@ -196,6 +199,7 @@ kotlin.test = "org.jetbrains.kotlin:kotlin-test-junit:$version.kotlin"
 kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$version.kotlin"
 kotlin.reflect = "org.jetbrains.kotlin:kotlin-reflect:$version.kotlin"
 kotlin.compose_plugin = "org.jetbrains.kotlin:compose-compiler-gradle-plugin:$version.kotlin"
+kotlin.serialization_plugin = "org.jetbrains.kotlin:kotlin-serialization:$version.kotlin"
 dependency.kotlin = kotlin
 
 def kotlin_coroutines = [:]
@@ -204,6 +208,10 @@ kotlin_coroutines.core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version
 kotlin_coroutines.test = "org.jetbrains.kotlinx:kotlinx-coroutines-test:$version.kotlin_coroutines"
 dependency.kotlin_coroutines = kotlin_coroutines
 
+def kotlin_serialization = [:]
+kotlin_serialization.json = "org.jetbrains.kotlinx:kotlinx-serialization-json:$version.kotlin_serialization"
+dependency.kotlin_serialization = kotlin_serialization
+
 def lifecycle = [:]
 lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$version.androidx_lifecycle"
 lifecycle.extensions = "androidx.lifecycle:lifecycle-extensions:$version.androidx_lifecycle_extensions"
@@ -211,6 +219,7 @@ lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$version.androidx_life
 lifecycle.livedata_ktx = "androidx.lifecycle:lifecycle-livedata-ktx:$version.androidx_lifecycle"
 lifecycle.runtime_ktx = "androidx.lifecycle:lifecycle-runtime-ktx:$version.androidx_lifecycle"
 lifecycle.viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version.androidx_lifecycle"
+lifecycle.navigation = "androidx.lifecycle:lifecycle-viewmodel-navigation3:$version.androidx_lifecycle"
 dependency.lifecycle = lifecycle
 
 def mockk = [:]
@@ -224,6 +233,11 @@ navigation.androidx_navigation_fragment_ktx = "androidx.navigation:navigation-fr
 navigation.androidx_navigation_ui_ktx = "androidx.navigation:navigation-ui-ktx:$version.androidx_navigation"
 navigation.androidx_navigation_runtime_ktx = "androidx.navigation:navigation-runtime-ktx:$version.androidx_navigation"
 dependency.navigation = navigation
+
+def navigation3 = [:]
+navigation3.runtime = "androidx.navigation3:navigation3-runtime:$version.androidx_navigation3"
+navigation3.ui = "androidx.navigation3:navigation3-ui:$version.androidx_navigation3"
+dependency.navigation3 = navigation3
 
 def network = [:]
 network.browser = "androidx.browser:browser:$version.androidx_browser"
