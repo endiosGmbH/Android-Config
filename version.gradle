@@ -168,6 +168,7 @@ foundation.test_library = "de.endios.one.core:testlibrary:$version.foundation_te
 foundation.compose = "de.endios.one.core:one-core-compose:$version_foundation@aar"
 foundation.auth = "de.endios.one.core:platform-auth:$version_auth@aar"
 foundation.main = "de.endios.one.core:platform-main:$version_foundation@aar"
+foundation.overlay = "de.endios.one.core:one-ui-overlay:$version_foundation@aar"
 dependency.foundation = foundation
 
 def google = [:]
