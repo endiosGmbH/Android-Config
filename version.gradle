@@ -97,6 +97,7 @@ version.compose_activity = "1.7.1"
 version.compose_lifecycle_viewmodel = "2.5.1"
 version.compose_base = "1.9.0"
 version.compose_material = "1.7.0"
+version.compose_material3 = "1.4.0"
 version.compose_runtime = "2.6.2"
 // Accompanist-compose
 version.accompanist = "0.30.1"
@@ -261,6 +262,7 @@ dependency.play_services = play_services
 
 def compose = [:]
 compose.material = "androidx.compose.material:material:$version.compose_material"
+compose.material3 = "androidx.compose.material3:material3:$version.compose_material3"
 compose.material_icons_extended = "androidx.compose.material:material-icons-extended:$version.compose_material"
 compose.ui_tooling_preview = "androidx.compose.ui:ui-tooling-preview:$version.compose_base"
 compose.ui_tooling = "androidx.compose.ui:ui-tooling:$version.compose_base"
