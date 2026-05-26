@@ -1,0 +1,43 @@
+name: Widget publish
+
+on:
+  workflow_call:
+    inputs:
+      modules:
+        description: 'JSON array of Gradle module names to build and publish (e.g. ''["oneWidgetOffers","oneWidgetOffersLarge"]'').'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    name: Publish :${{ matrix.module }}
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        module: ${{ fromJSON(inputs.modules) }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+
+      - name: Install local.properties
+        env:
+          ENDIOS_DE_FTP_USER: ${{ secrets.ENDIOS_DE_FTP_USER }}
+          ENDIOS_DE_FTP_PASSWORD: ${{ secrets.ENDIOS_DE_FTP_PASSWORD }}
+          ENDIOS_DE_HTACCESS_USER: ${{ secrets.ENDIOS_DE_HTACCESS_USER }}
+          ENDIOS_DE_HTACCESS_PASSWORD: ${{ secrets.ENDIOS_DE_HTACCESS_PASSWORD }}
+        run: |
+          echo 'Generating local.properties ...'
+          echo "ENDIOS_DE_HTACCESS_USER=$ENDIOS_DE_HTACCESS_USER
+          ENDIOS_DE_HTACCESS_PASSWORD=$ENDIOS_DE_HTACCESS_PASSWORD
+          ENDIOS_DE_FTP_USER=$ENDIOS_DE_FTP_USER
+          ENDIOS_DE_FTP_PASSWORD=$ENDIOS_DE_FTP_PASSWORD" >> ./local.properties
+
+      - name: Build :${{ matrix.module }}
+        run: gradle :${{ matrix.module }}:build
+
+      - name: Publish :${{ matrix.module }}
+        run: gradle :${{ matrix.module }}:publish
