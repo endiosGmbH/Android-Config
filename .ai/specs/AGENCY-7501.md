@@ -2,7 +2,7 @@
 
 **Ticket:** [AGENCY-7501](https://endios.atlassian.net/browse/AGENCY-7501)
 **Created:** 2026-05-26
-**Status:** Draft
+**Status:** Implemented (verification pending PR merges)
 
 ## Context
 
@@ -31,8 +31,8 @@ Scope of *this* spec is a **pilot**: introduce the reusable workflow in Android-
 
 This is a CI/infra change — there are no unit tests to write. Instead, each behaviour below is verified by observing the GitHub Actions run after the change is merged. The checklist is for the pilot only.
 
-1. [ ] Reusable workflow defined: `Android-Config/.github/workflows/widget-publish.yml` exists with `on: workflow_call`, accepts a `modules` input (JSON array), and runs build+publish for each entry.
-2. [ ] Caller in `oneWidgetOffers-Android/.github/workflows/release.yml` triggers on `develop` **and** `release/**`, references `endiosGmbH/Android-Config/.github/workflows/widget-publish.yml@develop`, lists the 3 Offers modules, and passes the 4 FTP/htaccess secrets explicitly.
+1. [x] Reusable workflow defined: `Android-Config/.github/workflows/widget-publish.yml` exists with `on: workflow_call`, accepts a `modules` input (JSON array), and runs build+publish for each entry.
+2. [x] Caller in `oneWidgetOffers-Android/.github/workflows/release.yml` triggers on `develop` **and** `release/**`, references `endiosGmbH/Android-Config/.github/workflows/widget-publish.yml@develop`, lists the 3 Offers modules, and passes the 4 FTP/htaccess secrets explicitly.
 3. [ ] Push to `develop` still results in a successful publish run for all 3 Offers modules.
 4. [ ] Push (or merge) to `release/v26.04` triggers the publish run and produces 3 Maven artifacts at pomVersion `4.5.11-RC`. (AGENCY-7436's existing bump satisfies the precondition.)
 5. [ ] Per-module phases are visible in the Actions log as collapsible `::group::` sections (`Build :oneWidgetOffers`, `Publish :oneWidgetOffers`, …). On failure, the open group identifies the failing module.
