@@ -54,7 +54,7 @@ version.firebase_messaging = "23.0.7"
 version.foundation = "5.5.11"
 // foundation - STABLE release version (used by release/* branches)
 version.foundation_release = "5.4.22-RC"
-version.foundation_auth = "5.0.54"
+version.foundation_auth = "5.0.55"
 version.foundation_test_library = "5.0.10"
 version.one_core_compose = "4.26.58"
 // google
