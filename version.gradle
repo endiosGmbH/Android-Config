@@ -78,7 +78,7 @@ version.core_ktx = "1.5.0"
 // kohii
 version.kohii = "1.4.0.2017001"
 // koin
-version.koin = "4.1.1"
+version.koin = "4.2.1"
 // mockk
 version.mockk = "1.13.5"
 // okhttp
@@ -189,7 +189,6 @@ dependency.jacoco_core = "org.jacoco:org.jacoco.core:$version.jacoco"
 
 def koin = [:]
 koin.android = "io.insert-koin:koin-android:$version.koin"
-koin.android_scope = "io.insert-koin:koin-android-scope:$version.koin"
 koin.compose = "io.insert-koin:koin-androidx-compose:$version.koin"
 koin.core = "io.insert-koin:koin-core:$version.koin"
 koin.test = "io.insert-koin:koin-test:$version.koin"
