@@ -82,14 +82,14 @@ version.koin = "4.1.1"
 // mockk
 version.mockk = "1.13.5"
 // okhttp
-version.okhttp = "4.9.1"
+version.okhttp = "4.12.0"
 // permission
 version.permission = "4.8.0"
 // play-services
 version.play_services_maps = "18.1.0"
 version.play_services_location = "21.0.0"
 // retrofit
-version.retrofit = "2.6.1"
+version.retrofit = "3.0.0"
 // vertx-codegen
 version.vertx_codegen = "3.6.0"
 // jetpack-compose
