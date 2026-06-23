@@ -102,6 +102,8 @@ version.compose_material3 = "1.4.0"
 version.compose_runtime = "2.6.2"
 // Accompanist-compose
 version.accompanist = "0.30.1"
+// Lottie-compose
+version.lottie_compose = "6.7.1"
 // maps-compose
 version.maps_compose = "2.11.4"
 // end-dependency-version-declaration
@@ -223,6 +225,10 @@ lifecycle.runtime_ktx = "androidx.lifecycle:lifecycle-runtime-ktx:$version.andro
 lifecycle.viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version.androidx_lifecycle"
 lifecycle.navigation = "androidx.lifecycle:lifecycle-viewmodel-navigation3:$version.androidx_lifecycle"
 dependency.lifecycle = lifecycle
+
+def lottie = [:]
+lottie.compose = "com.airbnb.android:lottie-compose:$version.lottie_compose"
+dependency.lottie = lottie
 
 def mockk = [:]
 mockk.core = "io.mockk:mockk:$version.mockk"
