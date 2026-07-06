@@ -1,0 +1,58 @@
+name: Widget publish
+
+on:
+  workflow_call:
+    inputs:
+      modules:
+        description: 'JSON array of Gradle module names to build and publish (e.g. ''["oneWidgetOffers","oneWidgetOffersLarge"]'').'
+        required: true
+        type: string
+    secrets:
+      ENDIOS_DE_FTP_USER:
+        required: true
+      ENDIOS_DE_FTP_PASSWORD:
+        required: true
+      ENDIOS_DE_HTACCESS_USER:
+        required: true
+      ENDIOS_DE_HTACCESS_PASSWORD:
+        required: true
+
+concurrency:
+  group: widget-publish-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+
+      - name: Install local.properties
+        env:
+          ENDIOS_DE_FTP_USER: ${{ secrets.ENDIOS_DE_FTP_USER }}
+          ENDIOS_DE_FTP_PASSWORD: ${{ secrets.ENDIOS_DE_FTP_PASSWORD }}
+          ENDIOS_DE_HTACCESS_USER: ${{ secrets.ENDIOS_DE_HTACCESS_USER }}
+          ENDIOS_DE_HTACCESS_PASSWORD: ${{ secrets.ENDIOS_DE_HTACCESS_PASSWORD }}
+        run: |
+          echo 'Generating local.properties ...'
+          echo "ENDIOS_DE_HTACCESS_USER=$ENDIOS_DE_HTACCESS_USER
+          ENDIOS_DE_HTACCESS_PASSWORD=$ENDIOS_DE_HTACCESS_PASSWORD
+          ENDIOS_DE_FTP_USER=$ENDIOS_DE_FTP_USER
+          ENDIOS_DE_FTP_PASSWORD=$ENDIOS_DE_FTP_PASSWORD" > ./local.properties
+
+      - name: Build and publish modules
+        run: |
+          for module in $(echo '${{ inputs.modules }}' | jq -r '.[]'); do
+            echo "::group::Build :$module"
+            gradle :$module:build
+            echo "::endgroup::"
+            echo "::group::Publish :$module"
+            gradle :$module:publish
+            echo "::endgroup::"
+          done
