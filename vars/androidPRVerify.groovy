@@ -140,10 +140,13 @@ EOF
                                 // Build the comma-separated --input in Groovy: shelling `tr '\n' ','`
                                 // left a trailing comma, so detekt parsed an empty path and crashed.
                                 String input = env.KOTLIN_CHANGESET.readLines().findAll { it?.trim() }.join(',')
+                                // --plugins is optional: some repos (e.g. oneDataProvider) run detekt
+                                // without the formatting plugin. Omit the flag when detektPlugin is blank.
+                                String pluginArg = cfg.detektPlugin ? "--plugins ${cfg.detektPlugin}" : ''
                                 sh """
                                   curl -sSLO https://github.com/detekt/detekt/releases/download/v${cfg.detektVersion}/detekt-cli-${cfg.detektVersion}.zip
                                   unzip -o detekt-cli-${cfg.detektVersion}.zip
-                                  ./detekt-cli-${cfg.detektVersion}/bin/detekt-cli --config ${cfg.detektConfig} --plugins ${cfg.detektPlugin} --input "${input}"
+                                  ./detekt-cli-${cfg.detektVersion}/bin/detekt-cli --config ${cfg.detektConfig} ${pluginArg} --input "${input}"
                                 """
                             }
                         }
