@@ -137,11 +137,13 @@ EOF
                             if (!env.KOTLIN_CHANGESET?.trim()) {
                                 echo 'No Kotlin changes — skipping detekt.'
                             } else {
+                                // Build the comma-separated --input in Groovy: shelling `tr '\n' ','`
+                                // left a trailing comma, so detekt parsed an empty path and crashed.
+                                String input = env.KOTLIN_CHANGESET.readLines().findAll { it?.trim() }.join(',')
                                 sh """
                                   curl -sSLO https://github.com/detekt/detekt/releases/download/v${cfg.detektVersion}/detekt-cli-${cfg.detektVersion}.zip
                                   unzip -o detekt-cli-${cfg.detektVersion}.zip
-                                  INPUT=\$(echo "${env.KOTLIN_CHANGESET}" | tr '\\n' ',')
-                                  ./detekt-cli-${cfg.detektVersion}/bin/detekt-cli --config ${cfg.detektConfig} --plugins ${cfg.detektPlugin} --input "\$INPUT"
+                                  ./detekt-cli-${cfg.detektVersion}/bin/detekt-cli --config ${cfg.detektConfig} --plugins ${cfg.detektPlugin} --input "${input}"
                                 """
                             }
                         }
