@@ -81,26 +81,31 @@ EOF
                         // Resolve the Kotlin changeset WITHOUT a network fetch — a raw `git fetch`
                         // in an sh step has no credentials (GIT_ASKPASS is scoped to `checkout scm`).
                         //
-                        // With PR "merge" discovery, Jenkins checks out a merge commit whose first
-                        // parent is the target-branch tip and second parent is the PR head, so we
-                        // diff those two parents directly. Mirrors CircleCI's resolve_changeset
-                        // (diff-filter=dr drops deletes/renames).
-                        def parents = sh(returnStdout: true, script: 'git rev-list --parents -n 1 HEAD').trim().tokenize(' ')
-                        if (env.CHANGE_ID?.trim() && parents.size() >= 3) {
-                            String target = parents[1]
-                            String prHead = parents[2]
-                            echo "PR #${env.CHANGE_ID}: diffing target ${target} vs PR head ${prHead}"
+                        // The GitHub Branch Source already fetches the PR's target branch into
+                        // refs/remotes/origin/<target> (it needs it to build the merge), so we diff
+                        // the working tree against it with a three-dot (merge-base) range. This is
+                        // robust whether or not Jenkins produced a real merge commit — a branch that
+                        // is already up to date with the target yields no merge commit, which the old
+                        // merge-parent approach mis-read as "no changes" and skipped linting entirely.
+                        // Mirrors CircleCI's resolve_changeset (diff-filter=dr drops deletes/renames).
+                        String target = env.CHANGE_TARGET?.trim() ?: cfg.baseBranch
+                        String targetRef = "origin/${target}"
+                        boolean hasRef = sh(returnStatus: true, script: "git rev-parse --verify --quiet ${targetRef} > /dev/null") == 0
+                        if (hasRef) {
+                            echo "Resolving changeset vs ${targetRef} (merge-base)"
                             env.KOTLIN_CHANGESET = sh(
                                 returnStdout: true,
-                                script: "git diff --name-only --diff-filter=dr ${target} ${prHead} | grep '\\.kt[s\"]\\?\$' || true"
+                                script: "git diff --name-only --diff-filter=dr ${targetRef}...HEAD | grep '\\.kt[s\"]\\?\$' || true"
                             ).trim()
                         } else {
-                            // Not a PR merge build (e.g. a branch build). This job should discover
-                            // PRs only; skip the changeset linters rather than fail, and warn loudly.
-                            echo "WARNING: not a PR merge build (CHANGE_ID='${env.CHANGE_ID}'). " +
-                                 "Configure the Multibranch source for 'Discover pull requests' with the " +
-                                 "merge strategy and remove 'Discover branches'. Skipping ktlint/detekt changeset."
-                            env.KOTLIN_CHANGESET = ''
+                            // Fail closed, not open: if we can't determine the target ref, lint every
+                            // Kotlin file rather than silently skipping and passing a broken PR.
+                            echo "WARNING: ${targetRef} not available (CHANGE_TARGET='${env.CHANGE_TARGET}'). " +
+                                 "Running ktlint/detekt over ALL Kotlin files as a safe fallback."
+                            env.KOTLIN_CHANGESET = sh(
+                                returnStdout: true,
+                                script: "git ls-files '*.kt' '*.kts' || true"
+                            ).trim()
                         }
                         echo "Kotlin changeset:\n${env.KOTLIN_CHANGESET ?: '(none)'}"
                     }
