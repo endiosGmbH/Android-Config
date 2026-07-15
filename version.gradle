@@ -51,7 +51,7 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation - LATEST development version
-version.foundation = "5.5.46"
+version.foundation = "5.5.53"
 // foundation - STABLE release version (used by release/* branches)
 version.foundation_release = "5.5.12-RC4"
 version.foundation_auth = "5.0.58"
@@ -90,6 +90,8 @@ version.play_services_maps = "18.1.0"
 version.play_services_location = "21.0.0"
 // retrofit
 version.retrofit = "3.0.0"
+// robolectric
+version.robolectric = "4.16"
 // vertx-codegen
 version.vertx_codegen = "3.6.0"
 // jetpack-compose
@@ -297,6 +299,7 @@ test.jupiter_plugin = "de.mannodermaus.gradle.plugins:android-junit5:$version.ju
 test.junit_platform_launcher = "org.junit.platform:junit-platform-launcher:$version.junit_platform_launcher"
 test.core_ktx = "androidx.test:core-ktx:$version.core_ktx"
 test.junit_ktx = "androidx.test.ext:junit-ktx:$version.junit_ktx"
+test.robolectric = "org.robolectric:robolectric:$version.robolectric"
 dependency.test = test
 
 def ui_test = [:]
