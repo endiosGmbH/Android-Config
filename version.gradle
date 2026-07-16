@@ -331,7 +331,6 @@ ext.dependency = dependency
 def addRepositories(RepositoryHandler handler) {
     handler.google()
     handler.mavenCentral()
-    handler.maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     handler.maven {
         url 'https://mvn.endios.de/android'
         credentials {
