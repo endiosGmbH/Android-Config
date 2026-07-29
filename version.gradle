@@ -51,10 +51,10 @@ version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
 // foundation - LATEST development version
-version.foundation = "5.5.12"
+version.foundation = "5.5.46"
 // foundation - STABLE release version (used by release/* branches)
-version.foundation_release = "5.5.12-RC4"
-version.foundation_auth = "5.0.55-RC"
+version.foundation_release = "5.5.49-RC2"
+version.foundation_auth = "5.0.58"
 version.foundation_test_library = "5.0.10"
 version.one_core_compose = "4.26.58"
 // google
@@ -106,6 +106,8 @@ version.compose_runtime = "2.6.2"
 version.accompanist = "0.30.1"
 // maps-compose
 version.maps_compose = "2.11.4"
+// Lottie-compose
+version.lottie_compose = "6.7.1"
 // end-dependency-version-declaration
 ext.version = version
 
@@ -282,6 +284,10 @@ compose.permissions = "com.google.accompanist:accompanist-permissions:$version.a
 compose.coil = "io.coil-kt:coil-compose:$version.coil"
 compose.runtime = "androidx.lifecycle:lifecycle-runtime-compose:$version.compose_runtime"
 dependency.compose = compose
+
+def lottie = [:]
+lottie.compose = "com.airbnb.android:lottie-compose:$version.lottie_compose"
+dependency.lottie = lottie
 
 def test = [:]
 test.base = "junit:junit:$version.junit"
