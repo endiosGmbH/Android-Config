@@ -90,6 +90,8 @@ version.play_services_maps = "18.1.0"
 version.play_services_location = "21.0.0"
 // retrofit
 version.retrofit = "2.6.1"
+// robolectric
+version.robolectric = "4.16"
 // vertx-codegen
 version.vertx_codegen = "3.6.0"
 // jetpack-compose
@@ -106,8 +108,6 @@ version.accompanist = "0.30.1"
 version.maps_compose = "2.11.4"
 // Lottie-compose
 version.lottie_compose = "6.7.1"
-// robolectric
-version.robolectric = "4.16"
 // end-dependency-version-declaration
 ext.version = version
 
