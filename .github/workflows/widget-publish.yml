@@ -25,7 +25,10 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      # write is needed to push the version tag and create the GitHub Release below.
+      # The tag/release step is best-effort: if the caller's GITHUB_TOKEN is capped to
+      # read (org/repo default), it emits a ::warning:: and never fails the publish.
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
@@ -56,3 +59,43 @@ jobs:
             ./gradlew :$module:publish
             echo "::endgroup::"
           done
+
+      # Tag the published pomVersion and cut a GitHub Release for visibility, and so that
+      # release-start can later recover the exact source of any published version by tag.
+      # Strictly best-effort: any failure (e.g. a read-only token) warns but never fails the
+      # publish. Idempotent: an already-existing tag is skipped.
+      - name: Tag published version and create GitHub Release
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Resolve the single repo-wide published version: the literal pomVersion string
+          # (root build.gradle first, else the first module build.gradle). Values that are a
+          # Gradle reference (contain '$', e.g. "${rootProject.ext.pomVersion}") are skipped.
+          VER=$(grep -oE 'pomVersion[[:space:]]*=[[:space:]]*"[^"$]+"' build.gradle 2>/dev/null \
+                | grep -oE '"[^"]+"' | tr -d '"' | head -1)
+          if [ -z "$VER" ]; then
+            VER=$(grep -rhoE 'pomVersion[[:space:]]*=[[:space:]]*"[^"$]+"' --include=build.gradle . 2>/dev/null \
+                  | grep -oE '"[^"]+"' | tr -d '"' | head -1)
+          fi
+          if [ -z "$VER" ]; then
+            echo "::warning::Could not resolve a literal pomVersion; skipping tag/release."
+            exit 0
+          fi
+          echo "Resolved published version: $VER"
+
+          # Idempotent: skip if a Release for this version already exists (re-run / unchanged version).
+          if gh release view "$VER" >/dev/null 2>&1; then
+            echo "Release $VER already exists; nothing to do."
+            exit 0
+          fi
+
+          # -RC / any suffixed version is a pre-release so it doesn't take the "Latest release" badge.
+          PRERELEASE=""
+          case "$VER" in *-*) PRERELEASE="--prerelease";; esac
+
+          # Creates the tag ($VER) at this commit AND the Release in one call (needs contents: write).
+          # No local git identity required — the ref is created server-side via the API.
+          gh release create "$VER" --target "$GITHUB_SHA" --title "$VER" --generate-notes $PRERELEASE \
+            || echo "::warning::Failed to create tag/Release $VER (Actions token is likely read-only; set the repo/org default workflow permissions to read-and-write)."
