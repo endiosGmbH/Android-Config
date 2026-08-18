@@ -50,14 +50,8 @@ version.firebase_analytics = "22.1.2"
 version.firebase_crashlytics = "18.2.11"
 version.firebase_crashlytics_gradle = "2.9.0"
 version.firebase_messaging = "23.0.7"
-// foundation - LATEST development version.
-// On a release branch there is no "latest": this is the value develop happened to be on when v26.08 was cut,
-// and every consumer here should be on the release Foundation instead. It is kept in step with
-// version.foundation_release so a build that does NOT get detected as a release build still resolves the
-// Foundation this release ships with. That is not hypothetical — a Jenkins multibranch PR build sets
-// BRANCH_NAME to "PR-<n>", so isReleaseBranch() is false for every PR targeting this branch, and it would
-// otherwise compile release-branch code against a Foundation from before the cut.
-version.foundation = "5.5.61"
+// foundation - LATEST development version
+version.foundation = "5.5.49-RC2"
 // foundation - STABLE release version (used by release/* branches)
 version.foundation_release = "5.5.61"
 version.foundation_auth = "5.0.58"
