@@ -82,14 +82,14 @@ version.koin = "4.1.1"
 // mockk
 version.mockk = "1.13.5"
 // okhttp
-version.okhttp = "4.9.1"
+version.okhttp = "4.12.0"
 // permission
 version.permission = "4.8.0"
 // play-services
 version.play_services_maps = "18.1.0"
 version.play_services_location = "21.0.0"
 // retrofit
-version.retrofit = "2.6.1"
+version.retrofit = "3.0.0"
 // robolectric
 version.robolectric = "4.16"
 // vertx-codegen
@@ -104,6 +104,8 @@ version.compose_material3 = "1.4.0"
 version.compose_runtime = "2.6.2"
 // Accompanist-compose
 version.accompanist = "0.30.1"
+// Lottie-compose
+version.lottie_compose = "6.7.1"
 // maps-compose
 version.maps_compose = "2.11.4"
 // end-dependency-version-declaration
@@ -226,6 +228,10 @@ lifecycle.viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version.andro
 lifecycle.navigation = "androidx.lifecycle:lifecycle-viewmodel-navigation3:$version.androidx_lifecycle"
 dependency.lifecycle = lifecycle
 
+def lottie = [:]
+lottie.compose = "com.airbnb.android:lottie-compose:$version.lottie_compose"
+dependency.lottie = lottie
+
 def mockk = [:]
 mockk.core = "io.mockk:mockk:$version.mockk"
 mockk.android = "io.mockk:mockk-android:$version.mockk"
@@ -249,6 +255,7 @@ network.okhttp_base = "com.squareup.okhttp3:okhttp:$version.okhttp"
 network.okhttp_logging_interceptor = "com.squareup.okhttp3:logging-interceptor:$version.okhttp"
 network.retrofit_base = "com.squareup.retrofit2:retrofit:$version.retrofit"
 network.retrofit_converter_gson = "com.squareup.retrofit2:converter-gson:$version.retrofit"
+network.retrofit_converter_kotlinx = "com.squareup.retrofit2:converter-kotlinx-serialization:$version.retrofit"
 network.work_manager = "androidx.work:work-runtime-ktx:$version.work_manager"
 network.work_manager_testing = "androidx.work:work-testing:$version.work_manager"
 dependency.network = network
