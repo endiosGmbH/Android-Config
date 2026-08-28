@@ -1,0 +1,113 @@
+name: Foundation publish
+
+# Whole-project Maven publish for endiosOneFoundation-Android.
+#
+# Kept separate from widget-publish.yml rather than folded into it: that one
+# takes a list of module names and builds them one at a time, which suits a
+# widget's one or two modules. Foundation is 52, so it publishes in a single
+# Gradle invocation and needs the memory settings below to survive it. Sharing
+# one workflow would mean carrying those knobs as dead weight for every widget,
+# and every change to it would risk regressing all of them.
+
+on:
+  workflow_call:
+    inputs:
+      gradle-opts:
+        description: >-
+          Override the default Gradle JVM tuning. Leave unset unless a run is
+          actually OOMing — the default below is sized for the 52-module build.
+        required: false
+        type: string
+        default: >-
+          -Dorg.gradle.jvmargs=-Xmx6g
+          -Dorg.gradle.parallel=false
+          -Dorg.gradle.workers.max=2
+          -Dorg.gradle.daemon=false
+          -Dorg.gradle.caching=true
+          -Dorg.gradle.configureondemand=true
+          -Dkotlin.compiler.execution.strategy=in-process
+          -Dkotlin.incremental=false
+      publish-task:
+        description: 'Gradle task that performs the publish.'
+        required: false
+        type: string
+        default: 'publish'
+      timeout-minutes:
+        description: 'Job timeout. The cold 52-module build runs well under an hour.'
+        required: false
+        type: number
+        default: 90
+    secrets:
+      ENDIOS_DE_FTP_USER:
+        required: true
+      ENDIOS_DE_FTP_PASSWORD:
+        required: true
+      ENDIOS_DE_HTACCESS_USER:
+        required: true
+      ENDIOS_DE_HTACCESS_PASSWORD:
+        required: true
+
+# One publish at a time per calling branch. cancel-in-progress stays false on
+# purpose: the Maven repo is SFTP with no checksums, so a run killed partway
+# through writing artifacts leaves a coordinate that resolves fine and fails
+# somewhere else later. A queued run is cheaper than a corrupted one.
+concurrency:
+  group: foundation-publish-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    permissions:
+      contents: read
+    env:
+      GRADLE_OPTS: ${{ inputs.gradle-opts }}
+      _JAVA_OPTIONS: -Xmx6g
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          # Only develop writes the cache; other branches read it, so a one-off
+          # release build cannot poison what develop restores.
+          cache-read-only: ${{ github.ref != 'refs/heads/develop' }}
+
+      - name: Install local.properties
+        env:
+          ENDIOS_DE_FTP_USER: ${{ secrets.ENDIOS_DE_FTP_USER }}
+          ENDIOS_DE_FTP_PASSWORD: ${{ secrets.ENDIOS_DE_FTP_PASSWORD }}
+          ENDIOS_DE_HTACCESS_USER: ${{ secrets.ENDIOS_DE_HTACCESS_USER }}
+          ENDIOS_DE_HTACCESS_PASSWORD: ${{ secrets.ENDIOS_DE_HTACCESS_PASSWORD }}
+        run: |
+          echo 'Generating local.properties ...'
+          echo "ENDIOS_DE_HTACCESS_USER=$ENDIOS_DE_HTACCESS_USER
+          ENDIOS_DE_HTACCESS_PASSWORD=$ENDIOS_DE_HTACCESS_PASSWORD
+          ENDIOS_DE_FTP_USER=$ENDIOS_DE_FTP_USER
+          ENDIOS_DE_FTP_PASSWORD=$ENDIOS_DE_FTP_PASSWORD" > ./local.properties
+
+      - name: Report the version being published
+        # Printed so a run can be matched to a coordinate after the fact — the
+        # repo has no checksums, so the log is the only record of what was written.
+        run: |
+          echo "::group::Publishing"
+          grep -m1 'pomVersion' build.gradle || true
+          echo "ref=${{ github.ref }} sha=${{ github.sha }}"
+          echo "::endgroup::"
+
+      - name: Publish libraries
+        # Lint and tests are skipped: they already ran in PR CI, and each one
+        # roughly doubles peak memory on a 52-module build. The publish task
+        # still assembles the release variant of every module.
+        run: >-
+          ./gradlew ${{ inputs.publish-task }}
+          -x lint -x lintDebug -x lintRelease
+          -x test -x testDebugUnitTest -x testReleaseUnitTest
+          --stacktrace
