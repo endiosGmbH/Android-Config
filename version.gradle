@@ -107,7 +107,7 @@ version.accompanist = "0.30.1"
 // Lottie-compose
 version.lottie_compose = "6.7.1"
 // maps-compose
-version.maps_compose = "2.11.4"
+version.maps_compose = "2.11.5"
 // end-dependency-version-declaration
 ext.version = version
 
