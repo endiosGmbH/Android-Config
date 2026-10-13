@@ -338,33 +338,37 @@ dependency.vertx_codegen = "io.vertx:vertx-codegen:$version.vertx_codegen"
 ext.dependency = dependency
 
 def addRepositories(RepositoryHandler handler) {
-    // Google's repository is asked only for the groups it hosts. Unfiltered, every other lookup (our own
+    // Google's repository is asked only for the groups we use from it. Unfiltered, every other lookup (our own
     // artifacts, Maven Central libraries, versions Google doesn't have) goes to dl.google.com first, so a
-    // slow dl.google.com stalls every build.
+    // slow dl.google.com stalls every build. A new dependency from Google in another group must be added here,
+    // or it won't resolve. Regexes rather than includeGroupAndSubgroups: repos on Gradle 7.5 load this file.
     handler.google {
         content {
             includeGroupByRegex 'androidx\\..*'
-            includeGroupByRegex 'com\\.android(\\..*)?'
-            includeGroupByRegex 'com\\.google\\..*'
             includeGroupByRegex 'android\\.arch\\..*'
+            includeGroupByRegex 'com\\.android(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.android(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.firebase(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.gms(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.mlkit(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.ar(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.testing\\.platform(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.prefab(\\..*)?'
         }
     }
-    handler.mavenCentral()
-    def endiosRepository = handler.maven {
+    handler.mavenCentral {
+        content {
+            excludeGroupByRegex 'de\\.endios(\\..*)?'
+        }
+    }
+    handler.maven {
         url 'https://mvn.endios.de/android'
         credentials {
             username maven_pull_credential_username
             password maven_pull_credential_password
         }
     }
-    def localRepository = handler.mavenLocal()
-    // Our artifacts come only from our repository, or from mavenLocal when testing a local build.
-    handler.exclusiveContent {
-        forRepositories(endiosRepository, localRepository)
-        filter {
-            includeGroupByRegex 'de\\.endios(\\..*)?'
-        }
-    }
+    handler.mavenLocal()
 }
 
 ext.addRepositories = this.&addRepositories
