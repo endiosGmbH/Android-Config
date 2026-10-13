@@ -338,8 +338,29 @@ dependency.vertx_codegen = "io.vertx:vertx-codegen:$version.vertx_codegen"
 ext.dependency = dependency
 
 def addRepositories(RepositoryHandler handler) {
-    handler.google()
-    handler.mavenCentral()
+    // Google's repository is asked only for the groups we use from it. Unfiltered, every other lookup (our own
+    // artifacts, Maven Central libraries, versions Google doesn't have) goes to dl.google.com first, so a
+    // slow dl.google.com stalls every build. A new dependency from Google in another group must be added here,
+    // or it won't resolve. Regexes rather than includeGroupAndSubgroups: repos on Gradle 7.5 load this file.
+    handler.google {
+        content {
+            includeGroupByRegex 'androidx\\..*'
+            includeGroupByRegex 'android\\.arch\\..*'
+            includeGroupByRegex 'com\\.android(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.android(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.firebase(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.gms(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.mlkit(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.ar(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.testing\\.platform(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.prefab(\\..*)?'
+        }
+    }
+    handler.mavenCentral {
+        content {
+            excludeGroupByRegex 'de\\.endios(\\..*)?'
+        }
+    }
     handler.maven {
         url 'https://mvn.endios.de/android'
         credentials {
