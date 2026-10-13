@@ -21,6 +21,7 @@ version.androidx_navigation3 = "1.0.0"
 version.androidx_navigation_plugin = "2.9.5"
 version.androidx_lifecycle = "2.4.1"
 version.androidx_lifecycle_extensions = "2.2.0"
+version.androidx_lifecycle_navigation3 = "2.10.0"
 version.androidx_recyclerview = "1.1.0"
 version.androidx_swipe_refresh_layout = "1.1.0"
 version.androidx_test = "1.3.0"
@@ -225,7 +226,7 @@ lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$version.androidx_life
 lifecycle.livedata_ktx = "androidx.lifecycle:lifecycle-livedata-ktx:$version.androidx_lifecycle"
 lifecycle.runtime_ktx = "androidx.lifecycle:lifecycle-runtime-ktx:$version.androidx_lifecycle"
 lifecycle.viewmodel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version.androidx_lifecycle"
-lifecycle.navigation = "androidx.lifecycle:lifecycle-viewmodel-navigation3:$version.androidx_lifecycle"
+lifecycle.navigation = "androidx.lifecycle:lifecycle-viewmodel-navigation3:$version.androidx_lifecycle_navigation3"
 dependency.lifecycle = lifecycle
 
 def lottie = [:]
@@ -337,8 +338,29 @@ dependency.vertx_codegen = "io.vertx:vertx-codegen:$version.vertx_codegen"
 ext.dependency = dependency
 
 def addRepositories(RepositoryHandler handler) {
-    handler.google()
-    handler.mavenCentral()
+    // Google's repository is asked only for the groups we use from it. Unfiltered, every other lookup (our own
+    // artifacts, Maven Central libraries, versions Google doesn't have) goes to dl.google.com first, so a
+    // slow dl.google.com stalls every build. A new dependency from Google in another group must be added here,
+    // or it won't resolve. Regexes rather than includeGroupAndSubgroups: repos on Gradle 7.5 load this file.
+    handler.google {
+        content {
+            includeGroupByRegex 'androidx\\..*'
+            includeGroupByRegex 'android\\.arch\\..*'
+            includeGroupByRegex 'com\\.android(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.android(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.firebase(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.gms(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.mlkit(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.ar(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.testing\\.platform(\\..*)?'
+            includeGroupByRegex 'com\\.google\\.prefab(\\..*)?'
+        }
+    }
+    handler.mavenCentral {
+        content {
+            excludeGroupByRegex 'de\\.endios(\\..*)?'
+        }
+    }
     handler.maven {
         url 'https://mvn.endios.de/android'
         credentials {
