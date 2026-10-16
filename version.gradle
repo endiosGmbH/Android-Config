@@ -56,7 +56,7 @@ version.foundation = "5.24.1"
 // foundation - STABLE release version (used by release/* branches)
 version.foundation_release = "5.22.2"
 version.foundation_auth = "5.0.66"
-version.foundation_test_library = "5.0.11"
+version.foundation_test_library = "5.1.0"
 version.one_core_compose = "4.26.58"
 // google
 version.google_exoplayer = "2.17.1"
