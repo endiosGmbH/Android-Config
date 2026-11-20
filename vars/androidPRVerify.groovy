@@ -23,7 +23,17 @@
  *     lintTask     : 'lintDevelopDebug',
  *     unitTestTask : 'testDevelopDebugUnitTest',
  *     agentLabel   : 'android',
+ *     timeoutMinutes: 45,          // 120 when screenDiff is on
+ *     screenDiff   : null,         // opt-in, see below
  *   )
+ *
+ * Screen diff (opt-in): records the screenshot tests on the PR and on the target
+ * branch, reports each screen as unchanged / changed / new / removed with a
+ * Before / After / Diff HTML report, runs the flow tests on a Gradle Managed
+ * Device, and comments the counts on the PR. See androidScreenDiff.groovy for
+ * all keys; only `module` is required:
+ *
+ *   androidPRVerify(..., screenDiff: [module: 'oneWidgetMeterReading'])
  *
  * Note: suppressing the native `continuous-integration/jenkins/pr-head` status
  * is a job-level trait (skip-notifications-trait plugin), configured on the
@@ -40,7 +50,10 @@ def call(Map config = [:]) {
         lintTask     : 'lintDevelopDebug',
         unitTestTask : 'testDevelopDebugUnitTest',
         agentLabel   : 'android',
+        screenDiff   : null,
     ] + config
+    Map sd = androidScreenDiff.config(cfg.screenDiff, cfg.baseBranch)
+    int timeoutMinutes = (cfg.timeoutMinutes ?: (sd ? 120 : 45)) as Integer
 
     pipeline {
         agent { label cfg.agentLabel }
@@ -48,7 +61,7 @@ def call(Map config = [:]) {
         options {
             skipDefaultCheckout()
             disableConcurrentBuilds()
-            timeout(time: 45, unit: 'MINUTES')
+            timeout(time: timeoutMinutes, unit: 'MINUTES')
             buildDiscarder(logRotator(numToKeepStr: '30', daysToKeepStr: '30'))
         }
 
@@ -169,10 +182,49 @@ EOF
                     }
                 }
             }
+
+            // The screen-diff stages run only when the repo opted in (screenDiff: [...]).
+            stage('screens: PR') {
+                when { expression { sd != null } }
+                steps {
+                    script { androidScreenDiff.recordHead(sd) }
+                }
+            }
+
+            stage('screens: base') {
+                when { expression { sd != null } }
+                steps {
+                    script { androidScreenDiff.recordBase(sd) }
+                }
+            }
+
+            stage('screens: report') {
+                when { expression { sd != null } }
+                steps {
+                    githubStatusWrap('ci/jenkins: screens') {
+                        script { androidScreenDiff.report(sd) }
+                    }
+                }
+            }
+
+            stage('flow tests') {
+                when { expression { sd != null && sd.flowTests } }
+                steps {
+                    githubStatusWrap('ci/jenkins: flow tests') {
+                        script { androidScreenDiff.flowTests(sd) }
+                    }
+                }
+            }
         }
 
         post {
             always {
+                script {
+                    if (sd != null) {
+                        androidScreenDiff.comment(sd)
+                        androidScreenDiff.cleanup(sd)
+                    }
+                }
                 sh 'rm -rf local.properties ktlint detekt-cli-*.zip detekt-cli-*/'
             }
         }
