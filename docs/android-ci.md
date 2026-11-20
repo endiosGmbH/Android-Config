@@ -12,7 +12,11 @@ Android-Config (gradle scripts, `version.gradle`, `tooling/`) is ignored by the 
 ```
 vars/
   androidPRVerify.groovy   # PR-verify pipeline (ktlint, detekt, lint, unit tests)
+  androidScreenDiff.groovy # opt-in: Before / After / Diff screen report + flow tests
   githubStatusWrap.groovy  # per-check reporter via publishChecks (best-effort)
+resources/android-ci/
+  screen_diff.py           # pixel compare, HTML report, PR comment (Python stdlib only)
+  screen_diff_test.py      # its unit tests: python3 resources/android-ci/screen_diff_test.py
 ```
 
 ## Consuming it
@@ -29,6 +33,66 @@ Per-repo overrides (widgets/Foundation with different flavors):
 ```groovy
 androidPRVerify(lintTask: 'lint', unitTestTask: 'testDebugUnitTest')
 ```
+
+## Which library version a job loads
+
+`@Library('android-ci') _` loads the library's **default version**, set in the Global Pipeline
+Library config: `develop`. So a change to `vars/` reaches every repo as soon as it merges to
+Android-Config `develop`. *Allow default version to be overridden* is on, so a PR can test an
+unmerged library branch by pinning it in its own `Jenkinsfile.prverify`:
+
+```groovy
+@Library('android-ci@feature/OP-12345-my-change') _
+```
+
+Revert the pin before that PR merges. (The PR-verify job builds the PR's own Jenkinsfile, so
+the pin takes effect on that PR's build.)
+
+## Screen diff (opt-in)
+
+Adds a Before / After / Diff report of the screenshot tests and runs the flow tests on a
+Gradle Managed Device. A repo opts in with one key:
+
+```groovy
+androidPRVerify(lintTask: 'lintDebug', unitTestTask: 'testDebugUnitTest',
+                screenDiff: [module: 'oneWidgetMeterReading'])
+```
+
+The repo must provide, in that module: Roborazzi with `recordRoborazziDebug`, screenshots in
+`<module>/build/outputs/roborazzi/` named `<screenId>__<state>.png`, and a Gradle Managed
+Device `ciDevice` (arm64 image — the agents are Apple Silicon). Reference images are not
+committed: the check records the base itself. All names are keys with defaults — see the
+header of `vars/androidScreenDiff.groovy` (`recordTask`, `outputDir`, `device`,
+`flowTestTask`, `threshold`, timeouts, `githubCredentialsId`, `flowTests`, `comment`).
+
+What the stages do:
+
+| Stage | What | Fails the build when |
+|---|---|---|
+| `screens: PR` | `recordRoborazziDebug` on the PR merge checkout → `build/screen-diff/after/` | (reported in `screens: report`) |
+| `screens: base` | the same task in a detached git worktree of `origin/<target>` (the target revision the PR was merged with) → `build/screen-diff/before/` | never — a base without snapshot tests or a red base shows as a warning, its screens as new |
+| `screens: report` | `screen_diff.py compare`: same-named PNGs are pixel-compared → unchanged / changed / new / removed, diff images, `build/screen-diff/report/index.html` archived as an artifact | a snapshot test failed on the PR. **A pixel change alone never fails** |
+| `flow tests` | `ciDeviceDebugAndroidTest` on the PR only, `--no-daemon`, 40 min timeout, JUnit results published | a flow test failed or timed out |
+| post | creates or updates **one** PR comment (marked `<!-- android-ci:screen-diff -->`) with the counts and the report link; removes the base worktree; kills leftover emulators | never — the comment is best-effort |
+
+Compare rule: byte-identical files are unchanged; otherwise pixels are decoded to RGBA and
+compared exactly. `threshold` (default `0`) is the largest fraction of differing pixels still
+counted as unchanged; a size change is always "changed". The base is `origin/<target>`, not
+the merge base: the PR checkout already contains the target's newest commits, so comparing to
+the target tip shows only what the PR changes.
+
+Report: `<BUILD_URL>artifact/build/screen-diff/report/index.html`. It uses a separate
+`report.css` and no JavaScript because Jenkins serves artifacts with a Content-Security-Policy
+that blocks inline styles and scripts; clicking an image opens it full screen (CSS `:target`).
+
+Emulator isolation: the managed device runs with `ANDROID_USER_HOME=$HOME/.android-ci/gmd-executor-<n>`
+and `ANDROID_ADB_SERVER_PORT=5037+<n>` (same port scheme as the app's uitests/maestro jobs). The
+post step kills every process that still holds files in that folder, so it never touches
+another executor's emulator. Each executor keeps its own AVD there (a few GB each).
+
+Agent requirements: `python3` (3.8+, stdlib only; Pillow is used if present, just faster),
+`rsync`, `lsof`, and a Secret-text credential `GITHUB_TOKEN_ENDIOSONEGITHUB` that is visible
+to the PR-verify job (global scope) and may comment on PRs.
 
 ## Jenkins setup (one-time, infra)
 
