@@ -89,8 +89,24 @@ case_b1_control_clean_pr_passes() {
   scan "$r" develop; expect_rc 0
 }
 
+case_b6_empty_target_fails() {
+  local r; r="$(new_repo b6a)"; commit_file "$r" a.txt x "pr"
+  scan "$r" ""; expect_rc 2; expect_out 'CHANGE_TARGET is empty'
+}
+case_b6_missing_target_ref_fails() {
+  local r; r="$(new_repo b6b)"; commit_file "$r" a.txt x "pr"
+  scan "$r" release/9.9; expect_rc 2; expect_out 'origin/release/9\.9 not found'
+}
+case_b6_no_merge_base_fails() {
+  local r; r="$(new_repo b6c)"; commit_file "$r" a.txt x "pr"
+  git -C "$r" checkout -q --orphan other; git -C "$r" commit -q -m unrelated
+  git -C "$r" update-ref refs/remotes/origin/develop other; git -C "$r" checkout -q feature
+  scan "$r" develop; expect_rc 2; expect_out 'no merge base between origin/develop and HEAD'
+}
+
 ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
-  b1_control_clean_pr_passes b1_pat_in_kt_fails)
+  b1_control_clean_pr_passes b1_pat_in_kt_fails
+  b6_empty_target_fails b6_missing_target_ref_fails b6_no_merge_base_fails)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do

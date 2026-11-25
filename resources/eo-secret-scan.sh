@@ -35,7 +35,11 @@ install() {
 scan() {
   local target="${1:-}" config="${2:?scan needs a config}" ref net rc
   : "${GITLEAKS:?GITLEAKS must point at the gitleaks binary}"
+  # Fail closed: without the PR's base there is nothing to diff against, so never pass.
+  [ -n "$target" ] || die "CHANGE_TARGET is empty, cannot find the PR's base branch"
   ref="origin/$target"
+  git rev-parse --verify --quiet "$ref^{commit}" > /dev/null || die "base branch $ref not found in the checkout"
+  git merge-base "$ref" HEAD > /dev/null || die "no merge base between $ref and HEAD"
   # Synthetic commit = what the PR would change on the target, incl. merge-resolution content.
   net="$(GIT_AUTHOR_NAME=secret-scan GIT_AUTHOR_EMAIL=secret-scan@invalid \
     GIT_COMMITTER_NAME=secret-scan GIT_COMMITTER_EMAIL=secret-scan@invalid \
