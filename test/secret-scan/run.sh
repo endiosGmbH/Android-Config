@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# Local harness for resources/eo-secret-scan.sh: throwaway repos, fake tokens made at runtime.
+# Usage: test/secret-scan/run.sh [case...]   (needs gitleaks 8.30.1 on PATH and network for install)
+set -uo pipefail
+
+HERE="$(cd "$(dirname "$0")" && pwd)"
+RESOURCES="${EO_RESOURCES:-$HERE/../../resources}"
+SCRIPT="$RESOURCES/eo-secret-scan.sh"
+CONFIG="$RESOURCES/eo-gitleaks.toml"
+GITLEAKS_BIN="$(command -v gitleaks)" || { echo "gitleaks not on PATH"; exit 2; }
+WORK="$(mktemp -d)"
+trap 'rm -rf "$WORK"' EXIT
+export GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1
+export GIT_AUTHOR_NAME=t GIT_AUTHOR_EMAIL=t@example.invalid GIT_COMMITTER_NAME=t GIT_COMMITTER_EMAIL=t@example.invalid
+
+PASS=0; FAIL=0; FAILED=()
+
+rand() { LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c "$1"; }
+# Token prefixes are split so this file never holds a token-shaped literal.
+fake_pat() { printf '%s%s' 'gh''p_' "$(rand 36)"; }
+fake_gcp() { printf '%s%s' 'AI''za' "$(rand 35)"; }
+
+# A repo whose refs/remotes/origin/develop stands in for the fetched PR target.
+new_repo() {
+  local d="$WORK/$1"; mkdir -p "$d"; git -C "$d" init -q -b feature
+  echo base > "$d/README.md"; git -C "$d" add -A; git -C "$d" commit -q -m base
+  git -C "$d" update-ref refs/remotes/origin/develop HEAD
+  echo "$d"
+}
+commit_file() { # repo path content message
+  mkdir -p "$(dirname "$1/$2")"; printf '%s\n' "$3" > "$1/$2"
+  git -C "$1" add -A; git -C "$1" commit -q -m "$4"
+}
+# Jenkins "merge with target" build: HEAD^1 = PR head, HEAD^2 = origin/<target>.
+jenkins_merge() { git -C "$1" merge -q --no-ff --no-edit refs/remotes/origin/develop >/dev/null; }
+
+scan() { # repo target -> sets RC, OUT
+  OUT="$WORK/out.$RANDOM"
+  (cd "$1" && GITLEAKS="$GITLEAKS_BIN" bash "$SCRIPT" scan "$2" "$CONFIG") > "$OUT" 2>&1
+  RC=$?
+}
+
+ok() { PASS=$((PASS+1)); echo "  ok   $CASE: $1"; }
+ko() { FAIL=$((FAIL+1)); FAILED+=("$CASE"); echo "  FAIL $CASE: $1"; [ -n "${OUT:-}" ] && [ -f "$OUT" ] && sed 's/^/       | /' "$OUT"; }
+expect_rc() { [ "$RC" = "$1" ] && ok "exit $1" || ko "exit $RC, want $1"; }
+expect_out() { grep -qE -- "$1" "$OUT" && ok "log matches /$1/" || ko "log lacks /$1/"; }
+expect_no() { grep -qF -- "$1" "$OUT" && ko "log contains the secret value" || ok "log omits the value"; }
+
+# ---- D1: install -------------------------------------------------------------------------
+shim() { # dir name body
+  mkdir -p "$1"; printf '#!/bin/sh\n%s\n' "$3" > "$1/$2"; chmod +x "$1/$2"
+}
+case_install_ok() {
+  local d="$WORK/inst"; mkdir -p "$d"; OUT="$WORK/out.inst"
+  bash "$SCRIPT" install "$d" > "$OUT" 2>&1; RC=$?; expect_rc 0
+  "$d/gitleaks" version > "$OUT" 2>&1; expect_out '^8\.30\.1$'
+}
+case_install_bad_arch() {
+  local s="$WORK/shim-arch"; OUT="$WORK/out.arch"
+  shim "$s" uname 'case "$1" in -m) echo i386;; *) echo Darwin;; esac'
+  PATH="$s:$PATH" bash "$SCRIPT" install "$WORK/inst-arch" > "$OUT" 2>&1; RC=$?
+  expect_rc 2; expect_out 'unsupported.*i386'
+}
+case_install_bad_os() {
+  local s="$WORK/shim-os"; OUT="$WORK/out.os"
+  shim "$s" uname 'case "$1" in -m) echo arm64;; *) echo Linux;; esac'
+  PATH="$s:$PATH" bash "$SCRIPT" install "$WORK/inst-os" > "$OUT" 2>&1; RC=$?
+  expect_rc 2; expect_out 'unsupported.*Linux'
+}
+case_install_bad_checksum() {
+  local s="$WORK/shim-curl"; OUT="$WORK/out.sum"
+  # Fake curl: writes junk to the -o target instead of downloading.
+  shim "$s" curl 'while [ $# -gt 0 ]; do [ "$1" = -o ] && { echo junk > "$2"; exit 0; }; shift; done; exit 1'
+  PATH="$s:$PATH" bash "$SCRIPT" install "$WORK/inst-sum" > "$OUT" 2>&1; RC=$?
+  expect_rc 2; expect_out 'checksum'
+  [ ! -e "$WORK/inst-sum/gitleaks" ] && ok "no binary left behind" || ko "binary extracted despite bad checksum"
+}
+
+ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum)
+
+if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
+for CASE in "${CASES[@]}"; do
+  echo "case $CASE"; OUT=""; "case_$CASE"
+done
+echo "passed $PASS, failed $FAIL${FAILED:+ (${FAILED[*]})}"
+[ "$FAIL" = 0 ]
