@@ -33,17 +33,19 @@ install() {
 }
 
 scan() {
-  local target="${1:-}" config="${2:?scan needs a config}" ref net rc tmpl
+  local target="${1:-}" config="${2:?scan needs a config}" ref base net rc tmpl
   : "${GITLEAKS:?GITLEAKS must point at the gitleaks binary}"
   # Fail closed: without the PR's base there is nothing to diff against, so never pass.
   [ -n "$target" ] || die "CHANGE_TARGET is empty, cannot find the PR's base branch"
   ref="origin/$target"
   git rev-parse --verify --quiet "$ref^{commit}" > /dev/null || die "base branch $ref not found in the checkout"
-  git merge-base "$ref" HEAD > /dev/null || die "no merge base between $ref and HEAD"
+  base="$(git merge-base "$ref" HEAD)" || die "no merge base between $ref and HEAD"
+  # A PR built without merging its target is diffed against the merge base instead.
+  git merge-base --is-ancestor "$ref" HEAD && base="$ref"
   # Synthetic commit = what the PR would change on the target, incl. merge-resolution content.
   net="$(GIT_AUTHOR_NAME=secret-scan GIT_AUTHOR_EMAIL=secret-scan@invalid \
     GIT_COMMITTER_NAME=secret-scan GIT_COMMITTER_EMAIL=secret-scan@invalid \
-    git commit-tree "HEAD^{tree}" -p "$ref" -m "secret-scan: net PR diff")" || die "cannot build the net PR diff vs $ref"
+    git commit-tree "HEAD^{tree}" -p "$base" -m "secret-scan: net PR diff")" || die "cannot build the net PR diff vs $ref"
   # One "path:line rule" per finding; no commit (the net commit is synthetic), never the value.
   tmpl="$(mktemp)" || die "mktemp failed"
   printf '%s' '{{range .}}{{.File}}:{{.StartLine}} {{.RuleID}}{{"\n"}}{{end}}' > "$tmpl"

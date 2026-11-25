@@ -136,11 +136,34 @@ case_b7_firebase_key_in_kt_fails() {
   jenkins_merge "$r"; scan "$r" develop; expect_rc 1; expect_out 'Firebase\.kt:1 gcp-api-key$'; expect_no "$TOKEN"
 }
 
+case_b9_target_moved_on_merge_build_passes() {
+  local r; r="$(new_repo b9)"; TOKEN="$(fake_pat)"
+  commit_file "$r" Other.kt 'val ok = 1' "pr"
+  git -C "$r" checkout -q -b dev refs/remotes/origin/develop
+  commit_file "$r" Legacy.kt "val old = \"$TOKEN\"" "target gains a credential later"
+  git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature
+  jenkins_merge "$r"
+  [ "$(git -C "$r" rev-parse HEAD^2)" = "$(git -C "$r" rev-parse refs/remotes/origin/develop)" ] \
+    && ok "HEAD is a Jenkins-style merge" || ko "setup: no merge commit"
+  scan "$r" develop; expect_rc 0
+}
+case_b9_target_removed_secret_unmerged_passes() {
+  local r; r="$(new_repo b9b)"; TOKEN="$(fake_pat)"
+  git -C "$r" checkout -q -b dev refs/remotes/origin/develop
+  commit_file "$r" Legacy.kt "val old = \"$TOKEN\"" "legacy credential"
+  git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature
+  git -C "$r" reset -q --hard refs/remotes/origin/develop; commit_file "$r" Other.kt 'val ok = 1' "pr"
+  git -C "$r" checkout -q dev; git -C "$r" rm -q Legacy.kt; git -C "$r" commit -q -m "target removes it"
+  git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature
+  scan "$r" develop; expect_rc 0   # PR built without a merge commit, behind its target
+}
+
 ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b1_control_clean_pr_passes b1_pat_in_kt_fails
   b6_empty_target_fails b6_missing_target_ref_fails b6_no_merge_base_fails
   b2_4_log_names_file_and_rule_not_value b5_google_services_key_passes
-  b7_pat_in_google_services_fails b7_firebase_key_in_kt_fails)
+  b7_pat_in_google_services_fails b7_firebase_key_in_kt_fails
+  b9_target_moved_on_merge_build_passes b9_target_removed_secret_unmerged_passes)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do
