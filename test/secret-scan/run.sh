@@ -224,14 +224,14 @@ expect_sha() { # repo rev
   local want; want="$(git -C "$1" rev-parse "$2")"
   [ "$RC" = 0 ] && [ "$SHA" = "$want" ] && ok "status on $2" || ko "status on '$SHA' (exit $RC), want $2 = $want"
 }
-case_status_up_to_date_author_merge_is_head() {
+case_b15_up_to_date_author_merge_is_head() {
   local r; r="$(new_repo sa)"; commit_file "$r" a.kt 'val a = 1' "pr"
   git -C "$r" checkout -q -b dev refs/remotes/origin/develop; commit_file "$r" d.kt 'val d = 1' "target"
   git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature
   git -C "$r" merge -q --no-ff --no-edit refs/remotes/origin/develop >/dev/null   # author: develop into feature
   status_sha "$r"; expect_sha "$r" HEAD
 }
-case_status_jenkins_merge_target_moved_is_pr_head() {
+case_b15_jenkins_merge_target_moved_is_pr_head() {
   local r; r="$(new_repo sb)"; commit_file "$r" a.kt 'val a = 1' "pr"
   git -C "$r" checkout -q -b dev refs/remotes/origin/develop; commit_file "$r" d.kt 'val d = 1' "target"
   git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature; jenkins_merge "$r"
@@ -240,7 +240,7 @@ case_status_jenkins_merge_target_moved_is_pr_head() {
   git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature
   status_sha "$r"; expect_sha "$r" HEAD^1
 }
-case_status_linear_pr_is_head() {
+case_b15_linear_pr_is_head() {
   local r; r="$(new_repo sc)"; commit_file "$r" a.kt 'val a = 1' "pr"
   status_sha "$r"; expect_sha "$r" HEAD
 }
@@ -255,7 +255,7 @@ ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b11_merge_resolution_adds_secret_fails
   b12_gitleaksignore_cannot_silence b12_inline_allow_cannot_silence
   b13_gitattributes_nodiff_cannot_silence b13_gitattributes_binary_cannot_silence b14_dir_jwe_in_kt_fails
-  status_up_to_date_author_merge_is_head status_jenkins_merge_target_moved_is_pr_head status_linear_pr_is_head)
+  b15_up_to_date_author_merge_is_head b15_jenkins_merge_target_moved_is_pr_head b15_linear_pr_is_head)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do
