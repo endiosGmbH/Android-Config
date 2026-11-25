@@ -210,15 +210,15 @@ EOF
 
         post {
             always {
-                sh 'rm -rf local.properties ktlint detekt-cli-*.zip detekt-cli-*/ gitleaks gitleaks_*.tar.gz .eo-gitleaks.toml .eo-secret-scan.sh'
+                sh 'rm -rf local.properties ktlint detekt-cli-*.zip detekt-cli-*/ gitleaks gitleaks_*.tar.gz .eo-gitleaks.toml .eo-secret-scan.sh .eo-secret-scan.sha'
             }
         }
     }
 }
 
 /**
- * Posts the `ci/jenkins: secret-scan` commit status on the PR head, as iosPRVerify's
- * ghStatus does. Best-effort: a missing credential or API error only logs a warning.
+ * Posts the `ci/jenkins: secret-scan` commit status on the PR head through
+ * `eo-secret-scan.sh post-status`. Best-effort: any failure only logs a warning.
  */
 void secretScanStatus(String state, String description) {
     String context = 'ci/jenkins: secret-scan'
@@ -228,28 +228,15 @@ void secretScanStatus(String state, String description) {
             echo "WARNING: ${context} status '${state}' not posted: no GitHub PR URL (CHANGE_URL='${env.CHANGE_URL}')"
             return
         }
-        // The script picks the PR head (HEAD^1 under a Jenkins merge commit); the harness tests it.
         writeFile file: '.eo-secret-scan.sh', text: libraryResource('eo-secret-scan.sh')
-        String sha = sh(returnStdout: true, script: 'bash .eo-secret-scan.sh status-sha').trim()
-        String body = groovy.json.JsonOutput.toJson([
-            state      : state,
-            context    : context,
-            description: description,
-            target_url : "${env.BUILD_URL}console".toString(),
-        ])
-        withEnv(["EO_STATUS_URL=https://api.github.com/repos/${slug}/statuses/${sha}", "EO_STATUS_BODY=${body}"]) {
+        withEnv(["EO_STATUS_REPO=${slug}", "EO_STATUS_STATE=${state}", "EO_STATUS_DESCRIPTION=${description}",
+                 "EO_STATUS_TARGET_URL=${env.BUILD_URL}console"]) {
             withCredentials([string(credentialsId: 'GITHUB_TOKEN_ENDIOSONEGITHUB', variable: 'GH_TOKEN')]) {
-                // Token on curl's stdin, never in argv.
-                String code = sh(returnStdout: true, script: '''
+                // Token on the script's stdin, never in argv.
+                sh '''
                   set +x
-                  printf 'Authorization: token %s\\n' "$GH_TOKEN" | curl -sS --connect-timeout 10 --max-time 20 -o /dev/null -w '%{http_code}' \\
-                    -X POST -H @- -H 'Accept: application/vnd.github+json' -d "$EO_STATUS_BODY" "$EO_STATUS_URL" || true
-                ''').trim()
-                if (code == '201') {
-                    echo "${context}: ${state} posted"
-                } else {
-                    echo "WARNING: ${context} status '${state}' not posted (HTTP ${code ?: 'none'})"
-                }
+                  printf '%s\\n' "$GH_TOKEN" | bash .eo-secret-scan.sh post-status "$EO_STATUS_STATE" "$EO_STATUS_DESCRIPTION"
+                '''
             }
         }
     } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {

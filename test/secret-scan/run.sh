@@ -35,6 +35,7 @@ commit_file() { # repo path content message
   git -C "$1" add -A; git -C "$1" commit -q -m "$4"
 }
 # Jenkins "merge with target" build: HEAD^1 = PR head, HEAD^2 = origin/<target>, Git plugin identity.
+# A no-op when the PR already contains its target; move the target first for a real merge.
 jenkins_merge() {
   GIT_COMMITTER_NAME=anonymous GIT_COMMITTER_EMAIL=nobody@nowhere \
     git -C "$1" merge -q --no-ff --no-edit refs/remotes/origin/develop >/dev/null
@@ -238,33 +239,98 @@ gitattributes_case() { # repo-name attribute
 case_b13_gitattributes_nodiff_cannot_silence() { gitattributes_case b13a -diff; }
 case_b13_gitattributes_binary_cannot_silence() { gitattributes_case b13b binary; }
 
-# ---- status SHA: the commit that carries ci/jenkins: secret-scan -------------------------------
-status_sha() { # repo -> sets RC, SHA
-  OUT="$WORK/out.$RANDOM"; SHA="$(cd "$1" && bash "$SCRIPT" status-sha 2> "$OUT")"; RC=$?
+# ---- status post: the commit that carries ci/jenkins: secret-scan ------------------------------
+# Fake statuses API: 201 for a SHA listed in <known>, 422 otherwise (500 for all in mode "fail").
+# Logs "<code> <sha> auth=<yes|no> state=<state>" per request; never the token itself.
+fake_api() { # known-file mode -> sets API, API_LOG
+  local pf="$WORK/api.port.$RANDOM"; API_LOG="$WORK/api.log.$RANDOM"; : > "$API_LOG"
+  python3 -I -c 'import http.server,json,sys
+known_f,mode,log_f,port_f,token=sys.argv[1:6]
+class H(http.server.BaseHTTPRequestHandler):
+    def do_POST(self):
+        sha=self.path.rsplit("/",1)[-1]
+        body=json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+        known=open(known_f).read().split()
+        code=500 if mode=="fail" else (201 if sha in known else 422)
+        auth="yes" if self.headers.get("Authorization")=="token "+token else "no"
+        open(log_f,"a").write("%d %s auth=%s state=%s context=%s\n"%(code,sha,auth,body["state"],body["context"]))
+        self.send_response(code); self.end_headers()
+    def log_message(self,*a): pass
+s=http.server.HTTPServer(("127.0.0.1",0),H)
+open(port_f,"w").write(str(s.server_port)); s.serve_forever()' "$1" "$2" "$API_LOG" "$pf" "$DUMMY_TOKEN" > /dev/null 2>&1 &
+  BG_PIDS+=($!); disown
+  while [ ! -s "$pf" ]; do sleep 0.1; done; API="http://127.0.0.1:$(cat "$pf")"
 }
-expect_sha() { # repo rev
-  local want; want="$(git -C "$1" rev-parse "$2")"
-  [ "$RC" = 0 ] && [ "$SHA" = "$want" ] && ok "status on $2" || ko "status on '$SHA' (exit $RC), want $2 = $want"
+DUMMY_TOKEN="dummy-$(rand 16)"
+post_status() { # repo state api -> sets RC, OUT
+  OUT="$WORK/out.$RANDOM"
+  (cd "$1" && printf '%s\n' "$DUMMY_TOKEN" | EO_GITHUB_API="$3" EO_STATUS_REPO=o/r \
+    EO_STATUS_TARGET_URL=http://jenkins.invalid/1/console EO_STATUS_MAX_TIME="${EO_STATUS_MAX_TIME:-20}" \
+    bounded 15 bash "$SCRIPT" post-status "$2" "Scanning") > "$OUT" 2>&1
+  RC=$?
 }
-case_b15_up_to_date_author_merge_is_head() {
-  local r; r="$(new_repo sa)"; commit_file "$r" a.kt 'val a = 1' "pr"
-  git -C "$r" checkout -q -b dev refs/remotes/origin/develop; commit_file "$r" d.kt 'val d = 1' "target"
-  git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature
-  git -C "$r" merge -q --no-ff --no-edit refs/remotes/origin/develop >/dev/null   # author: develop into feature
-  status_sha "$r"; expect_sha "$r" HEAD
+known() { # repo revs... -> file listing their SHAs
+  local f="$WORK/known.$RANDOM" r="$1"; shift
+  for rev in "$@"; do git -C "$r" rev-parse "$rev"; done > "$f"; echo "$f"
 }
-case_b15_jenkins_merge_target_moved_is_pr_head() {
-  local r; r="$(new_repo sb)"; commit_file "$r" a.kt 'val a = 1' "pr"
+expect_api() { # repo expected-lines ("code rev" each)
+  local want="" line; while read -r code rev; do
+    [ -n "$code" ] && want+="$code $(git -C "$1" rev-parse "$rev") auth=yes"$'\n'
+  done <<< "$2"
+  local got; got="$(cut -d' ' -f1-3 "$API_LOG")"$'\n'
+  [ "$got" = "$want" ] && ok "API saw: $(echo $2)" || ko "API saw: $(cat "$API_LOG" | tr '\n' ';'), want $(echo $2)"
+}
+moved_target_merge() { # repo-name -> Jenkins merge of a PR whose target moved
+  local r; r="$(new_repo "$1")"; commit_file "$r" a.kt 'val a = 1' "pr"
   git -C "$r" checkout -q -b dev refs/remotes/origin/develop; commit_file "$r" d.kt 'val d = 1' "target"
   git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature; jenkins_merge "$r"
-  git -C "$r" rev-parse -q --verify HEAD^2 >/dev/null && ok "HEAD is a Jenkins merge" || ko "setup: no merge commit"
-  git -C "$r" checkout -q dev; commit_file "$r" e.kt 'val e = 1' "target moves on after the merge"
-  git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature
-  status_sha "$r"; expect_sha "$r" HEAD^1
+  echo "$r"
 }
-case_b15_linear_pr_is_head() {
+case_b15_jenkins_merge_posts_on_pr_head() {
+  local r; r="$(moved_target_merge sa)"
+  fake_api "$(known "$r" HEAD^1 HEAD^2)" ok
+  post_status "$r" pending "$API"; expect_rc 0
+  post_status "$r" success "$API"; expect_rc 0
+  expect_api "$r" "422 HEAD
+201 HEAD^1
+201 HEAD^1"
+  grep -q 'context=ci/jenkins: secret-scan' "$API_LOG" && ok "context name" || ko "context name"
+}
+case_b15_forged_identity_author_merge_posts_on_head() {
+  local r; r="$(new_repo sb)"; commit_file "$r" a.kt 'val a = 1' "pr"
+  git -C "$r" checkout -q -b dev refs/remotes/origin/develop; commit_file "$r" d.kt 'val d = 1' "target"
+  git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature
+  jenkins_merge "$r"   # the author forges the Jenkins identity on a merge they push
+  fake_api "$(known "$r" HEAD HEAD^1 HEAD^2)" ok
+  post_status "$r" pending "$API"; expect_rc 0; post_status "$r" failure "$API"; expect_rc 0
+  expect_api "$r" "201 HEAD
+201 HEAD"
+}
+case_b15_linear_posts_on_head() {
   local r; r="$(new_repo sc)"; commit_file "$r" a.kt 'val a = 1' "pr"
-  status_sha "$r"; expect_sha "$r" HEAD
+  fake_api "$(known "$r" HEAD HEAD^1)" ok
+  post_status "$r" pending "$API"; expect_rc 0; post_status "$r" success "$API"; expect_rc 0
+  expect_api "$r" "201 HEAD
+201 HEAD"
+}
+case_b15_pending_forgets_a_previous_build_sha() {
+  local r; r="$(new_repo sd)"; commit_file "$r" a.kt 'val a = 1' "pr"
+  git -C "$r" rev-parse HEAD^1 > "$r/.eo-secret-scan.sha"   # left over from an older build
+  fake_api "$(known "$r" HEAD HEAD^1)" ok
+  post_status "$r" pending "$API"; expect_rc 0
+  expect_api "$r" "201 HEAD"
+}
+case_b15_api_failure_only_warns() {
+  local r; r="$(new_repo se)"; commit_file "$r" a.kt 'val a = 1' "pr"
+  fake_api "$(known "$r" HEAD)" fail
+  post_status "$r" pending "$API"; expect_rc 0; expect_out "WARNING: .*'pending' not posted \(HTTP 500\)"
+  expect_no "$DUMMY_TOKEN"
+}
+case_b16_stalled_status_post_only_warns() {
+  local r start; r="$(new_repo sf)"; commit_file "$r" a.kt 'val a = 1' "pr"; silent_listener; start=$SECONDS
+  EO_STATUS_MAX_TIME=2 post_status "$r" pending "http://127.0.0.1:$PORT"
+  expect_rc 0; expect_out "WARNING: .*'pending' not posted"; expect_no "$DUMMY_TOKEN"
+  [ $((SECONDS - start)) -le 10 ] && ok "gave up within the bound" || ko "took $((SECONDS - start)) s"
 }
 
 ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum b16_stalled_download_exits_2
@@ -277,7 +343,8 @@ ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum b16_s
   b11_merge_resolution_adds_secret_fails
   b12_gitleaksignore_cannot_silence b12_inline_allow_cannot_silence
   b13_gitattributes_nodiff_cannot_silence b13_gitattributes_binary_cannot_silence b14_dir_jwe_in_kt_fails
-  b15_up_to_date_author_merge_is_head b15_jenkins_merge_target_moved_is_pr_head b15_linear_pr_is_head)
+  b15_jenkins_merge_posts_on_pr_head b15_forged_identity_author_merge_posts_on_head b15_linear_posts_on_head
+  b15_pending_forgets_a_previous_build_sha b15_api_failure_only_warns b16_stalled_status_post_only_warns)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do
