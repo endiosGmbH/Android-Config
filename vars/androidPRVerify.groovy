@@ -7,6 +7,11 @@
  * changeset (vs the PR base branch), Android lint, and unit tests. Each check
  * reports an independent `ci/jenkins: <check>` GitHub commit status.
  *
+ * Before any Gradle work, a gitleaks secret scan (`resources/eo-secret-scan.sh`,
+ * config `resources/eo-gitleaks.toml`) checks only what the PR adds vs
+ * `origin/${CHANGE_TARGET}`. It is non-blocking for now: a finding turns the stage
+ * red and posts `ci/jenkins: secret-scan` as failure, but leaves the build result.
+ *
  * Usage — repo `Jenkinsfile.prverify`:
  *
  *   @Library('android-ci') _
@@ -112,6 +117,38 @@ EOF
                 }
             }
 
+            stage('Secret scan') {
+                steps {
+                    // Non-blocking: the stage goes red, the build result stays as it is.
+                    catchError(buildResult: 'SUCCESS', stageResult: 'FAILURE', catchInterruptions: false) {
+                        script {
+                            secretScanStatus('pending', 'Scanning this PR for credentials')
+                            int rc = 2
+                            try {
+                                writeFile file: '.eo-gitleaks.toml', text: libraryResource('eo-gitleaks.toml')
+                                writeFile file: '.eo-secret-scan.sh', text: libraryResource('eo-secret-scan.sh')
+                                // No credentials in scope; exit 0 clean, 1 credentials found, 2 could not run.
+                                rc = sh(returnStatus: true, script: '''
+                                  bash .eo-secret-scan.sh install . &&
+                                    GITLEAKS=./gitleaks bash .eo-secret-scan.sh scan "${CHANGE_TARGET:-}" .eo-gitleaks.toml
+                                ''')
+                            } finally {
+                                if (rc == 0) {
+                                    secretScanStatus('success', 'No credentials added by this PR')
+                                } else if (rc == 1) {
+                                    secretScanStatus('failure', 'This PR adds credentials, see the Jenkins log')
+                                } else {
+                                    secretScanStatus('error', 'Secret scan could not run, see the Jenkins log')
+                                }
+                            }
+                            if (rc != 0) {
+                                error("Secret scan failed (exit ${rc}), see the log above")
+                            }
+                        }
+                    }
+                }
+            }
+
             stage('ktlint') {
                 steps {
                     githubStatusWrap('ci/jenkins: ktlint') {
@@ -173,8 +210,60 @@ EOF
 
         post {
             always {
-                sh 'rm -rf local.properties ktlint detekt-cli-*.zip detekt-cli-*/'
+                sh 'rm -rf local.properties ktlint detekt-cli-*.zip detekt-cli-*/ gitleaks gitleaks_*.tar.gz .eo-gitleaks.toml .eo-secret-scan.sh'
             }
         }
     }
+}
+
+/**
+ * Posts the `ci/jenkins: secret-scan` commit status on the PR head, as iosPRVerify's
+ * ghStatus does. Best-effort: a missing credential or API error only logs a warning.
+ */
+void secretScanStatus(String state, String description) {
+    String context = 'ci/jenkins: secret-scan'
+    try {
+        String slug = githubSlug(env.CHANGE_URL)
+        if (!slug) {
+            echo "WARNING: ${context} status '${state}' not posted: no GitHub PR URL (CHANGE_URL='${env.CHANGE_URL}')"
+            return
+        }
+        // HEAD is the Jenkins merge commit when its second parent is the target; the PR head is HEAD^1.
+        String sha = sh(returnStdout: true, script: '''
+          p2=$(git rev-parse -q --verify 'HEAD^2' || true)
+          if [ -n "$p2" ] && [ "$p2" = "$(git rev-parse -q --verify "origin/${CHANGE_TARGET:-}" || true)" ]; then
+            git rev-parse 'HEAD^1'; else git rev-parse HEAD; fi
+        ''').trim()
+        String body = groovy.json.JsonOutput.toJson([
+            state      : state,
+            context    : context,
+            description: description,
+            target_url : "${env.BUILD_URL}console".toString(),
+        ])
+        withEnv(["EO_STATUS_URL=https://api.github.com/repos/${slug}/statuses/${sha}", "EO_STATUS_BODY=${body}"]) {
+            withCredentials([string(credentialsId: 'GITHUB_TOKEN_ENDIOSONEGITHUB', variable: 'GH_TOKEN')]) {
+                // Token on curl's stdin, never in argv.
+                String code = sh(returnStdout: true, script: '''
+                  set +x
+                  printf 'Authorization: token %s\\n' "$GH_TOKEN" | curl -sS -o /dev/null -w '%{http_code}' \\
+                    -X POST -H @- -H 'Accept: application/vnd.github+json' -d "$EO_STATUS_BODY" "$EO_STATUS_URL" || true
+                ''').trim()
+                if (code == '201') {
+                    echo "${context}: ${state} posted"
+                } else {
+                    echo "WARNING: ${context} status '${state}' not posted (HTTP ${code ?: 'none'})"
+                }
+            }
+        }
+    } catch (org.jenkinsci.plugins.workflow.steps.FlowInterruptedException e) {
+        throw e
+    } catch (Throwable t) {
+        echo "WARNING: ${context} status '${state}' not posted: ${t.message}"
+    }
+}
+
+@NonCPS
+static String githubSlug(String changeUrl) {
+    def m = (changeUrl ?: '') =~ /github\.com\/([^\/]+\/[^\/]+)\/pull\//
+    return m.find() ? m.group(1) : null
 }
