@@ -3,12 +3,12 @@
 [extend]
 useDefault = true
 
-# The endios backend tokens are JWE (five dot-separated parts). The default jwt rule
-# expects three parts and misses them.
+# The endios backend tokens are JWE (five dot-separated parts; the key part is empty for `dir`).
+# The default jwt rule expects three parts and misses them.
 [[rules]]
 id = "endios-jwe-token"
 description = "endios backend token (JWE)"
-regex = '''eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+'''
+regex = '''eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]*\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+'''
 keywords = ["eyj"]
 
 # A hardcoded Authorization header value (no default rule covers it).

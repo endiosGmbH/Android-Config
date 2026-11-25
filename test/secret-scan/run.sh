@@ -19,6 +19,8 @@ rand() { LC_ALL=C tr -dc 'A-Za-z0-9' < /dev/urandom | head -c "$1"; }
 # Token prefixes are split so this file never holds a token-shaped literal.
 fake_pat() { printf '%s%s' 'gh''p_' "$(rand 36)"; }
 fake_gcp() { printf '%s%s' 'AI''za' "$(rand 35)"; }
+# A `dir`-algorithm JWE: header..iv.ciphertext.tag (empty encrypted-key segment).
+fake_jwe_dir() { printf '%s%s..%s.%s.%s' 'ey''J' "$(rand 30)" "$(rand 22)" "$(rand 60)" "$(rand 22)"; }
 
 # A repo whose refs/remotes/origin/develop stands in for the fetched PR target.
 new_repo() {
@@ -198,6 +200,12 @@ case_b12_inline_allow_cannot_silence() {
   jenkins_merge "$r"; scan "$r" develop; expect_rc 1; expect_out 'Api\.kt:1 github-pat$'; expect_no "$TOKEN"
 }
 
+case_b14_dir_jwe_in_kt_fails() {
+  local r; r="$(new_repo b14)"; TOKEN="$(fake_jwe_dir)"
+  commit_file "$r" Backend.kt "val jwe = \"$TOKEN\"" "dir jwe in code"
+  jenkins_merge "$r"; scan "$r" develop; expect_rc 1; expect_out 'Backend\.kt:1 endios-jwe-token$'; expect_no "$TOKEN"
+}
+
 # A PR's own .gitattributes must not hide its diff (`-diff` and `binary` make git log print no patch).
 gitattributes_case() { # repo-name attribute
   local r; r="$(new_repo "$1")"; TOKEN="$(fake_pat)"
@@ -246,7 +254,7 @@ ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b9_target_removed_secret_unmerged_passes b10_added_then_removed_fails
   b11_merge_resolution_adds_secret_fails
   b12_gitleaksignore_cannot_silence b12_inline_allow_cannot_silence
-  b13_gitattributes_nodiff_cannot_silence b13_gitattributes_binary_cannot_silence
+  b13_gitattributes_nodiff_cannot_silence b13_gitattributes_binary_cannot_silence b14_dir_jwe_in_kt_fails
   status_up_to_date_author_merge_is_head status_jenkins_merge_target_moved_is_pr_head status_linear_pr_is_head)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
