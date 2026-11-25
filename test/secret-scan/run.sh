@@ -41,6 +41,15 @@ jenkins_merge() {
     git -C "$1" merge -q --no-ff --no-edit refs/remotes/origin/develop >/dev/null
 }
 
+# A real merge build: the target gains a commit first, so jenkins_merge creates HEAD^2.
+merge_build() {
+  local r="$1" br; br="$(git -C "$r" symbolic-ref --short HEAD)"
+  git -C "$r" checkout -q -B dev refs/remotes/origin/develop; commit_file "$r" "target-$RANDOM.txt" moved "target moves"
+  git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q "$br"; jenkins_merge "$r"
+  [ "$(git -C "$r" rev-parse HEAD^2 2>/dev/null)" = "$(git -C "$r" rev-parse refs/remotes/origin/develop)" ] \
+    && ok "HEAD is a Jenkins-style merge" || ko "setup: no merge commit"
+}
+
 scan() { # repo target -> sets RC, OUT
   OUT="$WORK/out.$RANDOM"
   (cd "$1" && GITLEAKS="$GITLEAKS_BIN" bash "$SCRIPT" scan "$2" "$CONFIG") > "$OUT" 2>&1
@@ -239,6 +248,29 @@ gitattributes_case() { # repo-name attribute
 case_b13_gitattributes_nodiff_cannot_silence() { gitattributes_case b13a -diff; }
 case_b13_gitattributes_binary_cannot_silence() { gitattributes_case b13b binary; }
 
+# Merge-build variants: same PRs, built as a real merge with a moved target.
+case_b1_pat_in_kt_merge_build_fails() {
+  local r; r="$(new_repo b1m)"; TOKEN="$(fake_pat)"
+  commit_file "$r" app/src/main/java/Api.kt "val token = \"$TOKEN\"" "add api"; merge_build "$r"
+  scan "$r" develop; expect_rc 1; expect_out 'Api\.kt:1 github-pat$'; expect_no "$TOKEN"
+}
+case_b5_google_services_key_merge_build_passes() {
+  local r; r="$(new_repo b5m)"
+  commit_file "$r" app/google-services.json "$(gservices "$(fake_gcp)")" "firebase"
+  merge_build "$r"; scan "$r" develop; expect_rc 0
+}
+case_b10_added_then_removed_merge_build_fails() {
+  local r; r="$(new_repo b10m)"; TOKEN="$(fake_pat)"
+  commit_file "$r" Api.kt "val t = \"$TOKEN\"" "add"; commit_file "$r" Api.kt 'val t = ""' "remove"
+  merge_build "$r"; scan "$r" develop; expect_rc 1; expect_out 'Api\.kt:1 github-pat$'; expect_no "$TOKEN"
+}
+case_b13_gitattributes_nodiff_merge_build_cannot_silence() {
+  local r; r="$(new_repo b13m)"; TOKEN="$(fake_pat)"
+  commit_file "$r" .gitattributes "*.kt -diff" "no diffs for kotlin"
+  commit_file "$r" Api.kt "val t = \"$TOKEN\"" "add"
+  merge_build "$r"; scan "$r" develop; expect_rc 1; expect_out 'Api\.kt:1 github-pat$'; expect_no "$TOKEN"
+}
+
 # ---- status post: the commit that carries ci/jenkins: secret-scan ------------------------------
 # Fake statuses API: 201 for a SHA listed in <known>, 422 otherwise (500 for all in mode "fail").
 # Logs "<code> <sha> auth=<yes|no> state=<state>" per request; never the token itself.
@@ -343,6 +375,8 @@ ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum b16_s
   b11_merge_resolution_adds_secret_fails
   b12_gitleaksignore_cannot_silence b12_inline_allow_cannot_silence
   b13_gitattributes_nodiff_cannot_silence b13_gitattributes_binary_cannot_silence b14_dir_jwe_in_kt_fails
+  b1_pat_in_kt_merge_build_fails b5_google_services_key_merge_build_passes
+  b10_added_then_removed_merge_build_fails b13_gitattributes_nodiff_merge_build_cannot_silence
   b15_jenkins_merge_posts_on_pr_head b15_forged_identity_author_merge_posts_on_head b15_linear_posts_on_head
   b15_pending_forgets_a_previous_build_sha b15_api_failure_only_warns b16_stalled_status_post_only_warns)
 
