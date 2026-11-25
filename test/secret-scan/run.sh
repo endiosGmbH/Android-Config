@@ -195,6 +195,16 @@ case_b12_inline_allow_cannot_silence() {
   jenkins_merge "$r"; scan "$r" develop; expect_rc 1; expect_out 'Api\.kt:1 github-pat$'; expect_no "$TOKEN"
 }
 
+# A PR's own .gitattributes must not hide its diff (`-diff` and `binary` make git log print no patch).
+gitattributes_case() { # repo-name attribute
+  local r; r="$(new_repo "$1")"; TOKEN="$(fake_pat)"
+  commit_file "$r" .gitattributes "*.kt $2" "no diffs for kotlin"
+  commit_file "$r" Api.kt "val t = \"$TOKEN\"" "add"
+  jenkins_merge "$r"; scan "$r" develop; expect_rc 1; expect_out 'Api\.kt:1 github-pat$'; expect_no "$TOKEN"
+}
+case_b13_gitattributes_nodiff_cannot_silence() { gitattributes_case b13a -diff; }
+case_b13_gitattributes_binary_cannot_silence() { gitattributes_case b13b binary; }
+
 ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b1_control_clean_pr_passes b1_pat_in_kt_fails
   b6_empty_target_fails b6_missing_target_ref_fails b6_no_merge_base_fails
@@ -203,7 +213,8 @@ ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b8_existing_secret_on_target_passes b9_target_moved_on_merge_build_passes
   b9_target_removed_secret_unmerged_passes b10_added_then_removed_fails
   b11_merge_resolution_adds_secret_fails
-  b12_gitleaksignore_cannot_silence b12_inline_allow_cannot_silence)
+  b12_gitleaksignore_cannot_silence b12_inline_allow_cannot_silence
+  b13_gitattributes_nodiff_cannot_silence b13_gitattributes_binary_cannot_silence)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do
