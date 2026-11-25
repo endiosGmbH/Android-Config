@@ -104,9 +104,21 @@ case_b6_no_merge_base_fails() {
   scan "$r" develop; expect_rc 2; expect_out 'no merge base between origin/develop and HEAD'
 }
 
+case_b2_4_log_names_file_and_rule_not_value() {
+  local r; r="$(new_repo b2)"; TOKEN="$(fake_pat)"
+  commit_file "$r" app/src/main/java/Api.kt "package x
+val token = \"$TOKEN\"" "add api"; jenkins_merge "$r"
+  scan "$r" develop; expect_rc 1
+  expect_out '(^|[^/])app/src/main/java/Api\.kt:2( |$)'   # behavior 2: path:line
+  expect_out 'Api\.kt:2 github-pat$'                      # behavior 3: rule
+  expect_no "$TOKEN"                                       # behavior 4: never the value
+  expect_no "${TOKEN:4}"
+}
+
 ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b1_control_clean_pr_passes b1_pat_in_kt_fails
-  b6_empty_target_fails b6_missing_target_ref_fails b6_no_merge_base_fails)
+  b6_empty_target_fails b6_missing_target_ref_fails b6_no_merge_base_fails
+  b2_4_log_names_file_and_rule_not_value)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do

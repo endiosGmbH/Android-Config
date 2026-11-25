@@ -33,7 +33,7 @@ install() {
 }
 
 scan() {
-  local target="${1:-}" config="${2:?scan needs a config}" ref net rc
+  local target="${1:-}" config="${2:?scan needs a config}" ref net rc tmpl
   : "${GITLEAKS:?GITLEAKS must point at the gitleaks binary}"
   # Fail closed: without the PR's base there is nothing to diff against, so never pass.
   [ -n "$target" ] || die "CHANGE_TARGET is empty, cannot find the PR's base branch"
@@ -44,12 +44,19 @@ scan() {
   net="$(GIT_AUTHOR_NAME=secret-scan GIT_AUTHOR_EMAIL=secret-scan@invalid \
     GIT_COMMITTER_NAME=secret-scan GIT_COMMITTER_EMAIL=secret-scan@invalid \
     git commit-tree "HEAD^{tree}" -p "$ref" -m "secret-scan: net PR diff")" || die "cannot build the net PR diff vs $ref"
+  # One "path:line rule" per finding; no commit (the net commit is synthetic), never the value.
+  tmpl="$(mktemp)" || die "mktemp failed"
+  printf '%s' '{{range .}}{{.File}}:{{.StartLine}} {{.RuleID}}{{"\n"}}{{end}}' > "$tmpl"
   "$GITLEAKS" git --config "$config" --redact --no-banner --no-color --exit-code 10 \
+    --report-format template --report-template "$tmpl" --report-path - \
     --log-opts="^$ref HEAD $net" .
   rc=$?
+  rm -f "$tmpl"
   case $rc in
     0) echo "Secret scan: no credentials in this PR"; return 0 ;;
-    10) echo "Secret scan: this PR adds credentials (values redacted)."; return 1 ;;
+    10) echo "Secret scan: this PR adds credentials (listed above as path:line rule, values redacted)."
+       echo "Inspect locally with: gitleaks git --redact --config <Android-Config>/resources/eo-gitleaks.toml"
+       return 1 ;;
     *) die "gitleaks failed (exit $rc)" ;;
   esac
 }
