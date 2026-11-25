@@ -32,7 +32,26 @@ install() {
   echo "Secret scan: gitleaks $GITLEAKS_VERSION ($platform) installed, checksum verified"
 }
 
+scan() {
+  local target="${1:-}" config="${2:?scan needs a config}" ref net rc
+  : "${GITLEAKS:?GITLEAKS must point at the gitleaks binary}"
+  ref="origin/$target"
+  # Synthetic commit = what the PR would change on the target, incl. merge-resolution content.
+  net="$(GIT_AUTHOR_NAME=secret-scan GIT_AUTHOR_EMAIL=secret-scan@invalid \
+    GIT_COMMITTER_NAME=secret-scan GIT_COMMITTER_EMAIL=secret-scan@invalid \
+    git commit-tree "HEAD^{tree}" -p "$ref" -m "secret-scan: net PR diff")" || die "cannot build the net PR diff vs $ref"
+  "$GITLEAKS" git --config "$config" --redact --no-banner --no-color --exit-code 10 \
+    --log-opts="^$ref HEAD $net" .
+  rc=$?
+  case $rc in
+    0) echo "Secret scan: no credentials in this PR"; return 0 ;;
+    10) echo "Secret scan: this PR adds credentials (values redacted)."; return 1 ;;
+    *) die "gitleaks failed (exit $rc)" ;;
+  esac
+}
+
 case "${1:-}" in
   install) shift; install "$@" ;;
+  scan) shift; scan "$@"; exit $? ;;
   *) die "usage: $0 install <dir> | scan <target-branch> <config>" ;;
 esac

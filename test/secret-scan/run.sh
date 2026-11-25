@@ -76,7 +76,21 @@ case_install_bad_checksum() {
   [ ! -e "$WORK/inst-sum/gitleaks" ] && ok "no binary left behind" || ko "binary extracted despite bad checksum"
 }
 
-ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum)
+# ---- scan behaviors (numbers match the spec) -------------------------------------------------
+case_b1_pat_in_kt_fails() {
+  local r; r="$(new_repo b1)"; TOKEN="$(fake_pat)"
+  commit_file "$r" app/src/main/java/Api.kt "val token = \"$TOKEN\"" "add api"; jenkins_merge "$r"
+  scan "$r" develop; expect_rc 1
+}
+
+case_b1_control_clean_pr_passes() {
+  local r; r="$(new_repo b1c)"
+  commit_file "$r" app/src/main/java/Api.kt 'val greeting = "hello"' "add api"; jenkins_merge "$r"
+  scan "$r" develop; expect_rc 0
+}
+
+ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
+  b1_control_clean_pr_passes b1_pat_in_kt_fails)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do
