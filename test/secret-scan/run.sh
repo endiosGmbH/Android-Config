@@ -125,10 +125,22 @@ case_b5_google_services_key_passes() {
   jenkins_merge "$r"; scan "$r" develop; expect_rc 0
 }
 
+case_b7_pat_in_google_services_fails() {
+  local r; r="$(new_repo b7a)"; TOKEN="$(fake_pat)"
+  commit_file "$r" app/google-services.json "{ \"github\": \"$TOKEN\" }" "pat in firebase file"
+  jenkins_merge "$r"; scan "$r" develop; expect_rc 1; expect_out 'google-services\.json:1 github-pat$'; expect_no "$TOKEN"
+}
+case_b7_firebase_key_in_kt_fails() {
+  local r; r="$(new_repo b7b)"; TOKEN="$(fake_gcp)"
+  commit_file "$r" app/src/main/java/Firebase.kt "val key = \"$TOKEN\"" "firebase key in code"
+  jenkins_merge "$r"; scan "$r" develop; expect_rc 1; expect_out 'Firebase\.kt:1 gcp-api-key$'; expect_no "$TOKEN"
+}
+
 ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b1_control_clean_pr_passes b1_pat_in_kt_fails
   b6_empty_target_fails b6_missing_target_ref_fails b6_no_merge_base_fails
-  b2_4_log_names_file_and_rule_not_value b5_google_services_key_passes)
+  b2_4_log_names_file_and_rule_not_value b5_google_services_key_passes
+  b7_pat_in_google_services_fails b7_firebase_key_in_kt_fails)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do
