@@ -13,7 +13,8 @@ SHA256_DARWIN_X64=dfe101a4db2255fc85120ac7f3d25e4342c3c20cf749f2c20a18081af19527
 die() { echo "Secret scan: $*" >&2; exit 2; }
 
 install() {
-  local dir="${1:?install needs a target dir}" os arch platform sum tarball
+  local dir="${1:-}" os arch platform sum tarball
+  [ -n "$dir" ] || die "install needs a target dir"
   os="$(uname -s)"; arch="$(uname -m)"
   [ "$os" = Darwin ] || die "unsupported OS '$os' (gitleaks is pinned for macOS arm64/x64 only)"
   case "$arch" in
@@ -36,8 +37,9 @@ install() {
 }
 
 scan() {
-  local target="${1:-}" config="${2:?scan needs a config}" ref base net rc tmpl attrs
-  : "${GITLEAKS:?GITLEAKS must point at the gitleaks binary}"
+  local target="${1:-}" config="${2:-}" ref base net rc tmpl attrs
+  [ -n "$config" ] || die "scan needs a config"
+  [ -n "${GITLEAKS:-}" ] || die "GITLEAKS must point at the gitleaks binary"
   # Fail closed: without the PR's base there is nothing to diff against, so never pass.
   [ -n "$target" ] || die "CHANGE_TARGET is empty, cannot find the PR's base branch"
   ref="origin/$target"

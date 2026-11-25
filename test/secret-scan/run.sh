@@ -91,6 +91,10 @@ case_install_bad_checksum() {
   expect_rc 2; expect_out 'checksum'
   [ ! -e "$WORK/inst-sum/gitleaks" ] && ok "no binary left behind" || ko "binary extracted despite bad checksum"
 }
+case_install_no_dir_exits_2() {
+  OUT="$WORK/out.nodir"; bash "$SCRIPT" install > "$OUT" 2>&1; RC=$?
+  expect_rc 2; expect_out 'install needs a target dir'
+}
 
 # A local TCP listener that accepts and never answers -> sets PORT.
 silent_listener() {
@@ -139,6 +143,22 @@ case_b6_no_merge_base_fails() {
   git -C "$r" checkout -q --orphan other; git -C "$r" commit -q -m unrelated
   git -C "$r" update-ref refs/remotes/origin/develop other; git -C "$r" checkout -q feature
   scan "$r" develop; expect_rc 2; expect_out 'no merge base between origin/develop and HEAD'
+}
+# Missing arguments are "could not run" (2), never "credentials found" (1).
+case_b6_missing_config_exits_2() {
+  local r; r="$(new_repo b6d)"; commit_file "$r" a.txt x "pr"; OUT="$WORK/out.$RANDOM"
+  (cd "$r" && GITLEAKS="$GITLEAKS_BIN" bash "$SCRIPT" scan develop) > "$OUT" 2>&1; RC=$?
+  expect_rc 2; expect_out 'scan needs a config'
+}
+case_b6_missing_gitleaks_exits_2() {
+  local r; r="$(new_repo b6e)"; commit_file "$r" a.txt x "pr"; OUT="$WORK/out.$RANDOM"
+  (cd "$r" && unset GITLEAKS && bash "$SCRIPT" scan develop "$CONFIG") > "$OUT" 2>&1; RC=$?
+  expect_rc 2; expect_out 'GITLEAKS must point'
+}
+case_b6_no_args_exits_2() {
+  local r; r="$(new_repo b6f)"; commit_file "$r" a.txt x "pr"; OUT="$WORK/out.$RANDOM"
+  (cd "$r" && GITLEAKS="$GITLEAKS_BIN" bash "$SCRIPT" scan) > "$OUT" 2>&1; RC=$?
+  expect_rc 2
 }
 
 case_b2_4_log_names_file_and_rule_not_value() {
@@ -365,9 +385,10 @@ case_b16_stalled_status_post_only_warns() {
   [ $((SECONDS - start)) -le 10 ] && ok "gave up within the bound" || ko "took $((SECONDS - start)) s"
 }
 
-ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum b16_stalled_download_exits_2
+ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum install_no_dir_exits_2 b16_stalled_download_exits_2
   b1_control_clean_pr_passes b1_pat_in_kt_fails
   b6_empty_target_fails b6_missing_target_ref_fails b6_no_merge_base_fails
+  b6_missing_config_exits_2 b6_missing_gitleaks_exits_2 b6_no_args_exits_2
   b2_4_log_names_file_and_rule_not_value b5_google_services_key_passes
   b7_pat_in_google_services_fails b7_firebase_key_in_kt_fails
   b8_existing_secret_on_target_passes b9_target_moved_on_merge_build_passes
