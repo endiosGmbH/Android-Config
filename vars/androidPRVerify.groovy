@@ -228,12 +228,9 @@ void secretScanStatus(String state, String description) {
             echo "WARNING: ${context} status '${state}' not posted: no GitHub PR URL (CHANGE_URL='${env.CHANGE_URL}')"
             return
         }
-        // HEAD is the Jenkins merge commit when its second parent is the target; the PR head is HEAD^1.
-        String sha = sh(returnStdout: true, script: '''
-          p2=$(git rev-parse -q --verify 'HEAD^2' || true)
-          if [ -n "$p2" ] && [ "$p2" = "$(git rev-parse -q --verify "origin/${CHANGE_TARGET:-}" || true)" ]; then
-            git rev-parse 'HEAD^1'; else git rev-parse HEAD; fi
-        ''').trim()
+        // The script picks the PR head (HEAD^1 under a Jenkins merge commit); the harness tests it.
+        writeFile file: '.eo-secret-scan.sh', text: libraryResource('eo-secret-scan.sh')
+        String sha = sh(returnStdout: true, script: 'bash .eo-secret-scan.sh status-sha').trim()
         String body = groovy.json.JsonOutput.toJson([
             state      : state,
             context    : context,

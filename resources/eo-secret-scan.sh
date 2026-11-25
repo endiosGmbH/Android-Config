@@ -2,6 +2,7 @@
 # Secret scan for androidPRVerify. Exit 0 = clean, 1 = credentials found, 2 = the scan could not run.
 #   eo-secret-scan.sh install <dir>                   pinned gitleaks into <dir>, SHA-256 verified
 #   GITLEAKS=<bin> eo-secret-scan.sh scan <target-branch> <config>   run inside the PR checkout
+#   eo-secret-scan.sh status-sha                      prints the PR head SHA that gets the commit status
 set -uo pipefail
 
 GITLEAKS_VERSION=8.30.1
@@ -68,8 +69,19 @@ scan() {
   esac
 }
 
+status_sha() {
+  # Jenkins Git plugin PR merges are committed as nobody@nowhere (no user.email on the agent);
+  # their first parent is the PR head. Any other HEAD, author merges included, is the PR head.
+  if git rev-parse -q --verify 'HEAD^2' > /dev/null && [ "$(git log -1 --format=%ce HEAD)" = nobody@nowhere ]; then
+    git rev-parse 'HEAD^1'
+  else
+    git rev-parse HEAD
+  fi || die "cannot resolve the PR head"
+}
+
 case "${1:-}" in
+  status-sha) shift; status_sha ;;
   install) shift; install "$@" ;;
   scan) shift; scan "$@"; exit $? ;;
-  *) die "usage: $0 install <dir> | scan <target-branch> <config>" ;;
+  *) die "usage: $0 install <dir> | scan <target-branch> <config> | status-sha" ;;
 esac

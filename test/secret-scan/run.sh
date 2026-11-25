@@ -31,8 +31,11 @@ commit_file() { # repo path content message
   mkdir -p "$(dirname "$1/$2")"; printf '%s\n' "$3" > "$1/$2"
   git -C "$1" add -A; git -C "$1" commit -q -m "$4"
 }
-# Jenkins "merge with target" build: HEAD^1 = PR head, HEAD^2 = origin/<target>.
-jenkins_merge() { git -C "$1" merge -q --no-ff --no-edit refs/remotes/origin/develop >/dev/null; }
+# Jenkins "merge with target" build: HEAD^1 = PR head, HEAD^2 = origin/<target>, Git plugin identity.
+jenkins_merge() {
+  GIT_COMMITTER_NAME=anonymous GIT_COMMITTER_EMAIL=nobody@nowhere \
+    git -C "$1" merge -q --no-ff --no-edit refs/remotes/origin/develop >/dev/null
+}
 
 scan() { # repo target -> sets RC, OUT
   OUT="$WORK/out.$RANDOM"
@@ -205,6 +208,35 @@ gitattributes_case() { # repo-name attribute
 case_b13_gitattributes_nodiff_cannot_silence() { gitattributes_case b13a -diff; }
 case_b13_gitattributes_binary_cannot_silence() { gitattributes_case b13b binary; }
 
+# ---- status SHA: the commit that carries ci/jenkins: secret-scan -------------------------------
+status_sha() { # repo -> sets RC, SHA
+  OUT="$WORK/out.$RANDOM"; SHA="$(cd "$1" && bash "$SCRIPT" status-sha 2> "$OUT")"; RC=$?
+}
+expect_sha() { # repo rev
+  local want; want="$(git -C "$1" rev-parse "$2")"
+  [ "$RC" = 0 ] && [ "$SHA" = "$want" ] && ok "status on $2" || ko "status on '$SHA' (exit $RC), want $2 = $want"
+}
+case_status_up_to_date_author_merge_is_head() {
+  local r; r="$(new_repo sa)"; commit_file "$r" a.kt 'val a = 1' "pr"
+  git -C "$r" checkout -q -b dev refs/remotes/origin/develop; commit_file "$r" d.kt 'val d = 1' "target"
+  git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature
+  git -C "$r" merge -q --no-ff --no-edit refs/remotes/origin/develop >/dev/null   # author: develop into feature
+  status_sha "$r"; expect_sha "$r" HEAD
+}
+case_status_jenkins_merge_target_moved_is_pr_head() {
+  local r; r="$(new_repo sb)"; commit_file "$r" a.kt 'val a = 1' "pr"
+  git -C "$r" checkout -q -b dev refs/remotes/origin/develop; commit_file "$r" d.kt 'val d = 1' "target"
+  git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature; jenkins_merge "$r"
+  git -C "$r" rev-parse -q --verify HEAD^2 >/dev/null && ok "HEAD is a Jenkins merge" || ko "setup: no merge commit"
+  git -C "$r" checkout -q dev; commit_file "$r" e.kt 'val e = 1' "target moves on after the merge"
+  git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature
+  status_sha "$r"; expect_sha "$r" HEAD^1
+}
+case_status_linear_pr_is_head() {
+  local r; r="$(new_repo sc)"; commit_file "$r" a.kt 'val a = 1' "pr"
+  status_sha "$r"; expect_sha "$r" HEAD
+}
+
 ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b1_control_clean_pr_passes b1_pat_in_kt_fails
   b6_empty_target_fails b6_missing_target_ref_fails b6_no_merge_base_fails
@@ -214,7 +246,8 @@ ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b9_target_removed_secret_unmerged_passes b10_added_then_removed_fails
   b11_merge_resolution_adds_secret_fails
   b12_gitleaksignore_cannot_silence b12_inline_allow_cannot_silence
-  b13_gitattributes_nodiff_cannot_silence b13_gitattributes_binary_cannot_silence)
+  b13_gitattributes_nodiff_cannot_silence b13_gitattributes_binary_cannot_silence
+  status_up_to_date_author_merge_is_head status_jenkins_merge_target_moved_is_pr_head status_linear_pr_is_head)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do
