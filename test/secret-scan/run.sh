@@ -136,6 +136,15 @@ case_b7_firebase_key_in_kt_fails() {
   jenkins_merge "$r"; scan "$r" develop; expect_rc 1; expect_out 'Firebase\.kt:1 gcp-api-key$'; expect_no "$TOKEN"
 }
 
+case_b8_existing_secret_on_target_passes() {
+  local r; r="$(new_repo b8)"; TOKEN="$(fake_pat)"
+  git -C "$r" checkout -q -b dev refs/remotes/origin/develop
+  commit_file "$r" Legacy.kt "val old = \"$TOKEN\"" "legacy credential"
+  git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature
+  git -C "$r" reset -q --hard refs/remotes/origin/develop
+  commit_file "$r" Other.kt 'val ok = 1' "pr"; jenkins_merge "$r"
+  scan "$r" develop; expect_rc 0
+}
 case_b9_target_moved_on_merge_build_passes() {
   local r; r="$(new_repo b9)"; TOKEN="$(fake_pat)"
   commit_file "$r" Other.kt 'val ok = 1' "pr"
@@ -157,13 +166,30 @@ case_b9_target_removed_secret_unmerged_passes() {
   git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature
   scan "$r" develop; expect_rc 0   # PR built without a merge commit, behind its target
 }
+case_b10_added_then_removed_fails() {
+  local r; r="$(new_repo b10)"; TOKEN="$(fake_pat)"
+  commit_file "$r" Api.kt "val t = \"$TOKEN\"" "add"; commit_file "$r" Api.kt 'val t = ""' "remove"
+  jenkins_merge "$r"; scan "$r" develop; expect_rc 1; expect_out 'Api\.kt:1 github-pat$'; expect_no "$TOKEN"
+}
+case_b11_merge_resolution_adds_secret_fails() {
+  local r; r="$(new_repo b11)"; TOKEN="$(fake_pat)"
+  commit_file "$r" Conf.kt 'val v = "pr"' "pr side"
+  git -C "$r" checkout -q -b dev refs/remotes/origin/develop
+  commit_file "$r" Conf.kt 'val v = "target"' "target side"
+  git -C "$r" update-ref refs/remotes/origin/develop HEAD; git -C "$r" checkout -q feature
+  git -C "$r" merge -q refs/remotes/origin/develop >/dev/null 2>&1
+  printf 'val v = "%s"\n' "$TOKEN" > "$r/Conf.kt"; git -C "$r" add -A; git -C "$r" commit -q --no-edit
+  scan "$r" develop; expect_rc 1; expect_out 'Conf\.kt:1 github-pat$'; expect_no "$TOKEN"
+}
 
 ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b1_control_clean_pr_passes b1_pat_in_kt_fails
   b6_empty_target_fails b6_missing_target_ref_fails b6_no_merge_base_fails
   b2_4_log_names_file_and_rule_not_value b5_google_services_key_passes
   b7_pat_in_google_services_fails b7_firebase_key_in_kt_fails
-  b9_target_moved_on_merge_build_passes b9_target_removed_secret_unmerged_passes)
+  b8_existing_secret_on_target_passes b9_target_moved_on_merge_build_passes
+  b9_target_removed_secret_unmerged_passes b10_added_then_removed_fails
+  b11_merge_resolution_adds_secret_fails)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do
