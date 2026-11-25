@@ -182,6 +182,14 @@ case_b11_merge_resolution_adds_secret_fails() {
   scan "$r" develop; expect_rc 1; expect_out 'Conf\.kt:1 github-pat$'; expect_no "$TOKEN"
 }
 
+case_b12_gitleaksignore_cannot_silence() {
+  local r sha; r="$(new_repo b12a)"; TOKEN="$(fake_pat)"
+  commit_file "$r" Api.kt "val t = \"$TOKEN\"" "add"; sha="$(git -C "$r" rev-parse HEAD)"
+  printf '%s\n' "$sha:Api.kt:github-pat:1" "Api.kt:github-pat:1" > "$r/.gitleaksignore"
+  git -C "$r" add -A; git -C "$r" commit -q -m "ignore own finding"
+  jenkins_merge "$r"; scan "$r" develop; expect_rc 1; expect_out 'Api\.kt:1 github-pat$'; expect_no "$TOKEN"
+}
+
 ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b1_control_clean_pr_passes b1_pat_in_kt_fails
   b6_empty_target_fails b6_missing_target_ref_fails b6_no_merge_base_fails
@@ -189,7 +197,8 @@ ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b7_pat_in_google_services_fails b7_firebase_key_in_kt_fails
   b8_existing_secret_on_target_passes b9_target_moved_on_merge_build_passes
   b9_target_removed_secret_unmerged_passes b10_added_then_removed_fails
-  b11_merge_resolution_adds_secret_fails)
+  b11_merge_resolution_adds_secret_fails
+  b12_gitleaksignore_cannot_silence)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do

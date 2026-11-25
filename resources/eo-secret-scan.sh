@@ -46,6 +46,8 @@ scan() {
   net="$(GIT_AUTHOR_NAME=secret-scan GIT_AUTHOR_EMAIL=secret-scan@invalid \
     GIT_COMMITTER_NAME=secret-scan GIT_COMMITTER_EMAIL=secret-scan@invalid \
     git commit-tree "HEAD^{tree}" -p "$base" -m "secret-scan: net PR diff")" || die "cannot build the net PR diff vs $ref"
+  # gitleaks honours a .gitleaksignore in the scanned dir; the PR must not silence itself.
+  rm -f .gitleaksignore || die "cannot remove .gitleaksignore"
   # One "path:line rule" per finding; no commit (the net commit is synthetic), never the value.
   tmpl="$(mktemp)" || die "mktemp failed"
   printf '%s' '{{range .}}{{.File}}:{{.StartLine}} {{.RuleID}}{{"\n"}}{{end}}' > "$tmpl"
