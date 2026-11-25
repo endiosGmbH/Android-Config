@@ -78,21 +78,23 @@ STATUS_CONTEXT='ci/jenkins: secret-scan'
 json_str() { local v="${1//\\/\\\\}"; printf '"%s"' "${v//\"/\\\"}"; }
 
 post_status() {
-  local state="${1:-}" desc="${2:-}" token body sha code sha_file="${EO_STATUS_SHA_FILE:-.eo-secret-scan.sha}"
+  local state="${1:-}" desc="${2:-}" token body sha code resp sha_file="${EO_STATUS_SHA_FILE:-.eo-secret-scan.sha}"
   [ -n "$state" ] && [ -n "$desc" ] && [ -n "${EO_STATUS_REPO:-}" ] || die "post-status needs <state> <description> and EO_STATUS_REPO"
   IFS= read -r token || true
   body="{\"state\":$(json_str "$state"),\"context\":$(json_str "$STATUS_CONTEXT"),\"description\":$(json_str "$desc"),\"target_url\":$(json_str "${EO_STATUS_TARGET_URL:-}")}"
   # pending starts a build's round; later posts reuse the commit it landed on.
   [ "$state" = pending ] && rm -f "$sha_file"
+  resp="$(mktemp)" || { echo "WARNING: $STATUS_CONTEXT status '$state' not posted (mktemp failed)"; return 0; }
   if [ -s "$sha_file" ]; then
     sha="$(cat "$sha_file")"; code="$(send_status "$sha")"
   else
     sha="$(git rev-parse HEAD)" || die "cannot resolve HEAD"; code="$(send_status "$sha")"
-    # 422 = HEAD is not on GitHub, so it is Jenkins' local merge; its first parent is the PR head.
-    if [ "$code" = 422 ] && git rev-parse -q --verify 'HEAD^2' > /dev/null; then
+    # HEAD not on GitHub = Jenkins' local merge; its first parent is the PR head. Other 422s only warn.
+    if [ "$code" = 422 ] && grep -q 'No commit found' "$resp" && git rev-parse -q --verify 'HEAD^2' > /dev/null; then
       sha="$(git rev-parse 'HEAD^1')"; code="$(send_status "$sha")"
     fi
   fi
+  rm -f "$resp"
   if [ "$code" = 201 ]; then
     echo "$sha" > "$sha_file"; echo "$STATUS_CONTEXT: $state posted on $sha"
   else
@@ -100,9 +102,9 @@ post_status() {
   fi
 }
 
-send_status() { # <sha> -> HTTP code; the token goes on curl's stdin, never in argv
+send_status() { # <sha> -> HTTP code, response body in $resp; the token goes on curl's stdin, never in argv
   printf 'Authorization: token %s\n' "$token" | curl -sS --connect-timeout 10 --max-time "${EO_STATUS_MAX_TIME:-20}" \
-    -o /dev/null -w '%{http_code}' -X POST -H @- -H 'Accept: application/vnd.github+json' \
+    -o "$resp" -w '%{http_code}' -X POST -H @- -H 'Accept: application/vnd.github+json' \
     -d "$body" "${EO_GITHUB_API:-https://api.github.com}/repos/$EO_STATUS_REPO/statuses/$1"
 }
 

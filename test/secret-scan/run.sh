@@ -292,7 +292,8 @@ case_b13_gitattributes_nodiff_merge_build_cannot_silence() {
 }
 
 # ---- status post: the commit that carries ci/jenkins: secret-scan ------------------------------
-# Fake statuses API: 201 for a SHA listed in <known>, 422 otherwise (500 for all in mode "fail").
+# Fake statuses API: 201 for a SHA listed in <known>, else 422 "No commit found" (GitHub's text);
+# mode "fail" answers 500 to all, mode "limit" a 422 with another message to all.
 # Logs "<code> <sha> auth=<yes|no> state=<state>" per request; never the token itself.
 fake_api() { # known-file mode -> sets API, API_LOG
   local pf="$WORK/api.port.$RANDOM"; API_LOG="$WORK/api.log.$RANDOM"; : > "$API_LOG"
@@ -303,10 +304,13 @@ class H(http.server.BaseHTTPRequestHandler):
         sha=self.path.rsplit("/",1)[-1]
         body=json.loads(self.rfile.read(int(self.headers["Content-Length"])))
         known=open(known_f).read().split()
-        code=500 if mode=="fail" else (201 if sha in known else 422)
+        code=500 if mode=="fail" else 422 if mode=="limit" else (201 if sha in known else 422)
+        msg="This SHA and context has reached the maximum number of statuses." if mode=="limit" else "No commit found for SHA: "+sha
         auth="yes" if self.headers.get("Authorization")=="token "+token else "no"
         open(log_f,"a").write("%d %s auth=%s state=%s context=%s\n"%(code,sha,auth,body["state"],body["context"]))
-        self.send_response(code); self.end_headers()
+        out=json.dumps({"message":msg}).encode() if code==422 else b"{}"
+        self.send_response(code); self.send_header("Content-Length",str(len(out))); self.end_headers()
+        self.wfile.write(out)
     def log_message(self,*a): pass
 s=http.server.HTTPServer(("127.0.0.1",0),H)
 open(port_f,"w").write(str(s.server_port)); s.serve_forever()' "$1" "$2" "$API_LOG" "$pf" "$DUMMY_TOKEN" > /dev/null 2>&1 &
@@ -347,6 +351,13 @@ case_b15_jenkins_merge_posts_on_pr_head() {
 201 HEAD^1
 201 HEAD^1"
   grep -q 'context=ci/jenkins: secret-scan' "$API_LOG" && ok "context name" || ko "context name"
+}
+case_b15_other_422_on_merge_only_warns() {
+  local r; r="$(moved_target_merge sg)"
+  fake_api "$(known "$r" HEAD^1 HEAD^2)" limit
+  post_status "$r" pending "$API"; expect_rc 0
+  expect_out "WARNING: .*'pending' not posted \(HTTP 422\)"; expect_no "$DUMMY_TOKEN"
+  expect_api "$r" "422 HEAD"
 }
 case_b15_forged_identity_author_merge_posts_on_head() {
   local r; r="$(new_repo sb)"; commit_file "$r" a.kt 'val a = 1' "pr"
@@ -398,7 +409,7 @@ ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum insta
   b13_gitattributes_nodiff_cannot_silence b13_gitattributes_binary_cannot_silence b14_dir_jwe_in_kt_fails
   b1_pat_in_kt_merge_build_fails b5_google_services_key_merge_build_passes
   b10_added_then_removed_merge_build_fails b13_gitattributes_nodiff_merge_build_cannot_silence
-  b15_jenkins_merge_posts_on_pr_head b15_forged_identity_author_merge_posts_on_head b15_linear_posts_on_head
+  b15_jenkins_merge_posts_on_pr_head b15_other_422_on_merge_only_warns b15_forged_identity_author_merge_posts_on_head b15_linear_posts_on_head
   b15_pending_forgets_a_previous_build_sha b15_api_failure_only_warns b16_stalled_status_post_only_warns)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
