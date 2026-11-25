@@ -36,6 +36,13 @@ finding prints as `path:line rule`; values are always redacted.
   allowlisted by path.
 - **Run it locally** on a branch: `gitleaks git --redact --config <Android-Config>/resources/eo-gitleaks.toml --log-opts="origin/develop..HEAD" .`
   Never drop `--redact` or add `-v`, which prints the matched line.
+- **Timeouts:** the gitleaks download gives up after 120 s (the scan reports `error`) and each
+  status post after 20 s (a warning), so a stalled GitHub never aborts the build.
+- **Known gaps:**
+  - A token added by an evil merge and removed in a later commit is not seen (`--remerge-diff` needs git ≥2.36).
+  - gitleaks' default global path allowlist skips files such as `*.svg`, `*.png` and `node_modules/`.
+  - UTF-16 text files are not scanned (git treats them as binary).
+  - Run locally in a linked worktree, the `info/attributes` line lands in the main clone's common git dir (harmless on Jenkins).
 - **Harness:** `test/secret-scan/run.sh` (needs gitleaks 8.30.1 on `PATH` and network for the
   install cases) builds throwaway repos with fake tokens generated at runtime and runs the same
   script the stage runs.
