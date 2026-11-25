@@ -18,3 +18,10 @@ description = "Literal Authorization header value"
 regex = '''(?i)[\x27"]authorization[\x27"]\s*:\s*[\x27"](?:bearer |token |basic )?([A-Za-z0-9_\-\.=+/]{30,})[\x27"]'''
 secretGroup = 1
 keywords = ["authorization"]
+
+# Path-based and rule-targeted, so a Firebase-shaped key pasted into code still fails, and so
+# does any other credential inside google-services.json.
+[[allowlists]]
+description = "Firebase google-services.json: the Android API key is public by design"
+targetRules = ["gcp-api-key", "generic-api-key"]
+paths = ['''(?:^|/)google-services\.json$''']

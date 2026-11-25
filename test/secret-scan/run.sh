@@ -115,10 +115,20 @@ val token = \"$TOKEN\"" "add api"; jenkins_merge "$r"
   expect_no "${TOKEN:4}"
 }
 
+gservices() { # api key -> a google-services.json body
+  printf '{\n  "client": [{\n    "api_key": [{\n      "current_key": "%s"\n    }]\n  }]\n}' "$1"
+}
+case_b5_google_services_key_passes() {
+  local r; r="$(new_repo b5)"
+  commit_file "$r" app/google-services.json "$(gservices "$(fake_gcp)")" "firebase"
+  commit_file "$r" app/src/debug/google-services.json "$(gservices "$(fake_gcp)")" "firebase debug"
+  jenkins_merge "$r"; scan "$r" develop; expect_rc 0
+}
+
 ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b1_control_clean_pr_passes b1_pat_in_kt_fails
   b6_empty_target_fails b6_missing_target_ref_fails b6_no_merge_base_fails
-  b2_4_log_names_file_and_rule_not_value)
+  b2_4_log_names_file_and_rule_not_value b5_google_services_key_passes)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do
