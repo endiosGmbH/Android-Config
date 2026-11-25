@@ -396,6 +396,14 @@ case_b16_stalled_status_post_only_warns() {
   [ $((SECONDS - start)) -le 10 ] && ok "gave up within the bound" || ko "took $((SECONDS - start)) s"
 }
 
+case_b17_unresolvable_head_leaves_no_temp_file() {
+  local r="$WORK/sh" tmp="$WORK/tmp-sh" s="$WORK/shim-sh" real; mkdir -p "$r" "$tmp"; git -C "$r" init -q -b feature
+  real="$(command -v mktemp)"; shim "$s" mktemp "exec '$real' '$tmp/tmp.XXXXXX'"   # BSD mktemp ignores TMPDIR
+  PATH="$s:$PATH" post_status "$r" pending "http://127.0.0.1:9"
+  expect_rc 2; expect_out 'cannot resolve HEAD'
+  [ -z "$(ls -A "$tmp")" ] && ok "temp dir left empty" || ko "left behind: $(ls -A "$tmp" | tr '\n' ' ')"
+}
+
 ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum install_no_dir_exits_2 b16_stalled_download_exits_2
   b1_control_clean_pr_passes b1_pat_in_kt_fails
   b6_empty_target_fails b6_missing_target_ref_fails b6_no_merge_base_fails
@@ -410,7 +418,8 @@ ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum insta
   b1_pat_in_kt_merge_build_fails b5_google_services_key_merge_build_passes
   b10_added_then_removed_merge_build_fails b13_gitattributes_nodiff_merge_build_cannot_silence
   b15_jenkins_merge_posts_on_pr_head b15_other_422_on_merge_only_warns b15_forged_identity_author_merge_posts_on_head b15_linear_posts_on_head
-  b15_pending_forgets_a_previous_build_sha b15_api_failure_only_warns b16_stalled_status_post_only_warns)
+  b15_pending_forgets_a_previous_build_sha b15_api_failure_only_warns b16_stalled_status_post_only_warns
+  b17_unresolvable_head_leaves_no_temp_file)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do

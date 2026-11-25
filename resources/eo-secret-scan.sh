@@ -85,6 +85,7 @@ post_status() {
   # pending starts a build's round; later posts reuse the commit it landed on.
   [ "$state" = pending ] && rm -f "$sha_file"
   resp="$(mktemp)" || { echo "WARNING: $STATUS_CONTEXT status '$state' not posted (mktemp failed)"; return 0; }
+  trap "rm -f $(printf %q "$resp")" EXIT   # expanded now: covers die() and the normal end alike
   if [ -s "$sha_file" ]; then
     sha="$(cat "$sha_file")"; code="$(send_status "$sha")"
   else
@@ -94,7 +95,6 @@ post_status() {
       sha="$(git rev-parse 'HEAD^1')"; code="$(send_status "$sha")"
     fi
   fi
-  rm -f "$resp"
   if [ "$code" = 201 ]; then
     echo "$sha" > "$sha_file"; echo "$STATUS_CONTEXT: $state posted on $sha"
   else
