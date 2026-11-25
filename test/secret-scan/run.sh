@@ -189,6 +189,11 @@ case_b12_gitleaksignore_cannot_silence() {
   git -C "$r" add -A; git -C "$r" commit -q -m "ignore own finding"
   jenkins_merge "$r"; scan "$r" develop; expect_rc 1; expect_out 'Api\.kt:1 github-pat$'; expect_no "$TOKEN"
 }
+case_b12_inline_allow_cannot_silence() {
+  local r; r="$(new_repo b12b)"; TOKEN="$(fake_pat)"
+  commit_file "$r" Api.kt "val t = \"$TOKEN\" // gitleaks:allow" "add with inline allow"
+  jenkins_merge "$r"; scan "$r" develop; expect_rc 1; expect_out 'Api\.kt:1 github-pat$'; expect_no "$TOKEN"
+}
 
 ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b1_control_clean_pr_passes b1_pat_in_kt_fails
@@ -198,7 +203,7 @@ ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
   b8_existing_secret_on_target_passes b9_target_moved_on_merge_build_passes
   b9_target_removed_secret_unmerged_passes b10_added_then_removed_fails
   b11_merge_resolution_adds_secret_fails
-  b12_gitleaksignore_cannot_silence)
+  b12_gitleaksignore_cannot_silence b12_inline_allow_cannot_silence)
 
 if [ $# -gt 0 ]; then CASES=("$@"); else CASES=("${ALL_CASES[@]}"); fi
 for CASE in "${CASES[@]}"; do

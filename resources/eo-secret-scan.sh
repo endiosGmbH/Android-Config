@@ -51,7 +51,7 @@ scan() {
   # One "path:line rule" per finding; no commit (the net commit is synthetic), never the value.
   tmpl="$(mktemp)" || die "mktemp failed"
   printf '%s' '{{range .}}{{.File}}:{{.StartLine}} {{.RuleID}}{{"\n"}}{{end}}' > "$tmpl"
-  "$GITLEAKS" git --config "$config" --redact --no-banner --no-color --exit-code 10 \
+  "$GITLEAKS" git --config "$config" --redact --no-banner --no-color --exit-code 10 --ignore-gitleaks-allow \
     --report-format template --report-template "$tmpl" --report-path - \
     --log-opts="^$ref HEAD $net" .
   rc=$?
