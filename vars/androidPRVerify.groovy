@@ -242,7 +242,7 @@ void secretScanStatus(String state, String description) {
                 // Token on curl's stdin, never in argv.
                 String code = sh(returnStdout: true, script: '''
                   set +x
-                  printf 'Authorization: token %s\\n' "$GH_TOKEN" | curl -sS -o /dev/null -w '%{http_code}' \\
+                  printf 'Authorization: token %s\\n' "$GH_TOKEN" | curl -sS --connect-timeout 10 --max-time 20 -o /dev/null -w '%{http_code}' \\
                     -X POST -H @- -H 'Accept: application/vnd.github+json' -d "$EO_STATUS_BODY" "$EO_STATUS_URL" || true
                 ''').trim()
                 if (code == '201') {

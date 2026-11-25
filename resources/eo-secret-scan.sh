@@ -22,8 +22,9 @@ install() {
   esac
   tarball="gitleaks_${GITLEAKS_VERSION}_${platform}.tar.gz"
   mkdir -p "$dir" || die "cannot create $dir"
-  curl -sSfL -o "$dir/$tarball" \
-    "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/${tarball}" \
+  # Bounded, so a stalled GitHub fails the scan instead of the build's 45-min timeout.
+  curl -sSfL --connect-timeout 10 --max-time "${EO_DOWNLOAD_MAX_TIME:-120}" -o "$dir/$tarball" \
+    "${EO_GITLEAKS_RELEASES:-https://github.com/gitleaks/gitleaks/releases/download}/v${GITLEAKS_VERSION}/${tarball}" \
     || die "download of $tarball failed"
   if ! (cd "$dir" && echo "$sum  $tarball" | shasum -a 256 -c --status); then
     rm -f "$dir/$tarball"; die "checksum mismatch for $tarball, refusing to run it"

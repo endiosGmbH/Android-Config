@@ -9,7 +9,8 @@ SCRIPT="$RESOURCES/eo-secret-scan.sh"
 CONFIG="$RESOURCES/eo-gitleaks.toml"
 GITLEAKS_BIN="$(command -v gitleaks)" || { echo "gitleaks not on PATH"; exit 2; }
 WORK="$(mktemp -d)"
-trap 'rm -rf "$WORK"' EXIT
+BG_PIDS=()
+trap '[ ${#BG_PIDS[@]} -gt 0 ] && kill "${BG_PIDS[@]}" 2>/dev/null; rm -rf "$WORK"' EXIT
 export GIT_CONFIG_GLOBAL=/dev/null GIT_CONFIG_NOSYSTEM=1
 export GIT_AUTHOR_NAME=t GIT_AUTHOR_EMAIL=t@example.invalid GIT_COMMITTER_NAME=t GIT_COMMITTER_EMAIL=t@example.invalid
 
@@ -79,6 +80,27 @@ case_install_bad_checksum() {
   PATH="$s:$PATH" bash "$SCRIPT" install "$WORK/inst-sum" > "$OUT" 2>&1; RC=$?
   expect_rc 2; expect_out 'checksum'
   [ ! -e "$WORK/inst-sum/gitleaks" ] && ok "no binary left behind" || ko "binary extracted despite bad checksum"
+}
+
+# A local TCP listener that accepts and never answers -> sets PORT.
+silent_listener() {
+  local pf="$WORK/silent.port"; rm -f "$pf"
+  python3 -I -c 'import socket,sys
+s=socket.socket(); s.bind(("127.0.0.1",0)); s.listen(8)
+open(sys.argv[1],"w").write(str(s.getsockname()[1]))
+conns=[]
+while True: conns.append(s.accept())' "$pf" > /dev/null 2>&1 & BG_PIDS+=($!); disown
+  while [ ! -s "$pf" ]; do sleep 0.1; done; PORT="$(cat "$pf")"
+}
+bounded() { # seconds cmd... -> the command, killed (exit 142) after <seconds>
+  perl -e 'alarm shift; exec @ARGV or die' "$@"
+}
+case_b16_stalled_download_exits_2() {
+  local start; silent_listener; OUT="$WORK/out.stall"; start=$SECONDS
+  EO_GITLEAKS_RELEASES="http://127.0.0.1:$PORT" EO_DOWNLOAD_MAX_TIME=2 \
+    bounded 15 bash "$SCRIPT" install "$WORK/inst-stall" > "$OUT" 2>&1; RC=$?
+  expect_rc 2; expect_out 'download of .* failed'
+  [ $((SECONDS - start)) -le 10 ] && ok "gave up within the bound" || ko "took $((SECONDS - start)) s"
 }
 
 # ---- scan behaviors (numbers match the spec) -------------------------------------------------
@@ -245,7 +267,7 @@ case_b15_linear_pr_is_head() {
   status_sha "$r"; expect_sha "$r" HEAD
 }
 
-ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum
+ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum b16_stalled_download_exits_2
   b1_control_clean_pr_passes b1_pat_in_kt_fails
   b6_empty_target_fails b6_missing_target_ref_fails b6_no_merge_base_fails
   b2_4_log_names_file_and_rule_not_value b5_google_services_key_passes
