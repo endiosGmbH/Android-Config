@@ -42,7 +42,6 @@ finding prints as `path:line rule`; values are always redacted.
   - A token added by an evil merge and removed in a later commit is not seen (`--remerge-diff` needs git ≥2.36).
   - gitleaks' default global path allowlist skips files such as `*.svg`, `*.png` and `node_modules/`.
   - UTF-16 text files and other binaries are not scanned (git treats them as binary).
-  - Run locally in a linked worktree, the `* !diff` line in `info/attributes` lands in the main clone's common git dir (harmless on Jenkins).
 - **Harness:** `test/secret-scan/run.sh` (needs gitleaks 8.30.1 on `PATH` and network for the
   install cases) builds throwaway repos with fake tokens generated at runtime and runs the same
   script the stage runs.

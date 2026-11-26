@@ -58,13 +58,13 @@ scan() {
   attrs="$(git rev-parse --git-path info/attributes)" && mkdir -p "$(dirname "$attrs")" \
     && { grep -qxF '* !diff' "$attrs" 2>/dev/null || echo '* !diff' >> "$attrs"; } || die "cannot reset diff attributes in $attrs"
   # One "path:line rule" per finding; no commit (the net commit is synthetic), never the value.
-  tmpl="$(mktemp)" || die "mktemp failed"
+  tmpl="$(mktemp)" || { reset_attrs "$attrs"; die "mktemp failed"; }
   printf '%s' '{{range .}}{{.File}}:{{.StartLine}} {{.RuleID}}{{"\n"}}{{end}}' > "$tmpl"
   "$GITLEAKS" git --config "$config" --redact --no-banner --no-color --exit-code 10 --ignore-gitleaks-allow \
     --report-format template --report-template "$tmpl" --report-path - \
     --log-opts="^$ref HEAD $net" .
   rc=$?
-  rm -f "$tmpl"
+  rm -f "$tmpl"; reset_attrs "$attrs"
   case $rc in
     0) echo "Secret scan: no credentials in this PR"; return 0 ;;
     10) echo "Secret scan: this PR adds credentials (listed above as path:line rule, values redacted)."
@@ -73,6 +73,9 @@ scan() {
     *) die "gitleaks failed (exit $rc)" ;;
   esac
 }
+
+# Jenkins reuses workspaces, so drop the scan's attributes line again (post cleanup is the fallback).
+reset_attrs() { grep -vxF '* !diff' "$1" > "$1.eo-tmp"; mv -f "$1.eo-tmp" "$1"; }
 
 STATUS_CONTEXT='ci/jenkins: secret-scan'
 

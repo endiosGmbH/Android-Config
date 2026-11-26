@@ -210,7 +210,11 @@ EOF
 
         post {
             always {
-                sh 'rm -rf local.properties ktlint detekt-cli-*.zip detekt-cli-*/ gitleaks gitleaks_*.tar.gz .eo-gitleaks.toml .eo-secret-scan.sh .eo-secret-scan.sha'
+                // Also drops the secret scan's info/attributes line if an aborted scan left it.
+                sh '''
+                    rm -rf local.properties ktlint detekt-cli-*.zip detekt-cli-*/ gitleaks gitleaks_*.tar.gz .eo-gitleaks.toml .eo-secret-scan.sh .eo-secret-scan.sha
+                    f=$(git rev-parse --git-path info/attributes 2>/dev/null) && [ -f "$f" ] && sed -i '' '/^[*] !diff$/d' "$f" || true
+                '''
             }
         }
     }

@@ -277,6 +277,19 @@ case_b18_binary_jar_passes() {
   jenkins_merge "$r"; scan "$r" develop; expect_rc 0
 }
 
+# Jenkins reuses workspaces: the scan must not leave its info/attributes line behind.
+attrs_line_removed() { # repo
+  local f; f="$(git -C "$1" rev-parse --path-format=absolute --git-path info/attributes)"
+  grep -qxF '* !diff' "$f" 2>/dev/null && ko "info/attributes still has '* !diff'" || ok "info/attributes cleaned up"
+}
+case_b19_attributes_line_removed_after_scan() {
+  local r; r="$(new_repo b19)"; TOKEN="$(fake_pat)"
+  commit_file "$r" Api.kt 'val greeting = "hello"' "clean"; jenkins_merge "$r"
+  scan "$r" develop; expect_rc 0; attrs_line_removed "$r"
+  commit_file "$r" Api.kt "val t = \"$TOKEN\"" "add"
+  scan "$r" develop; expect_rc 1; attrs_line_removed "$r"
+}
+
 # Merge-build variants: same PRs, built as a real merge with a moved target.
 case_b1_pat_in_kt_merge_build_fails() {
   local r; r="$(new_repo b1m)"; TOKEN="$(fake_pat)"
@@ -423,7 +436,7 @@ ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum insta
   b9_target_removed_secret_unmerged_passes b10_added_then_removed_fails
   b11_merge_resolution_adds_secret_fails
   b12_gitleaksignore_cannot_silence b12_inline_allow_cannot_silence
-  b13_gitattributes_nodiff_cannot_silence b13_gitattributes_binary_cannot_silence b14_dir_jwe_in_kt_fails b18_binary_jar_passes
+  b13_gitattributes_nodiff_cannot_silence b13_gitattributes_binary_cannot_silence b14_dir_jwe_in_kt_fails b18_binary_jar_passes b19_attributes_line_removed_after_scan
   b1_pat_in_kt_merge_build_fails b5_google_services_key_merge_build_passes
   b10_added_then_removed_merge_build_fails b13_gitattributes_nodiff_merge_build_cannot_silence
   b15_jenkins_merge_posts_on_pr_head b15_other_422_on_merge_only_warns b15_forged_identity_author_merge_posts_on_head b15_linear_posts_on_head
