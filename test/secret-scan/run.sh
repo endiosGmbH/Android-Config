@@ -268,6 +268,15 @@ gitattributes_case() { # repo-name attribute
 case_b13_gitattributes_nodiff_cannot_silence() { gitattributes_case b13a -diff; }
 case_b13_gitattributes_binary_cannot_silence() { gitattributes_case b13b binary; }
 
+# Binaries stay binary: random bytes around a key-shaped run must not be scanned as a patch.
+case_b18_binary_jar_passes() {
+  local r; r="$(new_repo b18)"; mkdir -p "$r/gradle/wrapper"
+  { printf 'PK\003\004\000'; head -c 3000 /dev/urandom; printf '\napi_key = "%s"\n' "$(rand 40)"; head -c 3000 /dev/urandom; } \
+    > "$r/gradle/wrapper/gradle-wrapper.jar"
+  git -C "$r" add -A; git -C "$r" commit -q -m "wrapper jar"
+  jenkins_merge "$r"; scan "$r" develop; expect_rc 0
+}
+
 # Merge-build variants: same PRs, built as a real merge with a moved target.
 case_b1_pat_in_kt_merge_build_fails() {
   local r; r="$(new_repo b1m)"; TOKEN="$(fake_pat)"
@@ -414,7 +423,7 @@ ALL_CASES=(install_ok install_bad_arch install_bad_os install_bad_checksum insta
   b9_target_removed_secret_unmerged_passes b10_added_then_removed_fails
   b11_merge_resolution_adds_secret_fails
   b12_gitleaksignore_cannot_silence b12_inline_allow_cannot_silence
-  b13_gitattributes_nodiff_cannot_silence b13_gitattributes_binary_cannot_silence b14_dir_jwe_in_kt_fails
+  b13_gitattributes_nodiff_cannot_silence b13_gitattributes_binary_cannot_silence b14_dir_jwe_in_kt_fails b18_binary_jar_passes
   b1_pat_in_kt_merge_build_fails b5_google_services_key_merge_build_passes
   b10_added_then_removed_merge_build_fails b13_gitattributes_nodiff_merge_build_cannot_silence
   b15_jenkins_merge_posts_on_pr_head b15_other_422_on_merge_only_warns b15_forged_identity_author_merge_posts_on_head b15_linear_posts_on_head

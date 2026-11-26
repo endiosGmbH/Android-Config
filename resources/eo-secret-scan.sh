@@ -53,9 +53,10 @@ scan() {
     git commit-tree "HEAD^{tree}" -p "$base" -m "secret-scan: net PR diff")" || die "cannot build the net PR diff vs $ref"
   # gitleaks honours a .gitleaksignore in the scanned dir; the PR must not silence itself.
   rm -f .gitleaksignore || die "cannot remove .gitleaksignore"
-  # In-tree `-diff`/`binary` would hide patches; info/attributes outranks .gitattributes.
+  # In-tree `-diff`/`binary` would hide patches; `!diff` in info/attributes (which outranks
+  # .gitattributes) unsets them, so git's own binary detection still skips real binaries.
   attrs="$(git rev-parse --git-path info/attributes)" && mkdir -p "$(dirname "$attrs")" \
-    && { grep -qxF '* diff' "$attrs" 2>/dev/null || echo '* diff' >> "$attrs"; } || die "cannot force diffs in $attrs"
+    && { grep -qxF '* !diff' "$attrs" 2>/dev/null || echo '* !diff' >> "$attrs"; } || die "cannot reset diff attributes in $attrs"
   # One "path:line rule" per finding; no commit (the net commit is synthetic), never the value.
   tmpl="$(mktemp)" || die "mktemp failed"
   printf '%s' '{{range .}}{{.File}}:{{.StartLine}} {{.RuleID}}{{"\n"}}{{end}}' > "$tmpl"
