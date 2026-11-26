@@ -79,6 +79,8 @@ reset_attrs() { grep -vxF '* !diff' "$1" > "$1.eo-tmp"; mv -f "$1.eo-tmp" "$1"; 
 
 STATUS_CONTEXT='ci/jenkins: secret-scan'
 
+# Escapes only \ and ", so only safe without control characters: callers pass fixed
+# states, context and descriptions, plus Jenkins' BUILD_URL.
 json_str() { local v="${1//\\/\\\\}"; printf '"%s"' "${v//\"/\\\"}"; }
 
 post_status() {
