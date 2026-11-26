@@ -11,9 +11,40 @@ Android-Config (gradle scripts, `version.gradle`, `tooling/`) is ignored by the 
 
 ```
 vars/
-  androidPRVerify.groovy   # PR-verify pipeline (ktlint, detekt, lint, unit tests)
+  androidPRVerify.groovy   # PR-verify pipeline (secret scan, ktlint, detekt, lint, unit tests)
   githubStatusWrap.groovy  # per-check reporter via publishChecks (best-effort)
+resources/
+  eo-secret-scan.sh        # secret scan: pinned gitleaks install + scan of what the PR adds
+  eo-gitleaks.toml         # central gitleaks config and allowlist (repos cannot override it)
+test/secret-scan/run.sh    # local harness for the scan (not loaded by Jenkins)
 ```
+
+## Secret scan
+
+The `Secret scan` stage runs first, before any Gradle work. It installs gitleaks 8.30.1 from the
+release tarball (SHA-256 pinned, macOS arm64/x64) and scans each PR commit plus the PR's net
+change vs `origin/${CHANGE_TARGET}`, so credentials already on the target are not reported. Each
+finding prints as `path:line rule`; values are always redacted.
+
+- **Non-blocking for now:** a finding turns the stage red but leaves the build result. The stage
+  posts its own commit status `ci/jenkins: secret-scan` (credential
+  `GITHUB_TOKEN_ENDIOSONEGITHUB`): `failure` for findings, `error` when the scan cannot run (for
+  example a missing base branch, which never passes). If the status cannot be posted, the log
+  shows a warning and nothing else changes.
+- **Exceptions** go only through `resources/eo-gitleaks.toml`. A repo's `.gitleaksignore` and
+  inline `gitleaks:allow` comments are ignored. Firebase `google-services.json` API keys are
+  allowlisted by path.
+- **Run it locally** on a branch: `gitleaks git --redact --config <Android-Config>/resources/eo-gitleaks.toml --log-opts="origin/develop..HEAD" .`
+  Never drop `--redact` or add `-v`, which prints the matched line.
+- **Timeouts:** the gitleaks download gives up after 120 s (the scan reports `error`) and each
+  status post after 20 s (a warning), so a stalled GitHub never aborts the build.
+- **Known gaps:**
+  - A token added by an evil merge and removed in a later commit is not seen (`--remerge-diff` needs git ≥2.36).
+  - gitleaks' default global path allowlist skips files such as `*.svg`, `*.png` and `node_modules/`.
+  - UTF-16 text files and other binaries are not scanned (git treats them as binary).
+- **Harness:** `test/secret-scan/run.sh` (needs gitleaks 8.30.1 on `PATH` and network for the
+  install cases) builds throwaway repos with fake tokens generated at runtime and runs the same
+  script the stage runs.
 
 ## Consuming it
 

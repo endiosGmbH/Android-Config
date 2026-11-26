@@ -1,0 +1,27 @@
+# Central secret-scan config for androidPRVerify's 'Secret scan' stage (repos cannot override it).
+# Run it locally with: gitleaks git --redact --config <this file>
+[extend]
+useDefault = true
+
+# The endios backend tokens are JWE (five dot-separated parts; the key part is empty for `dir`).
+# The default jwt rule expects three parts and misses them.
+[[rules]]
+id = "endios-jwe-token"
+description = "endios backend token (JWE)"
+regex = '''eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]*\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+'''
+keywords = ["eyj"]
+
+# A hardcoded Authorization header value (no default rule covers it).
+[[rules]]
+id = "hardcoded-authorization-header"
+description = "Literal Authorization header value"
+regex = '''(?i)[\x27"]authorization[\x27"]\s*:\s*[\x27"](?:bearer |token |basic )?([A-Za-z0-9_\-\.=+/]{30,})[\x27"]'''
+secretGroup = 1
+keywords = ["authorization"]
+
+# Path-based and rule-targeted, so a Firebase-shaped key pasted into code still fails, and so
+# does any other credential inside google-services.json.
+[[allowlists]]
+description = "Firebase google-services.json: the Android API key is public by design"
+targetRules = ["gcp-api-key", "generic-api-key"]
+paths = ['''(?:^|/)google-services\.json$''']
