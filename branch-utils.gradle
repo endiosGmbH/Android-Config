@@ -69,13 +69,31 @@ static def getCurrentBranch() {
 }
 
 /**
- * Determines if the current branch is a release branch or master.
- * Release branches are those that start with 'release/' or the master branch itself.
+ * Determines whether this build belongs to a release.
  *
- * @return boolean - true if on a release branch or master, false otherwise
+ * For a pull-request build the answer comes from the branch the PR *targets*, not from the branch being
+ * built: Jenkins checks a PR out as 'PR-<n>', so the source branch name says nothing about whether the
+ * change is headed for a release. Without this, a PR into release/* resolves version.foundation — the
+ * value develop happened to be on when that release was cut — while the branch it is merging into
+ * resolves version.foundation_release. The PR is then compiled against a Foundation the release will
+ * never ship, and fails on release-branch code that needs the newer one.
+ *
+ * CHANGE_TARGET is set by Jenkins on PR builds only, so a branch build is unaffected.
+ *
+ * @return boolean - true if this build is for a release branch or master, false otherwise
  */
 static def isReleaseBranch() {
-    def branch = getCurrentBranch()
+    def prTarget = System.getenv('CHANGE_TARGET')?.trim()
+    if (prTarget) {
+        return isReleaseBranchName(prTarget)
+    }
+    return isReleaseBranchName(getCurrentBranch())
+}
+
+/**
+ * Release branches are those that start with 'release/', plus master itself.
+ */
+static def isReleaseBranchName(String branch) {
     return branch.startsWith('release/') || branch == 'master'
 }
 
