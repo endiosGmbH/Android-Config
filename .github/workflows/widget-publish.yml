@@ -50,9 +50,9 @@ jobs:
         run: |
           for module in $(echo '${{ inputs.modules }}' | jq -r '.[]'); do
             echo "::group::Build :$module"
-            gradle :$module:build
+            ./gradlew :$module:build
             echo "::endgroup::"
             echo "::group::Publish :$module"
-            gradle :$module:publish
+            ./gradlew :$module:publish
             echo "::endgroup::"
           done
